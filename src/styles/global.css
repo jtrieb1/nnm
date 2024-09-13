@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "page.module.css";
+
+@import "navbar.module.css";
+@import "hero.module.css";
+@import "catalog.module.css";

@@ -1,0 +1,38 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #222831;
+    color: #EEEEEE;
+}
+
+/* Header Styles */
+.header {
+    background-color: #393E46;
+    padding: 20px;
+    color: #EEEEEE;
+}
+
+.header h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Main Content Styles */
+.main-content {
+    background-color: #EEEEEE;
+    padding: 20px;
+    color: #222831;
+}
+
+/* Footer Styles */
+.footer {
+    background-color: #393E46;
+    padding: 20px;
+    color: #EEEEEE;
+    text-align: center;
+}
+
+.footer p {
+    margin: 0;
+}

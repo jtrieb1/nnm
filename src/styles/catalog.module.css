@@ -1,0 +1,60 @@
+/* /home/jacob/Documents/projects/nonothing/nnm/src/styles/catalog.module.css */
+
+/* Color palette */
+:root {
+    --color-primary: #222831;
+    --color-secondary: #393E46;
+    --color-accent: #00ADB5;
+    --color-background: #EEEEEE;
+}
+
+/* Styles for the Catalog component */
+.catalog {
+    background-color: var(--color-background);
+    padding: 20px;
+}
+
+.catalog-header {
+    font-size: 24px;
+    color: var(--color-primary);
+    margin-bottom: 20px;
+}
+
+.catalog-issues {
+    margin-top: 20px;
+}
+
+.catalog-issues h2 {
+    font-size: 20px;
+    color: var(--color-primary);
+    margin-bottom: 10px;
+}
+
+.catalog-issues ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.catalog-issues li {
+    margin-bottom: 10px;
+}
+
+.catalog-issues a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.catalog-issues a:hover {
+    text-decoration: underline;
+}
+
+.catalog-loading {
+    font-size: 16px;
+    color: var(--color-primary);
+    margin-top: 20px;
+}
+
+.catalog-pdfviewer {
+    margin-top: 20px;
+}
