@@ -38,7 +38,7 @@ const Catalog = () => {
                         <div className='issues'>
                             <h2>Issues</h2>
                             <ul>
-                                {[...Array(count)].map((_, index) => (
+                                {[...Array(count)].slice(1).map((_, index) => (
                                     <li key={index}>
                                         <a href="#" onClick={() => {
                                             setPdfUrl(getIssueUrl(index));
