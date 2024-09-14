@@ -3,15 +3,16 @@ import React from 'react';
 import Layout from '../components/layout';
 import PDFViewer from '../components/pdfviewer';
 import SegmentHeader from '../components/segmentheader';
-import BACKEND_URL from '../util/aws';
 import getCount from '../util/count';
 import getIssueUrl from '../util/issue';
+
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 
 const Catalog = () => {
     const [pdfUrl, setPdfUrl] = React.useState('');
     const [loading, setLoading] = React.useState(true);
     const [count, setCount] = React.useState(0);
-    const [page, setPage] = React.useState(0);
 
     React.useEffect(() => {
         setLoading(true);

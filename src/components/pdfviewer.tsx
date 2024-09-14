@@ -9,6 +9,8 @@ interface PDFViewerProps {
 const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
     const [page, setPage] = useState(1);
 
+    pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+
     return (
         <div style={{ backgroundColor: '#222831', color: '#EEEEEE', padding: '10px' }}>
             <Document file={pdfUrl}>

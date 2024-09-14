@@ -5,6 +5,9 @@ import PDFViewer from '../components/pdfviewer';
 import BACKEND_URL from '../util/aws';
 import SegmentHeader from '../components/segmentheader';
 
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
+
 async function getCount() {
     const response = await fetch(`${BACKEND_URL}/count`);
     const data = await response.json();
