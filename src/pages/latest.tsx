@@ -2,28 +2,12 @@ import React from 'react';
 
 import Layout from '../components/layout';
 import PDFViewer from '../components/pdfviewer';
-import BACKEND_URL from '../util/aws';
 import SegmentHeader from '../components/segmentheader';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-
-async function getCount() {
-    const response = await fetch(`${BACKEND_URL}/count`);
-    const data = await response.json();
-    if (data.count === undefined) {
-        console.error('Invalid response from server');
-        console.error(data);
-        return 0;
-    }
-    return Number(data.count);
-}
-
-async function getIssueUrl(issueNumber: number) {
-    const response = await fetch(`${BACKEND_URL}/issue/${issueNumber}`);
-    // Returns a signed URL to the PDF
-    return response.text();
-}
+import getCount from '../util/count';
+import getIssueUrl from '../util/issue';
 
 const Latest = () => {
     const [pdfUrl, setPdfUrl] = React.useState('');
