@@ -15,18 +15,21 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
         <div className='pdfviewer'>
             <Document file={pdfUrl}>
                 <Page pageNumber={page} />
+                <Page pageNumber={page + 1} />
             </Document>
 
             <p className='pageCount'>
                 Page {page}
             </p>
 
-            <button onClick={() => setPage(page - 1)} disabled={page <= 1} className='previousBtn'>
-                Previous
-            </button>
-            <button onClick={() => setPage(page + 1)} className='nextBtn'>
-                Next
-            </button>
+            <div className='buttonContainer'>
+                <button onClick={() => setPage(page - 2)} disabled={page <= 2} className='previousBtn'>
+                    Previous
+                </button>
+                <button onClick={() => setPage(page + 2)} className='nextBtn'>
+                    Next
+                </button>
+            </div>
         </div>
     );
 };
