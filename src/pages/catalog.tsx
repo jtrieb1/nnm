@@ -4,16 +4,8 @@ import Layout from '../components/layout';
 import PDFViewer from '../components/pdfviewer';
 import SegmentHeader from '../components/segmentheader';
 import BACKEND_URL from '../util/aws';
-
-async function getCount() {
-    const response = await fetch(`${BACKEND_URL}/count`);
-    const data = await response.json();
-    return data.count;
-}
-
-function getIssueUrl(issueNumber: number) {
-    return `${BACKEND_URL}/issue/${issueNumber}`;
-}
+import getCount from '../util/count';
+import getIssueUrl from '../util/issue';
 
 const Catalog = () => {
     const [pdfUrl, setPdfUrl] = React.useState('');
@@ -21,9 +13,17 @@ const Catalog = () => {
     const [count, setCount] = React.useState(0);
 
     React.useEffect(() => {
+        setLoading(true);
         getCount().then(issueCount => {
             issueCount ? setCount(issueCount) : setCount(0);
-            setPdfUrl(`${BACKEND_URL}/issue/0`);
+            if (issueCount == 0) {
+                setLoading(false);
+                return;
+            }
+            getIssueUrl(issueCount).then(url => {
+                setPdfUrl(url);
+                setLoading(false);
+            });
         });
     }, []);
 
@@ -41,7 +41,11 @@ const Catalog = () => {
                                 {[...Array(count)].slice(1).map((_, index) => (
                                     <li key={index}>
                                         <a href="#" onClick={() => {
-                                            setPdfUrl(getIssueUrl(index));
+                                            setLoading(true);
+                                            getIssueUrl(index).then(url => {
+                                                setPdfUrl(url);
+                                                setLoading(false);
+                                            });
                                         }}>
                                             Issue {index}
                                         </a>
