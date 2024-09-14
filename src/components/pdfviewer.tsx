@@ -12,19 +12,19 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
     pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
     return (
-        <div style={{ backgroundColor: '#222831', color: '#EEEEEE', padding: '10px' }}>
+        <div className='pdfviewer'>
             <Document file={pdfUrl}>
                 <Page pageNumber={page} />
             </Document>
 
-            <p>
+            <p className='pageCount'>
                 Page {page}
             </p>
 
-            <button onClick={() => setPage(page - 1)} disabled={page <= 1}>
+            <button onClick={() => setPage(page - 1)} disabled={page <= 1} className='previousBtn'>
                 Previous
             </button>
-            <button onClick={() => setPage(page + 1)} >
+            <button onClick={() => setPage(page + 1)} className='nextBtn'>
                 Next
             </button>
         </div>
