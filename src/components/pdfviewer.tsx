@@ -14,8 +14,10 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
     return (
         <div className='pdfviewer'>
             <Document file={pdfUrl}>
-                <Page pageNumber={page} />
-                <Page pageNumber={page + 1} />
+                <div className='pageSpread'>
+                    <Page pageNumber={page} />
+                    <Page pageNumber={page + 1} />
+                </div>
             </Document>
 
             <p className='pageCount'>

@@ -27,7 +27,15 @@ const Latest = () => {
     return (
         <Layout>
             <SegmentHeader headerText="Latest Issue" />
-            {loading ? <p className='catalog-loading'>Loading...</p> : <div className='catalog-pdfviewer'><PDFViewer pdfUrl={pdfUrl} /></div>}
+            {loading ? (
+                <div className='catalog-loading'>
+                    <div className='spinner'></div>
+                </div>
+            ) : (
+                <div className='catalog-pdfviewer'>
+                    <PDFViewer pdfUrl={pdfUrl} />
+                </div>
+            )}
         </Layout>
     );
 }

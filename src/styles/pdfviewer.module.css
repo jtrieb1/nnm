@@ -35,3 +35,27 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
+.spinner {
+    border: 4px solid #00adb5;
+    border-top: 4px solid transparent;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin-top: 20px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.pageSpread {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
