@@ -1,0 +1,13 @@
+[package]
+name = "nnmbackend"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.88"
+aws-config = "1.5.6"
+aws-sdk-dynamodb = "1.45.0"
+aws-sdk-s3 = "1.49.0"
+serde = { version = "1.0.210", features = ["derive"] }
+serde_json = "1.0.128"
+tokio = { version = "1.40.0", features = ["full"] }
