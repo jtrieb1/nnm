@@ -1,13 +1,30 @@
 import React from 'react';
+import { useState } from 'react';
+import { Document, Page, pdfjs } from 'react-pdf';
 
 interface PDFViewerProps {
     pdfUrl: string;
 }
 
 const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
+    const [page, setPage] = useState(1);
+
     return (
         <div style={{ backgroundColor: '#222831', color: '#EEEEEE', padding: '10px' }}>
-            <embed src={pdfUrl} type="application/pdf" width="100%" height="600px" />
+            <Document file={pdfUrl}>
+                <Page pageNumber={page} />
+            </Document>
+
+            <p>
+                Page {page}
+            </p>
+
+            <button onClick={() => setPage(page - 1)} disabled={page <= 1}>
+                Previous
+            </button>
+            <button onClick={() => setPage(page + 1)} >
+                Next
+            </button>
         </div>
     );
 };

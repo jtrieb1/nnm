@@ -11,6 +11,7 @@ const Catalog = () => {
     const [pdfUrl, setPdfUrl] = React.useState('');
     const [loading, setLoading] = React.useState(true);
     const [count, setCount] = React.useState(0);
+    const [page, setPage] = React.useState(0);
 
     React.useEffect(() => {
         setLoading(true);
@@ -47,7 +48,7 @@ const Catalog = () => {
                                                 setLoading(false);
                                             });
                                         }}>
-                                            Issue {index}
+                                            {index}
                                         </a>
                                     </li>
                                 ))}
@@ -56,7 +57,14 @@ const Catalog = () => {
 
                     )
                 }
-                {loading ? <p className='catalog-loading'>Loading...</p> : <div className='catalog-pdfviewer'><PDFViewer pdfUrl={pdfUrl} /></div>}
+                {
+                    loading 
+                    ? <p className='catalog-loading'>Loading...</p> 
+                    : <div className='catalog-pdfviewer'>
+                        <PDFViewer pdfUrl={pdfUrl} />
+                        </div>
+                }
+
             </div>
             
         </Layout>
