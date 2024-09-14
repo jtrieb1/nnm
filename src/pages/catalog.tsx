@@ -38,18 +38,17 @@ const Catalog = () => {
                 {
                     count > 0 && (
                         <div className='issues'>
-                            <h2>Issues</h2>
-                            <ul>
-                                {[...Array(count)].slice(1).map((_, index) => (
-                                    <li key={index}>
+                            <ul className='issueSelector'>
+                                {[...Array(count)].map((_, index) => (
+                                    <li key={index} className='issueID'>
                                         <a href="#" onClick={() => {
                                             setLoading(true);
-                                            getIssueUrl(index).then(url => {
+                                            getIssueUrl(index + 1).then(url => {
                                                 setPdfUrl(url);
                                                 setLoading(false);
                                             });
                                         }}>
-                                            {index}
+                                            {index + 1}
                                         </a>
                                     </li>
                                 ))}

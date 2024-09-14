@@ -93,7 +93,7 @@ async fn get_signed_url_for_issue(issue_number: usize, s3client: &S3Client) -> R
             return Err(S3Error::NotFound(NotFound::builder().message("Invalid region").build()));
         }
     };
-    let conf = PresigningConfigBuilder::default().expires_in(Duration::from_secs(3600)).build().unwrap();
+    let conf = PresigningConfigBuilder::default().expires_in(Duration::from_millis(500)).build().unwrap();
     let ret = s3client.get_object().bucket(bucket).key(issue_key).presigned(conf).await?;
     Ok(ret.uri().to_string())
 }

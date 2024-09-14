@@ -58,3 +58,15 @@
 .catalog-pdfviewer {
     margin-top: 20px;
 }
+
+.issueSelector {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.issueID {
+    font-size: 16px;
+    color: var(--color-background);
+    margin-right: 10px;
+}
