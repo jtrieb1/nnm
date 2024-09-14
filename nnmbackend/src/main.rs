@@ -1,13 +1,21 @@
-use actix_web::{App, HttpServer};
+use actix_web::{http, App, HttpServer};
 use aws_config::meta::region::RegionProviderChain;
 use aws_config::BehaviorVersion;
 use aws_sdk_s3::{presigning::PresigningConfigBuilder, Client as S3Client, Error as S3Error};
-
+use actix_cors::Cors;
 
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
     HttpServer::new(|| {
+        let cors = Cors::default()
+            .allow_any_origin()
+            .allowed_methods(vec!["GET"])
+            .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+            .allowed_header(http::header::CONTENT_TYPE)
+            .max_age(3600)
+            .send_wildcard();
         App::new()
+            .wrap(cors)
             .service(count_issues)
             .service(get_issue)
             .service(get_latest_issue)
@@ -31,7 +39,7 @@ async fn count_issues() -> String {
     let s3client = get_s3_client().await;
     match get_issue_count(&s3client).await {
         Ok(count) => format!("{{\"count\": {}}}", count),
-        Err(_) => "Error".to_string(),
+        Err(e) => format!("{{\"error\": \"{}\"}}", e),
     }
 }
 
@@ -41,7 +49,7 @@ async fn get_issue(issue_number: actix_web::web::Path<usize>) -> actix_web::Http
     let s3client = get_s3_client().await;
     match get_signed_url_for_issue(issue_number.into_inner(), &s3client).await {
         Ok(url) => actix_web::HttpResponse::Ok().body(url),
-        Err(_) => actix_web::HttpResponse::InternalServerError().body("Error"),
+        Err(e) => actix_web::HttpResponse::InternalServerError().body(format!("Error: {}", e)),
     }
 }
 
@@ -52,15 +60,15 @@ async fn get_latest_issue() -> actix_web::HttpResponse {
     match get_issue_count(&s3client).await {
         Ok(count) => match get_signed_url_for_issue(count, &s3client).await {
             Ok(url) => actix_web::HttpResponse::Ok().body(url),
-            Err(_) => actix_web::HttpResponse::InternalServerError().body("Error"),
+            Err(e) => actix_web::HttpResponse::InternalServerError().body(format!("Error: {}", e)),
         },
-        Err(_) => actix_web::HttpResponse::InternalServerError().body("Error"),
+        Err(e) => actix_web::HttpResponse::InternalServerError().body(format!("Error: {}", e)),
     }
 }
 
 async fn get_issue_count(s3client: &S3Client) -> Result<usize, S3Error> {
     let issues = s3client.list_objects_v2().bucket("nonothingissues").send().await?;
-    Ok(issues.contents.unwrap().len())
+    Ok(issues.contents.unwrap_or_default().len())
 }
 
 async fn get_signed_url_for_issue(issue_number: usize, s3client: &S3Client) -> Result<String, S3Error> {

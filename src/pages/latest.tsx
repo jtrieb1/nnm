@@ -7,8 +7,13 @@ import SegmentHeader from '../components/segmentheader';
 
 async function getCount() {
     const response = await fetch(`${BACKEND_URL}/count`);
-    const data = await response.text();
-    return Number(data);
+    const data = await response.json();
+    if (data.count === undefined) {
+        console.error('Invalid response from server');
+        console.error(data);
+        return 0;
+    }
+    return Number(data.count);
 }
 
 async function getIssueUrl(issueNumber: number) {
