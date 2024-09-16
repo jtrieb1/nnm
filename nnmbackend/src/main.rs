@@ -22,6 +22,10 @@ async fn main() -> Result<(), std::io::Error> {
             .service(count_issues)
             .service(get_issue)
             .service(get_latest_issue)
+            .service(create_checkout)
+            .service(add_item_to_checkout)
+            .service(remove_item_from_checkout)
+            .service(get_checkout)
     })
     .bind(("0.0.0.0", 8000))?
     .run()
