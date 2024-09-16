@@ -1,4 +1,4 @@
-use std::{collections::HashMap, time::Duration};
+use std::time::Duration;
 
 use actix_web::{http, web::Json, App, HttpServer};
 use aws_config::meta::region::RegionProviderChain;
@@ -74,23 +74,29 @@ async fn get_latest_issue() -> actix_web::HttpResponse {
 }
 
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct MoneyV2 {
+    amount: f64,
+    currency_code: String,
+}
+
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
 struct CostRepresentation {
     #[serde(rename = "checkoutChargeAmount")]
-    checkout_charge_amount: f64,
+    checkout_charge_amount: MoneyV2,
     #[serde(rename = "subtotalAmount")]
-    subtotal_amount: f64,
+    subtotal_amount: MoneyV2,
     #[serde(rename = "subtotalAmountEstimated")]
     subtotal_amount_estimated: bool,
     #[serde(rename = "totalAmount")]
-    total_amount: f64,
+    total_amount: MoneyV2,
     #[serde(rename = "totalAmountEstimated")]
     total_amount_estimated: bool,
     #[serde(rename = "totalDutyAmount")]
-    total_duty_amount: f64,
+    total_duty_amount: MoneyV2,
     #[serde(rename = "totalDutyAmountEstimated")]
     total_duty_amount_estimated: bool,
     #[serde(rename = "totalTaxAmount")]
-    total_tax_amount: f64,
+    total_tax_amount: MoneyV2,
     #[serde(rename = "totalTaxAmountEstimated")]
     total_tax_amount_estimated: bool,
 }
@@ -318,7 +324,7 @@ async fn get_checkout(checkout_id: String) -> actix_web::HttpResponse {
 
 async fn send_shopify_request(requestbody: String) -> Result<Response, Error> {
     let base_url: &'static str = env!("GATSBY_MYSHOPIFY_URL");
-    let api_key: &'static str = env!("SHOPIFY_APP_PASSWORD");
+    let api_key: &'static str = env!("SHOPIFY_STOREFRONT_KEY");
     let api_version: &'static str = "2024-07";
 
     let client = reqwest::Client::new();
