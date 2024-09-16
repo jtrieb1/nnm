@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::{collections::HashMap, time::Duration};
 
 use actix_web::{http, web::Json, App, HttpServer};
 use aws_config::meta::region::RegionProviderChain;
@@ -119,30 +119,71 @@ struct CartAPIResponse {
     user_errors: Vec<UserError>,
 }
 
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct CartCreateResponse {
+    #[serde(rename = "cartCreate")]
+    cart_create: CartAPIResponse
+}
+
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct FullResponse {
+    data: CartCreateResponse
+}
+
 #[actix_web::get("/create_checkout")]
 async fn create_checkout() -> actix_web::HttpResponse {
     // Create a checkout session
-
     let create_mutation = r#"
-        mutation cartCreate {
-            cart {
-                id
-                checkoutUrl
-                cost
-                totalQuantity
-            }
-            userErrors {
-                field,
-                message
+        mutation {
+            cartCreate {
+                cart {
+                    id
+                    checkoutUrl
+                    cost { 
+                        checkoutChargeAmount { 
+                            amount
+                            currencyCode
+                        }
+                        subtotalAmount {
+                            amount
+                            currencyCode
+                        }
+                        subtotalAmountEstimated
+                        totalAmount {
+                            amount
+                            currencyCode
+                        }
+                        totalAmountEstimated
+                        totalDutyAmount {
+                            amount
+                            currencyCode
+                        }
+                        totalDutyAmountEstimated
+                        totalTaxAmount {
+                            amount
+                            currencyCode
+                        }
+                        totalTaxAmountEstimated
+                    }
+                    totalQuantity
+                }
+                userErrors {
+                    field
+                    message
+                }
             }
         }
     "#;
 
-    let res = send_shopify_request(create_mutation.to_string()).await;
+    let payload = format!("{{\"query\":\"{}\",\"variables\":{{}}}}", create_mutation);
+
+    let res = send_shopify_request(payload.to_string()).await;
     match res {
         Ok(res) => {
             let body = res.text().await.unwrap();
-            let parsed: CartAPIResponse = serde_json::from_str(&body).unwrap();
+            println!("{}", body);
+            let parsed: FullResponse = serde_json::from_str(&body).unwrap();
+            let parsed = parsed.data.cart_create;
             if !parsed.user_errors.is_empty() {
                 return actix_web::HttpResponse::BadRequest().body(format!("{{\"error\": \"Error: {:?}\"}}", parsed.user_errors));
             }
@@ -188,7 +229,7 @@ async fn add_item_to_checkout(checkout_id: String, Json(payload): Json<ItemPaylo
 
     // Add an item to a checkout session
     let add_item_mutation = format!("
-        cartLinesAdd(cartId: {}, lines: {}) {{
+        mutation cartLinesAdd(cartId: {}, lines: {}) {{
             cart {{
                 id
                 checkoutUrl
@@ -283,7 +324,7 @@ async fn send_shopify_request(requestbody: String) -> Result<Response, Error> {
     let client = reqwest::Client::new();
     client
         .post(format!("https://{}/api/{}/graphql.json", base_url, api_version))
-        .header("X-Shopify-Access-Token", api_key)
+        .header("X-Shopify-Storefront-Access-Token", api_key)
         .header("Content-Type", "application/json")
         .header("Accept", "application/json")
         .header("X-Shopify-Api-Version", api_version)
