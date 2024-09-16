@@ -1,4 +1,4 @@
-use std::{process, time::Duration};
+use std::time::Duration;
 
 use actix_web::{http, web::Json, App, HttpServer};
 use aws_config::meta::region::RegionProviderChain;
@@ -140,13 +140,11 @@ async fn create_checkout() -> actix_web::HttpResponse {
         if !parsed.user_errors.is_empty() {
             return actix_web::HttpResponse::BadRequest().body(format!("Error: {:?}", parsed.user_errors));
         }
-        return actix_web::HttpResponse::Ok().body(serde_json::to_string(&parsed.cart));
+        return actix_web::HttpResponse::Ok().body(serde_json::to_string(&parsed.cart).unwrap());
 
     } else {
         return actix_web::HttpResponse::InternalServerError().body("Error creating checkout session");
     }
-    
-    actix_web::HttpResponse::Ok().body("Checkout session created")
 }
 
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
@@ -159,30 +157,45 @@ struct ItemPayload {
     shopify_id: String,
 }
 
+impl std::fmt::Display for ItemPayload {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, r#"{{
+            merchandiseId: "{}",
+            quantity: 1
+        }}"#, self.shopify_id)
+    }
+}
+
+struct ItemPayloadList(pub Vec<ItemPayload>);
+
+impl std::fmt::Display for ItemPayloadList {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut items = Vec::new();
+        for item in &self.0 {
+            items.push(format!("{}", item));
+        }
+        write!(f, "[{}]", items.join(","))
+    }
+}
+
 #[actix_web::post("/add_item/{checkout_id}")]
 async fn add_item_to_checkout(checkout_id: String, Json(payload): Json<ItemPayload>) -> actix_web::HttpResponse {
 
-    // Need to reformat payload a little
-    let cartlineinput = format!(r#"{{
-        merchandiseId: "{}",
-        quantity: 1
-    }}"#, payload.shopify_id);
-
     // Add an item to a checkout session
-    let add_item_mutation = format!(r#"
-        cartLinesAdd(cartId: {}, lines: {}) {
-            cart {
+    let add_item_mutation = format!("
+        cartLinesAdd(cartId: {}, lines: {}) {{
+            cart {{
                 id
                 checkoutUrl
                 cost
                 totalQuantity
-            }
-            userErrors {
+            }}
+            userErrors {{
                 field
                 message
-            }
-        }
-    "#, checkout_id, vec![payload]);
+            }}
+        }}
+    ", checkout_id, ItemPayloadList(vec![payload]));
 
     if let Ok(res) = send_shopify_request(add_item_mutation).await {
         let body = res.text().await.unwrap();
@@ -198,27 +211,22 @@ async fn add_item_to_checkout(checkout_id: String, Json(payload): Json<ItemPaylo
 
 #[actix_web::post("/remove_item/{checkout_id}")]
 async fn remove_item_from_checkout(checkout_id: String, Json(payload): Json<ItemPayload>) -> actix_web::HttpResponse {
-    // Need to reformat payload a little
-    let cartlineinput = format!(r#"{{
-        merchandiseId: "{}",
-        quantity: 1
-    }}"#, payload.shopify_id);
 
     // Remove an item from a checkout session
-    let remove_item_mutation = format!(r#"
-        cartLinesRemove(cartId: {}, lines: {}) {
-            cart {
+    let remove_item_mutation = format!("
+        cartLinesRemove(cartId: {}, lines: {}) {{
+            cart {{
                 id
                 checkoutUrl
                 cost
                 totalQuantity
-            }
-            userErrors {
+            }}
+            userErrors {{
                 field
                 message
-            }
-        }
-    "#, checkout_id, vec![payload]);
+            }}
+        }}
+    ", checkout_id, ItemPayloadList(vec![payload]));
 
     if let Ok(res) = send_shopify_request(remove_item_mutation).await {
         let body = res.text().await.unwrap();
@@ -256,24 +264,24 @@ async fn get_checkout(checkout_id: String) -> actix_web::HttpResponse {
         if !parsed.user_errors.is_empty() {
             return actix_web::HttpResponse::BadRequest().body(format!("Error: {:?}", parsed.user_errors));
         }
-        return actix_web::HttpResponse::Ok().body(serde_json::to_string(&parsed.cart));
+        return actix_web::HttpResponse::Ok().body(serde_json::to_string(&parsed.cart).unwrap());
     } else {
         return actix_web::HttpResponse::InternalServerError().body("Error getting checkout session");
     }
 }
 
 async fn send_shopify_request(requestbody: String) -> Result<Response, Error> {
-    const URL: String = process.env.GATSBY_MYSHOPFY_URL;
-    const API_KEY: String = process.env.SHOPIFY_APP_PASSWORD;
-    const API_VERSION: String = "2024-07".into();
+    let base_url: &'static str = env!("GATSBY_MYSHOPIFY_URL");
+    let api_key: &'static str = env!("SHOPIFY_APP_PASSWORD");
+    let api_version: &'static str = "2024-07";
 
     let client = reqwest::Client::new();
     client
-        .post(URL)
-        .header("X-Shopify-Access-Token", API_KEY)
+        .post(base_url)
+        .header("X-Shopify-Access-Token", api_key)
         .header("Content-Type", "application/json")
         .header("Accept", "application/json")
-        .header("X-Shopify-Api-Version", API_VERSION)
+        .header("X-Shopify-Api-Version", api_version)
         .body(requestbody)
         .send()
         .await
