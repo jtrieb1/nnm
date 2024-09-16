@@ -138,12 +138,12 @@ async fn create_checkout() -> actix_web::HttpResponse {
         let body = res.text().await.unwrap();
         let parsed: CartAPIResponse = serde_json::from_str(&body).unwrap();
         if !parsed.user_errors.is_empty() {
-            return actix_web::HttpResponse::BadRequest().body(format!("Error: {:?}", parsed.user_errors));
+            return actix_web::HttpResponse::BadRequest().body(format!("{{\"error\": \"Error: {:?}\"}}", parsed.user_errors));
         }
         return actix_web::HttpResponse::Ok().body(serde_json::to_string(&parsed.cart).unwrap());
 
     } else {
-        return actix_web::HttpResponse::InternalServerError().body("Error creating checkout session");
+        return actix_web::HttpResponse::InternalServerError().body("{ \"error\": \"Error creating checkout session\" }");
     }
 }
 
@@ -201,11 +201,11 @@ async fn add_item_to_checkout(checkout_id: String, Json(payload): Json<ItemPaylo
         let body = res.text().await.unwrap();
         let parsed: CartAPIResponse = serde_json::from_str(&body).unwrap();
         if !parsed.user_errors.is_empty() {
-            return actix_web::HttpResponse::BadRequest().body(format!("Error: {:?}", parsed.user_errors));
+            return actix_web::HttpResponse::BadRequest().body(format!("{{\"error\": \"Error: {:?}\" }}", parsed.user_errors));
         }
-        return actix_web::HttpResponse::Ok().body("Item added to cart");
+        return actix_web::HttpResponse::Ok().body("{{\"success\": \"Item added to cart\" }");
     } else {
-        return actix_web::HttpResponse::InternalServerError().body("Error adding item to cart");
+        return actix_web::HttpResponse::InternalServerError().body("{ \"error\": \"Error adding item to cart\" }");
     }
 }
 
@@ -262,11 +262,11 @@ async fn get_checkout(checkout_id: String) -> actix_web::HttpResponse {
         let body = res.text().await.unwrap();
         let parsed: CartAPIResponse = serde_json::from_str(&body).unwrap();
         if !parsed.user_errors.is_empty() {
-            return actix_web::HttpResponse::BadRequest().body(format!("Error: {:?}", parsed.user_errors));
+            return actix_web::HttpResponse::BadRequest().body(format!("{{ \"error\": \"Error: {:?}\" }}", parsed.user_errors));
         }
         return actix_web::HttpResponse::Ok().body(serde_json::to_string(&parsed.cart).unwrap());
     } else {
-        return actix_web::HttpResponse::InternalServerError().body("Error getting checkout session");
+        return actix_web::HttpResponse::InternalServerError().body("{ \"error\": \"Error getting checkout session\" }");
     }
 }
 
