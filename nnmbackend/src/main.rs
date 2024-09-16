@@ -93,11 +93,11 @@ struct CostRepresentation {
     #[serde(rename = "totalAmountEstimated")]
     total_amount_estimated: bool,
     #[serde(rename = "totalDutyAmount")]
-    total_duty_amount: MoneyV2,
+    total_duty_amount: Option<MoneyV2>,
     #[serde(rename = "totalDutyAmountEstimated")]
     total_duty_amount_estimated: bool,
     #[serde(rename = "totalTaxAmount")]
-    total_tax_amount: MoneyV2,
+    total_tax_amount: Option<MoneyV2>,
     #[serde(rename = "totalTaxAmountEstimated")]
     total_tax_amount_estimated: bool,
 }
