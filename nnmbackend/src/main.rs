@@ -236,21 +236,25 @@ async fn add_item_to_checkout(checkout_id: String, Json(payload): Json<ItemPaylo
 
     // Add an item to a checkout session
     let add_item_mutation = format!("
-        mutation cartLinesAdd(cartId: {}, lines: {}) {{
-            cart {{
-                id
-                checkoutUrl
-                cost
-                totalQuantity
-            }}
-            userErrors {{
-                field
-                message
+        mutation {{
+            cartLinesAdd(cartId: {}, lines: {}) {{
+                cart {{
+                    id
+                    checkoutUrl
+                    cost
+                    totalQuantity
+                }}
+                userErrors {{
+                    field
+                    message
+                }}
             }}
         }}
     ", checkout_id, ItemPayloadList(vec![payload]));
 
-    if let Ok(res) = send_shopify_request(add_item_mutation).await {
+    let request = format!("{{\"query\":\"{}\",\"variables\":{{}}}}", add_item_mutation);
+
+    if let Ok(res) = send_shopify_request(request).await {
         let body = res.text().await.unwrap();
         let parsed: CartAPIResponse = serde_json::from_str(&body).unwrap();
         if !parsed.user_errors.is_empty() {
@@ -267,21 +271,25 @@ async fn remove_item_from_checkout(checkout_id: String, Json(payload): Json<Item
 
     // Remove an item from a checkout session
     let remove_item_mutation = format!("
-        cartLinesRemove(cartId: {}, lines: {}) {{
-            cart {{
-                id
-                checkoutUrl
-                cost
-                totalQuantity
-            }}
-            userErrors {{
-                field
-                message
+        mutation {{
+            cartLinesRemove(cartId: {}, lines: {}) {{
+                cart {{
+                    id
+                    checkoutUrl
+                    cost
+                    totalQuantity
+                }}
+                userErrors {{
+                    field
+                    message
+                }}
             }}
         }}
     ", checkout_id, ItemPayloadList(vec![payload]));
 
-    if let Ok(res) = send_shopify_request(remove_item_mutation).await {
+    let request = format!("{{\"query\":\"{}\",\"variables\":{{}}}}", remove_item_mutation);
+
+    if let Ok(res) = send_shopify_request(request).await {
         let body = res.text().await.unwrap();
         let parsed: CartAPIResponse = serde_json::from_str(&body).unwrap();
         if !parsed.user_errors.is_empty() {
@@ -297,21 +305,17 @@ async fn remove_item_from_checkout(checkout_id: String, Json(payload): Json<Item
 async fn get_checkout(checkout_id: String) -> actix_web::HttpResponse {
     // Get the checkout session
     let get_checkout_query = format!(r#"
-        query getCheckout {{
-            cart(id: {}) {{
-                id
-                checkoutUrl
-                cost
-                totalQuantity
-            }}
-            userErrors {{
-                field
-                message
-            }}
+        cart(id: gid://shopify/Cart/{}) {{
+            id
+            checkoutUrl
+            cost
+            totalQuantity
         }}
     "#, checkout_id);
 
-    if let Ok(res) = send_shopify_request(get_checkout_query).await {
+    let payload = format!("{{\"query\":\"{}\",\"variables\":{{}}}}", get_checkout_query);
+
+    if let Ok(res) = send_shopify_request(payload).await {
         let body = res.text().await.unwrap();
         let parsed: CartAPIResponse = serde_json::from_str(&body).unwrap();
         if !parsed.user_errors.is_empty() {
