@@ -76,6 +76,7 @@ async fn get_latest_issue() -> actix_web::HttpResponse {
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
 struct MoneyV2 {
     amount: String,
+    #[serde(rename = "currencyCode")]
     currency_code: String,
 }
 
