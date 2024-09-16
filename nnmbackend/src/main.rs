@@ -282,7 +282,7 @@ async fn send_shopify_request(requestbody: String) -> Result<Response, Error> {
 
     let client = reqwest::Client::new();
     client
-        .post(format!("{}/api/{}/graphql.json", base_url, api_version))
+        .post(format!("https://{}/api/{}/graphql.json", base_url, api_version))
         .header("X-Shopify-Access-Token", api_key)
         .header("Content-Type", "application/json")
         .header("Accept", "application/json")
