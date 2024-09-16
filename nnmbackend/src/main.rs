@@ -138,16 +138,17 @@ async fn create_checkout() -> actix_web::HttpResponse {
         }
     "#;
 
-    if let Ok(res) = send_shopify_request(create_mutation.to_string()).await {
-        let body = res.text().await.unwrap();
-        let parsed: CartAPIResponse = serde_json::from_str(&body).unwrap();
-        if !parsed.user_errors.is_empty() {
-            return actix_web::HttpResponse::BadRequest().body(format!("{{\"error\": \"Error: {:?}\"}}", parsed.user_errors));
-        }
-        return actix_web::HttpResponse::Ok().body(serde_json::to_string(&parsed.cart).unwrap());
-
-    } else {
-        return actix_web::HttpResponse::InternalServerError().body("{ \"error\": \"Error creating checkout session\" }");
+    let res = send_shopify_request(create_mutation.to_string()).await;
+    match res {
+        Ok(res) => {
+            let body = res.text().await.unwrap();
+            let parsed: CartAPIResponse = serde_json::from_str(&body).unwrap();
+            if !parsed.user_errors.is_empty() {
+                return actix_web::HttpResponse::BadRequest().body(format!("{{\"error\": \"Error: {:?}\"}}", parsed.user_errors));
+            }
+            return actix_web::HttpResponse::Ok().body(serde_json::to_string(&parsed.cart).unwrap());
+        },
+        Err(e) => return actix_web::HttpResponse::InternalServerError().body(format!("{{\"error\": \"Error creating checkout session: {:?}\"}}", e)),
     }
 }
 
@@ -281,7 +282,7 @@ async fn send_shopify_request(requestbody: String) -> Result<Response, Error> {
 
     let client = reqwest::Client::new();
     client
-        .post(base_url)
+        .post(format!("{}/api/{}/graphql.json", base_url, api_version))
         .header("X-Shopify-Access-Token", api_key)
         .header("Content-Type", "application/json")
         .header("Accept", "application/json")
