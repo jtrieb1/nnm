@@ -1,10 +1,11 @@
-use std::time::Duration;
+use std::{process, time::Duration};
 
-use actix_web::{http, App, HttpServer};
+use actix_web::{http, web::Json, App, HttpServer};
 use aws_config::meta::region::RegionProviderChain;
 use aws_config::BehaviorVersion;
 use aws_sdk_s3::{presigning::PresigningConfigBuilder, types::error::NotFound, Client as S3Client, Error as S3Error};
 use actix_cors::Cors;
+use reqwest::{Error, Response};
 
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
@@ -66,6 +67,216 @@ async fn get_latest_issue() -> actix_web::HttpResponse {
         },
         Err(e) => actix_web::HttpResponse::InternalServerError().body(format!("Error: {}", e)),
     }
+}
+
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct CostRepresentation {
+    #[serde(rename = "checkoutChargeAmount")]
+    checkout_charge_amount: f64,
+    #[serde(rename = "subtotalAmount")]
+    subtotal_amount: f64,
+    #[serde(rename = "subtotalAmountEstimated")]
+    subtotal_amount_estimated: bool,
+    #[serde(rename = "totalAmount")]
+    total_amount: f64,
+    #[serde(rename = "totalAmountEstimated")]
+    total_amount_estimated: bool,
+    #[serde(rename = "totalDutyAmount")]
+    total_duty_amount: f64,
+    #[serde(rename = "totalDutyAmountEstimated")]
+    total_duty_amount_estimated: bool,
+    #[serde(rename = "totalTaxAmount")]
+    total_tax_amount: f64,
+    #[serde(rename = "totalTaxAmountEstimated")]
+    total_tax_amount_estimated: bool,
+}
+
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct CartAPIRepresentation {
+    id: String,
+    #[serde(rename = "checkoutUrl")]
+    checkout_url: String,
+    cost: CostRepresentation,
+    #[serde(rename = "totalQuantity")]
+    total_quantity: u32,
+
+}
+
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct UserError {
+    field: String,
+    message: String,
+}
+
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct CartAPIResponse {
+    cart: CartAPIRepresentation,
+    #[serde(rename = "userErrors")]
+    user_errors: Vec<UserError>,
+}
+
+#[actix_web::get("/create_checkout")]
+async fn create_checkout() -> actix_web::HttpResponse {
+    // Create a checkout session
+
+    let create_mutation = r#"
+        mutation cartCreate {
+            cart {
+                id
+                checkoutUrl
+                cost
+                totalQuantity
+            }
+            userErrors {
+                field,
+                message
+            }
+        }
+    "#;
+
+    if let Ok(res) = send_shopify_request(create_mutation.to_string()).await {
+        let body = res.text().await.unwrap();
+        let parsed: CartAPIResponse = serde_json::from_str(&body).unwrap();
+        if !parsed.user_errors.is_empty() {
+            return actix_web::HttpResponse::BadRequest().body(format!("Error: {:?}", parsed.user_errors));
+        }
+        return actix_web::HttpResponse::Ok().body(serde_json::to_string(&parsed.cart));
+
+    } else {
+        return actix_web::HttpResponse::InternalServerError().body("Error creating checkout session");
+    }
+    
+    actix_web::HttpResponse::Ok().body("Checkout session created")
+}
+
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct ItemPayload {
+    title: String,
+    handle: String,
+    description: String,
+    price: f64,
+    #[serde(rename = "shopifyId")]
+    shopify_id: String,
+}
+
+#[actix_web::post("/add_item/{checkout_id}")]
+async fn add_item_to_checkout(checkout_id: String, Json(payload): Json<ItemPayload>) -> actix_web::HttpResponse {
+
+    // Need to reformat payload a little
+    let cartlineinput = format!(r#"{{
+        merchandiseId: "{}",
+        quantity: 1
+    }}"#, payload.shopify_id);
+
+    // Add an item to a checkout session
+    let add_item_mutation = format!(r#"
+        cartLinesAdd(cartId: {}, lines: {}) {
+            cart {
+                id
+                checkoutUrl
+                cost
+                totalQuantity
+            }
+            userErrors {
+                field
+                message
+            }
+        }
+    "#, checkout_id, vec![payload]);
+
+    if let Ok(res) = send_shopify_request(add_item_mutation).await {
+        let body = res.text().await.unwrap();
+        let parsed: CartAPIResponse = serde_json::from_str(&body).unwrap();
+        if !parsed.user_errors.is_empty() {
+            return actix_web::HttpResponse::BadRequest().body(format!("Error: {:?}", parsed.user_errors));
+        }
+        return actix_web::HttpResponse::Ok().body("Item added to cart");
+    } else {
+        return actix_web::HttpResponse::InternalServerError().body("Error adding item to cart");
+    }
+}
+
+#[actix_web::post("/remove_item/{checkout_id}")]
+async fn remove_item_from_checkout(checkout_id: String, Json(payload): Json<ItemPayload>) -> actix_web::HttpResponse {
+    // Need to reformat payload a little
+    let cartlineinput = format!(r#"{{
+        merchandiseId: "{}",
+        quantity: 1
+    }}"#, payload.shopify_id);
+
+    // Remove an item from a checkout session
+    let remove_item_mutation = format!(r#"
+        cartLinesRemove(cartId: {}, lines: {}) {
+            cart {
+                id
+                checkoutUrl
+                cost
+                totalQuantity
+            }
+            userErrors {
+                field
+                message
+            }
+        }
+    "#, checkout_id, vec![payload]);
+
+    if let Ok(res) = send_shopify_request(remove_item_mutation).await {
+        let body = res.text().await.unwrap();
+        let parsed: CartAPIResponse = serde_json::from_str(&body).unwrap();
+        if !parsed.user_errors.is_empty() {
+            return actix_web::HttpResponse::BadRequest().body(format!("Error: {:?}", parsed.user_errors));
+        }
+        return actix_web::HttpResponse::Ok().body("Item removed from cart");
+    } else {
+        return actix_web::HttpResponse::InternalServerError().body("Error removing item from cart");
+    }
+}
+
+#[actix_web::get("/checkout/{checkout_id}")]
+async fn get_checkout(checkout_id: String) -> actix_web::HttpResponse {
+    // Get the checkout session
+    let get_checkout_query = format!(r#"
+        query getCheckout {{
+            cart(id: {}) {{
+                id
+                checkoutUrl
+                cost
+                totalQuantity
+            }}
+            userErrors {{
+                field
+                message
+            }}
+        }}
+    "#, checkout_id);
+
+    if let Ok(res) = send_shopify_request(get_checkout_query).await {
+        let body = res.text().await.unwrap();
+        let parsed: CartAPIResponse = serde_json::from_str(&body).unwrap();
+        if !parsed.user_errors.is_empty() {
+            return actix_web::HttpResponse::BadRequest().body(format!("Error: {:?}", parsed.user_errors));
+        }
+        return actix_web::HttpResponse::Ok().body(serde_json::to_string(&parsed.cart));
+    } else {
+        return actix_web::HttpResponse::InternalServerError().body("Error getting checkout session");
+    }
+}
+
+async fn send_shopify_request(requestbody: String) -> Result<Response, Error> {
+    const URL: String = process.env.GATSBY_MYSHOPFY_URL;
+    const API_KEY: String = process.env.SHOPIFY_APP_PASSWORD;
+    const API_VERSION: String = "2024-07".into();
+
+    let client = reqwest::Client::new();
+    client
+        .post(URL)
+        .header("X-Shopify-Access-Token", API_KEY)
+        .header("Content-Type", "application/json")
+        .header("Accept", "application/json")
+        .header("X-Shopify-Api-Version", API_VERSION)
+        .body(requestbody)
+        .send()
+        .await
 }
 
 async fn get_issue_count(s3client: &S3Client) -> Result<usize, S3Error> {
