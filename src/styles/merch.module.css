@@ -1,0 +1,38 @@
+.merch {
+    margin: 2rem;
+}
+
+.merch h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.merchGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-gap: 1rem;
+}
+
+.merchItem {
+    border: 1px solid #ccc;
+    padding: 1rem;
+}
+
+.merchItem h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.merchItem img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 0.5rem;
+}
+
+.merchItem p {
+    margin-bottom: 0.5rem;
+}
+
+.merchItem p:last-child {
+    margin-bottom: 0;
+}

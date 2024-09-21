@@ -1,2 +1,2 @@
-const BACKEND_URL = "http://3.88.152.244:8000";
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000";
 export default BACKEND_URL;

@@ -9,13 +9,19 @@ const config: GatsbyConfig = {
   // If you use VSCode you can also use the GraphQL plugin
   // Learn more at: https://gatsby.dev/graphql-typegen
   graphqlTypegen: true,
-  plugins: ["gatsby-plugin-postcss", "gatsby-plugin-image", {
-    resolve: "gatsby-source-shopify",
-    options: {
-      password: process.env.SHOPIFY_APP_PASSWORD,
-      storeUrl: process.env.GATSBY_MYSHOPIFY_URL,
+  plugins: [
+    "gatsby-plugin-postcss", 
+    "gatsby-plugin-image", 
+    "gatsby-plugin-sharp",
+    "gatsby-transformer-sharp",
+    {
+      resolve: "gatsby-source-shopify",
+      options: {
+        password: process.env.SHOPIFY_APP_PASSWORD,
+        storeUrl: process.env.GATSBY_MYSHOPIFY_URL,
+      },
     },
-  }]
+  ],
 };
 
 export default config;

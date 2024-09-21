@@ -1,6 +1,8 @@
 import React from "react"
 import { Link } from "gatsby"
 
+import ProductCard from "./productcard"
+
 const links = [
     {
       text: "Home",
@@ -27,6 +29,12 @@ const links = [
           "Browse our catalog",
     },
     {
+        text: "Merch",
+        url: "/merch",
+        description:
+          "Browse our merch store",
+    },
+    {
         text: "Subscribe",
         url: "/subscribe",
         description:
@@ -50,6 +58,7 @@ const Navbar: React.FC = () => {
                     </li>
                 ))}
             </ul>
+            <button className="snipcart-checkout">Cart</button>
         </nav>
     )
 }
