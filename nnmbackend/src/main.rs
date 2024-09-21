@@ -1,12 +1,13 @@
 use std::time::Duration;
 
-use actix_web::{http, web::{Json, Path}, App, HttpServer};
+use actix_web::{http, web::{Bytes, Json, Path}, App, HttpServer};
 use aws_config::meta::region::RegionProviderChain;
 use aws_config::BehaviorVersion;
 use aws_sdk_s3::{presigning::PresigningConfigBuilder, types::error::NotFound, Client as S3Client, Error as S3Error};
 use actix_cors::Cors;
 use shopify::{FullAddItemResponse, FullCartCreateResponse, FullCartGetResponse, FullRemoveItemResponse};
 
+mod db;
 mod shopify;
 
 #[actix_web::main]
@@ -24,7 +25,7 @@ async fn main() -> Result<(), std::io::Error> {
             .wrap(cors)
             .service(count_issues)
             .service(get_issue)
-            .service(get_latest_issue)
+            .service(get_issue_data)
             .service(create_checkout)
             .service(add_item_to_checkout)
             .service(remove_item_from_checkout)
@@ -63,15 +64,12 @@ async fn get_issue(issue_number: Path<usize>) -> actix_web::HttpResponse {
     }
 }
 
-#[actix_web::get("/issue/latest")]
-async fn get_latest_issue() -> actix_web::HttpResponse {
-    // Returns signed URL for latest issue
-    let s3client = get_s3_client().await;
-    match get_issue_count(&s3client).await {
-        Ok(count) => match get_signed_url_for_issue(count, &s3client).await {
-            Ok(url) => actix_web::HttpResponse::Ok().body(url),
-            Err(e) => actix_web::HttpResponse::InternalServerError().body(format!("Error: {}", e)),
-        },
+#[actix_web::get("/issuedata/{issue_number}")]
+async fn get_issue_data(issue_number: Path<usize>) -> actix_web::HttpResponse {
+    // Get issue data from database
+    let client = db::get_db_client().await.unwrap();
+    match db::get_issue_data(issue_number.into_inner(), &client).await {
+        Ok(issue) => actix_web::HttpResponse::Ok().body(serde_json::to_string(&issue).unwrap()),
         Err(e) => actix_web::HttpResponse::InternalServerError().body(format!("Error: {}", e)),
     }
 }
@@ -215,4 +213,47 @@ async fn get_signed_url_for_issue(issue_number: usize, s3client: &S3Client) -> R
     let conf = PresigningConfigBuilder::default().expires_in(Duration::from_secs(10)).build().unwrap();
     let ret = s3client.get_object().bucket(bucket).key(issue_key).presigned(conf).await?;
     Ok(ret.uri().to_string())
+}
+
+
+#[actix_web::post("/new_issue")]
+async fn new_issue(payload: Bytes) -> actix_web::HttpResponse {
+    // Upload the issue to S3
+    let s3client = get_s3_client().await;
+    let issue_number = db::get_issue_count(&db::get_db_client().await.unwrap()).await.unwrap();
+    let issue_key = format!("issue_{}.pdf", issue_number);
+
+    let put_req = s3client.put_object().bucket("nonothingissues").key(issue_key).body(payload.into());
+    let res = put_req.send().await;
+    if let Err(e) = res {
+        return actix_web::HttpResponse::InternalServerError().body(format!("Error: {}", e));
+    }
+
+    // Ask the NNM LLM Agent to generate a blurb and list the contributors
+    // The agent is at ${NNM_AGENT_URL}/new_issue and returns a JSON object with the blurb and contributors
+    let agent_url = std::env::var("NNM_AGENT_URL").unwrap_or("http://localhost:3000".to_string());
+    let agent_res = reqwest::Client::new().get(format!("{}/new_issue", agent_url)).send().await;
+    if let Err(e) = agent_res {
+        return actix_web::HttpResponse::InternalServerError().body(format!("Error: {}", e));
+    }
+    let agent_res = agent_res.unwrap();
+    let agent_body = agent_res.text().await.unwrap();
+    let agent_json: serde_json::Value = serde_json::from_str(&agent_body).unwrap();
+    let blurb = agent_json.get("blurb").unwrap().as_str().unwrap();
+    // Contributors comes in as a plain string, so we split it into a vector of pairs of strings parsed from the format "Name (@Handle)"
+    let contributors = agent_json.get("contributors").unwrap().as_str().unwrap().split(", ").map(|contrib| {
+        let mut split = contrib.split(" (@");
+        let name = split.next().unwrap();
+        let handle = split.next().unwrap().trim_end_matches(')');
+        (name.to_string(), handle.to_string())
+    }).collect::<Vec<(String, String)>>();
+
+    // Add the issue to the database
+    let issue = db::DBIssue::new(issue_number, blurb.to_string(), contributors.iter().map(|(name, handle)| db::DBContributor::new(name.to_string(), handle.to_string())).collect());
+    let put_res = db::put_issue_data(issue, &db::get_db_client().await.unwrap()).await;
+    if let Err(e) = put_res {
+        return actix_web::HttpResponse::InternalServerError().body(format!("Error: {}", e));
+    }
+    
+    actix_web::HttpResponse::Ok().body("Issue uploaded and added to database")
 }

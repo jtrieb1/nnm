@@ -139,14 +139,22 @@ export class CopywriterGraphAgent {
 
     let app = workflow.compile({ checkpointer: this.memory });
     const blurbstate = await app.invoke({
-        messages: [new HumanMessage("Can you please write a blurb for the newest issue of our magazine?")],
+        messages: [new HumanMessage("Can you please write a blurb for the newest issue of our magazine? Make sure it's relevant.")],
     }, { configurable: { thread_id: 0 }});
     let blurb = blurbstate.messages[blurbstate.messages.length - 1].content;
 
     const creditsstate = await app.invoke({
-        messages: [new HumanMessage("Can you also give me a list of the contributors and their handles from the latest issue?")],
+        messages: [new HumanMessage("Can you also give me a list of the contributors and their handles from the latest issue? Please use the format 'Name (@Handle), ...'")],
     }, { configurable: { thread_id: 0 }});
     let credits = creditsstate.messages[creditsstate.messages.length - 1].content;
+
+    // Make sure credits is a list
+    // Try to split it by newlines
+    let creditsList = credits.split("\n");
+    // If it's not a list, return an error
+    if (creditsList.length === 1) {
+        throw new Error("Failed to extract credits");
+    }
 
     return JSON.stringify({ blurb, credits });
   }

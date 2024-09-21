@@ -179,8 +179,8 @@ pub struct GraphQLError {
 }
 
 pub async fn send_shopify_request(requestbody: String) -> Result<Response, Error> {
-    let base_url: &'static str = env!("GATSBY_MYSHOPIFY_URL");
-    let api_key: &'static str = env!("SHOPIFY_STOREFRONT_KEY");
+    let base_url: &str = &std::env::var("GATSBY_MYSHOPIFY_URL").unwrap();
+    let api_key: &str = &std::env::var("SHOPIFY_STOREFRONT_KEY").unwrap();
     let api_version: &'static str = "2024-07";
 
     let client = reqwest::Client::new();

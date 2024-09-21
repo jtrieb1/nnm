@@ -7,19 +7,23 @@ import SegmentHeader from '../components/segmentheader';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import getCount from '../util/count';
-import getIssueUrl from '../util/issue';
+import { getIssueData, getIssueUrl } from '../util/issue';
 
 const Latest = () => {
     const [pdfUrl, setPdfUrl] = React.useState('');
+    const [blurb, setBlurb] = React.useState('');
+    const [contributors, setContributors] = React.useState(Array<{ name: string, handle: string }>());
     const [loading, setLoading] = React.useState(true);
-    const [count, setCount] = React.useState(0);
 
     React.useEffect(() => {
         getCount().then(issueCount => {
-            issueCount ? setCount(issueCount) : setCount(0);
             getIssueUrl(issueCount).then(url => {
                 setPdfUrl(url);
                 setLoading(false);
+            });
+            getIssueData(issueCount).then(data => {
+                setBlurb(data.blurb);
+                setContributors(data.contributors);
             });
         });
     }, []);
@@ -33,7 +37,14 @@ const Latest = () => {
                 </div>
             ) : (
                 <div className='catalog-pdfviewer'>
+                    <h2>{blurb}</h2>
                     <PDFViewer pdfUrl={pdfUrl} />
+                    <h3>Contributors</h3>
+                    <ul>
+                        {contributors.map((contributor, index) => (
+                            <li key={index}>{contributor.name} ({contributor.handle})</li>
+                        ))}
+                    </ul>
                 </div>
             )}
         </Layout>
