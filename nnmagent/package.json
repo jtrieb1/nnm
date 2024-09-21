@@ -1,0 +1,29 @@
+{
+  "name": "nnmagent",
+  "version": "1.0.0",
+  "description": "nnm backend AI agent",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "build": "tsc",
+    "serve": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jacob Triebwasser",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/pdfjs-dist": "^2.10.378",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
+  },
+  "dependencies": {
+    "@langchain/core": "^0.3.3",
+    "@langchain/langgraph": "^0.2.8",
+    "@langchain/openai": "^0.3.0",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.5.5",
+    "express": "^4.21.0",
+    "pdfjs-dist": "^4.6.82",
+    "tesseract.js": "^5.1.1"
+  }
+}

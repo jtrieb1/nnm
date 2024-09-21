@@ -23,16 +23,25 @@ services:
       secrets:
         - GATSBY_MYSHOPIFY_URL
         - SHOPIFY_STOREFRONT_KEY
-    
-    container_name: backend
+
+    environment:
+      - AGENT_URL=http://nnmagent:3000
 
     ports:
       - "8000:8000"
     command: ["/bin/server"]
+
+  nnmagent:
+    build: 
+      context: ./nnmagent
+    
+    environment:
+      - BACKEND_URL=http://nnmbackend:3000
+    
+    ports:
+      - "3000:3000"
   
 secrets:
-  AGENT_URL:
-    environment: AGENT_URL
   GATSBY_MYSHOPIFY_URL:
     environment: GATSBY_MYSHOPIFY_URL
   SHOPIFY_APP_PASSWORD:
