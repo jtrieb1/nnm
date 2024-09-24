@@ -1,6 +1,6 @@
 import BACKEND_URL from "./aws";
 
-async function getCount() {
+async function getCount(): Promise<number> {
     const response = await fetch(`${BACKEND_URL}/count`);
     const data = await response.json();
     if (data.count === undefined) {

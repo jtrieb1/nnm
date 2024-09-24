@@ -14,14 +14,26 @@ async function get_top_contributors(): Promise<Array<{name: string, handle: stri
     let hmap = new Map<string, string>();
     let map = new Map<string, number>();
     let cretval = await getCount();
-    for (let i = 0; i < cretval; i++) {
-        let retval = await getIssueData(i + 1); // Issue numbers are 1-indexed
-        if (retval === null) {
+    let allIssueData = await Promise.all(Array.from({length: cretval}, (_, i) => i + 1).map(async (i) => {
+        return await getIssueData(i);
+    }
+    ));
+    for (let data of allIssueData) {
+        if (data === null) {
             continue;
         }
-        retval.contributors.forEach((contributor: {name: string, handle: string}) => {
+        data.contributors.forEach((contributor: {name: string, handle: string}) => {
             if (map.has(contributor.handle)) {
                 map.set(contributor.handle, map.get(contributor.handle)! + 1);
+                if (!hmap.has(contributor.handle)) {
+                    hmap.set(contributor.handle, contributor.name);
+                }
+                if (hmap.get(contributor.handle) !== contributor.name) {
+                    // Keep the longest
+                    if (contributor.name.length > hmap.get(contributor.handle)!.length) {
+                        hmap.set(contributor.handle, contributor.name);
+                    }
+                }
             } else {
                 map.set(contributor.handle, 1);
                 hmap.set(contributor.handle, contributor.name);
