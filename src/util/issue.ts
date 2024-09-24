@@ -6,8 +6,14 @@ export async function getIssueUrl(issueNumber: number) {
     return response.text();
 }
 
+export async function getLatestIssueUrl() {
+    const response = await fetch(`${BACKEND_URL}/latest`);
+    // Returns a signed URL to the PDF
+    return response.text();
+}
+
 export async function getIssueData(issueNumber: number) {
-    const response = await fetch(`${BACKEND_URL}/issueData/${issueNumber}`);
+    const response = await fetch(`${BACKEND_URL}/issuedata/${issueNumber}`);
     // Returns issue data in the following schema:
     // {
     //   number: number,

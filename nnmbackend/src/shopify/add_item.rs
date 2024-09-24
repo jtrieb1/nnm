@@ -19,13 +19,13 @@ pub struct FullAddItemResponse {
     pub errors: Option<Vec<GraphQLError>>
 }
 
-pub fn add_item_mutation(cart_id: &str, item_id: &str) -> GraphQLQuery<CartAPIRepresentation> {
+pub fn add_item_mutation(cart_id: &str, item_id: &str, item_qty: u32) -> GraphQLQuery<CartAPIRepresentation> {
     let mut aim = GraphQLQuery::mutation(CartAPIRepresentation::default(), Some("cartLinesAdd".to_string()));
     aim.add_variable("cartId".to_string(), ShopifyGraphQLType::ID(format!("gid://shopify/Cart/{}", cart_id)));
     aim.add_variable("lines".to_string(), ShopifyGraphQLType::Array(vec![ShopifyGraphQLType::Custom("CartLineInput".to_string(), ShopifyGraphQLType::Object(
         vec![
-            ("quantity".to_string(), ShopifyGraphQLType::Int(1)),
-            ("merchandiseId".to_string(), ShopifyGraphQLType::ID(format!("{}", item_id)))
+            ("merchandiseId".to_string(), ShopifyGraphQLType::ID(format!("{}", item_id))),
+            ("quantity".to_string(), ShopifyGraphQLType::Int(item_qty as i64))
         ].into_iter().collect()
     ).into())]));
     

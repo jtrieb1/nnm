@@ -1,2 +1,2 @@
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000";
+const BACKEND_URL = "https://api.nonothing.online";
 export default BACKEND_URL;

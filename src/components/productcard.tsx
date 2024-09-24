@@ -1,7 +1,6 @@
 import React from 'react';
 import { GatsbyImage, IGatsbyImageData } from 'gatsby-plugin-image';
-import Cart, { ItemResult } from './cart';
-import { CartContext } from '../pages/merch';
+import {ItemResult} from './cart';
 
 
 interface ProductCardProps {
@@ -13,54 +12,36 @@ interface ProductCardProps {
     img_src: IGatsbyImageData;
     price: string;
     currency: string;
-    cartUpdater: React.Dispatch<React.SetStateAction<Cart>>;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ shopifyID, title, handle, description, img_src, price, currency, nodeID, cartUpdater }) => {
+class ProductCard extends React.Component<ProductCardProps> {
+    constructor(props: ProductCardProps) {
+        super(props);
 
-    // Get the cart context
-    const cart: Cart = React.useContext(CartContext);
+        this.result = {
+            id: this.props.nodeID,
+            title: this.props.title,
+            handle: this.props.handle,
+            description: this.props.description,
+            currency: this.props.currency,
+            price: parseFloat(this.props.price),
+            shopifyId: this.props.shopifyID,
+            quantity: 1
+        };
+    }
 
-    let result: ItemResult = {
-        id: nodeID,
-        title: title,
-        handle: handle,
-        description: description,
-        currency: currency,
-        price: parseFloat(price),
-        shopifyId: shopifyID,
-        quantity: 1
-    };
+    result: ItemResult;
 
-    return (
-        <div key={shopifyID} className="merchItem">
-            <a href={`/products/${handle}`}>
-                <h2>{title}</h2>
-                <GatsbyImage image={img_src} alt={title} />
-                <p>{description}</p>
-                <p>{price} {currency}</p>
+    render() {
+        return (
+            <a href={`#`}>
+                <h2>{this.props.title}</h2>
+                <GatsbyImage image={this.props.img_src} alt={this.props.title} />
+                <p>{this.props.description}</p>
+                <p>{this.props.price} {this.props.currency}</p>
             </a>
-            
-            <button
-                onClick={() => {
-                    cart.addItem(result)
-                    cartUpdater(cart);
-                }}
-            >
-                Add to Cart
-            </button>
-            <button
-                onClick={() => {
-                    cart.removeItem(result);
-                    cartUpdater(cart);
-                }}
-                disabled={!cart.hasItem(shopifyID)}
-                style={{"display": `${cart.hasItem(shopifyID) ? 'block' : 'none'}`}}
-            >
-                Remove from Cart
-            </button>
-        </div>
-    );
-};
+        );
+    }
+}
 
 export default ProductCard;

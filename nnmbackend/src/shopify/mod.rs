@@ -3,6 +3,7 @@ mod create_cart;
 mod get_cart;
 mod graphqlquery;
 mod remove_item;
+mod update_item;
 
 use std::collections::HashMap;
 
@@ -11,6 +12,7 @@ pub use create_cart::*;
 pub use get_cart::*;
 use graphqlquery::{GraphQLRepresentable, ShopifyGraphQLType};
 pub use remove_item::*;
+pub use update_item::*;
 use reqwest::{Error, Response};
 
 fn add_tabs_to_lines(s: &str, tabs: u32) -> String {
@@ -25,11 +27,21 @@ fn add_tabs_to_lines(s: &str, tabs: u32) -> String {
     new_s
 }
 
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, Default, Clone, serde::Deserialize, serde::Serialize)]
 pub struct MoneyV2 {
     pub amount: String,
     #[serde(rename = "currencyCode")]
     pub currency_code: String,
+}
+
+impl GraphQLRepresentable for MoneyV2 {
+    fn label(&self) -> String {
+        "cost".to_string()
+    }
+
+    fn to_graphql(&self, _: HashMap<String, ShopifyGraphQLType>) -> String {
+        format!("{{\n\tamount\n\tcurrencyCode\n}}")
+    }
 }
 
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
@@ -88,6 +100,11 @@ impl GraphQLRepresentable for CostRepresentation {
     }
 }
 
+#[derive(Debug, Clone, Default, serde::Deserialize, serde::Serialize)]
+pub struct LineItemAPIRepresentation {
+    pub nodes: Vec<LineItem>
+}
+
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
 pub struct CartAPIRepresentation {
     pub id: String,
@@ -96,6 +113,7 @@ pub struct CartAPIRepresentation {
     pub cost: CostRepresentation,
     #[serde(rename = "totalQuantity")]
     pub total_quantity: u32,
+    pub lines: LineItemAPIRepresentation,
 }
 
 impl Default for CartAPIRepresentation {
@@ -123,7 +141,8 @@ impl Default for CartAPIRepresentation {
                 total_tax_amount: None,
                 total_tax_amount_estimated: false
             },
-            total_quantity: 0
+            total_quantity: 0,
+            lines: LineItemAPIRepresentation::default()
         }
     }
 }
@@ -151,7 +170,7 @@ impl GraphQLRepresentable for CartAPIRepresentation {
         }
 
         s.push_str(&add_tabs_to_lines(&self.cost.to_graphql(HashMap::new()), 1));
-        s.push_str(&format!("\ntotalQuantity\n}}"));
+        s.push_str(&format!("\ntotalQuantity\nlines(first: 250) {{\nnodes {}\n}}\n}}", LineItem::default().to_graphql(HashMap::new())));
         s
     }
 }
@@ -195,17 +214,58 @@ pub async fn send_shopify_request(requestbody: String) -> Result<Response, Error
         .await
 }
 
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, Default, Clone, serde::Deserialize, serde::Serialize)]
+pub struct CartLineCost {
+    #[serde(rename = "amountPerQuantity")]
+    amount_per_quantity: MoneyV2,
+    #[serde(rename = "subtotalAmount")]
+    subtotal_amount: MoneyV2,
+    #[serde(rename = "totalAmount")]
+    total_amount: MoneyV2,
+}
+
+impl GraphQLRepresentable for CartLineCost {
+    fn label(&self) -> String {
+        "cost".to_string()
+    }
+
+    fn to_graphql(&self, _: HashMap<String, ShopifyGraphQLType>) -> String {
+        format!("{{\n\tamountPerQuantity {}\n\tsubtotalAmount {}\n\ttotalAmount {}\n}}",
+            self.amount_per_quantity.to_graphql(HashMap::new()),
+            self.subtotal_amount.to_graphql(HashMap::new()),
+            self.total_amount.to_graphql(HashMap::new())
+        )
+    }
+}
+
+#[derive(Debug, Default, Clone, serde::Deserialize, serde::Serialize)]
+pub struct Merchandise {
+    pub id: String,
+    pub title: String,
+}
+
+impl GraphQLRepresentable for Merchandise {
+    fn label(&self) -> String {
+        "merchandise".to_string()
+    }
+    fn to_graphql(&self, _: HashMap<String, ShopifyGraphQLType>) -> String {
+        format!("{{\n... on ProductVariant {{\nid\ntitle\n}}\n}}")
+    }
+}
+
+#[derive(Debug, Default, Clone, serde::Deserialize, serde::Serialize)]
 pub struct LineItem {
+    pub id: String,
     pub quantity: u32,
-    pub merchandise_id: String,
+    pub merchandise: Merchandise,
+    pub cost: CartLineCost
 }
 
 impl GraphQLRepresentable for LineItem {
     fn label(&self) -> String {
         "lines".to_string()
     }
-    fn to_graphql(&self, _: HashMap<String, ShopifyGraphQLType>) -> String {
-        format!("{{\nquantity\nmerchandiseId\n}}")
+    fn to_graphql(&self, args: HashMap<String, ShopifyGraphQLType>) -> String {
+        format!("{{\nid\nquantity\nmerchandise {}\ncost {}}}", self.merchandise.to_graphql(HashMap::new()), self.cost.to_graphql(args))
     }
 }

@@ -5,14 +5,15 @@ use aws_config::meta::region::RegionProviderChain;
 use aws_config::BehaviorVersion;
 use aws_sdk_s3::{presigning::PresigningConfigBuilder, types::error::NotFound, Client as S3Client, Error as S3Error};
 use actix_cors::Cors;
-use shopify::{FullAddItemResponse, FullCartCreateResponse, FullCartGetResponse, FullRemoveItemResponse};
+use shopify::{FullAddItemResponse, FullCartCreateResponse, FullCartGetResponse, FullRemoveItemResponse, FullUpdateItemResponse};
 
 mod db;
 mod shopify;
 
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
-    println!("Starting server on port 8000...");
+
+    println!("Starting server on port 443...");
     HttpServer::new(|| {
         let cors = Cors::default()
             .allow_any_origin()
@@ -25,13 +26,15 @@ async fn main() -> Result<(), std::io::Error> {
             .wrap(cors)
             .service(count_issues)
             .service(get_issue)
+            .service(get_latest_issue)
             .service(get_issue_data)
             .service(create_checkout)
             .service(add_item_to_checkout)
             .service(remove_item_from_checkout)
+            .service(update_item_in_checkout)
             .service(get_checkout)
     })
-    .bind(("0.0.0.0", 8000))?
+    .bind("127.0.0.1:8000")?
     .run()
     .await
 }
@@ -51,6 +54,16 @@ async fn count_issues() -> String {
     match get_issue_count(&s3client).await {
         Ok(count) => format!("{{\"count\": {}}}", count),
         Err(e) => format!("{{\"error\": \"{}\"}}", e),
+    }
+}
+
+#[actix_web::get("/latest")]
+async fn get_latest_issue() -> actix_web::HttpResponse {
+    // Returns signed URL for latest issue
+    let s3client = get_s3_client().await;
+    match get_signed_url_for_latest_issue(&s3client).await {
+        Ok(url) => actix_web::HttpResponse::Ok().body(url),
+        Err(e) => actix_web::HttpResponse::InternalServerError().body(format!("Error: {}", e)),
     }
 }
 
@@ -99,23 +112,36 @@ async fn create_checkout() -> actix_web::HttpResponse {
 
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
 struct ItemPayload {
-    id: String,
+    product_id: String,
     title: String,
     handle: String,
     description: String,
     price: f64,
-    #[serde(rename = "shopifyId")]
-    shopify_id: String,
+    currency: String,
+    quantity: u32,
+}
+
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct CartItemPayload {
+    product_id: String,
+    title: String,
+    handle: String,
+    description: String,
+    price: f64,
+    currency: String,
+    quantity: u32,
+    line_id: String,
 }
 
 #[actix_web::post("/add_item/{checkout_id}")]
 async fn add_item_to_checkout(checkout_id: Path<String>, Json(payload): Json<ItemPayload>) -> actix_web::HttpResponse {
 
     // Add an item to a checkout session
-    let request = shopify::add_item_mutation(&checkout_id, &payload.shopify_id);
+    let request = shopify::add_item_mutation(&checkout_id, &payload.product_id, payload.quantity);
 
     if let Ok(res) = shopify::send_shopify_request(request.to_payload()).await {
         let body = res.text().await.unwrap();
+        println!("[line 144]: {}", body);
         let parsed: FullAddItemResponse = serde_json::from_str(&body).unwrap();
         let Some(parsed) = parsed.data.add_item else {
             // Send back GraphQL errors if there are any
@@ -126,38 +152,63 @@ async fn add_item_to_checkout(checkout_id: Path<String>, Json(payload): Json<Ite
                 return actix_web::HttpResponse::BadRequest().body(format!("{{\"error\": \"Error: {:?}\" }}", parsederrs));
             }
         }
-        return actix_web::HttpResponse::Ok().body("{{\"success\": \"Item added to cart\" }");
+        return actix_web::HttpResponse::Ok().body(serde_json::to_string(&parsed.cart).unwrap());
     } else {
         return actix_web::HttpResponse::InternalServerError().body("{ \"error\": \"Error adding item to cart\" }");
+    }
+}
+
+#[actix_web::post("/update_item/{checkout_id}")]
+async fn update_item_in_checkout(checkout_id: Path<String>, Json(payload): Json<CartItemPayload>) -> actix_web::HttpResponse {
+
+    // Update an item in a checkout session
+    let request = shopify::update_item_mutation(&checkout_id, &payload.product_id, &payload.line_id, payload.quantity);
+
+    println!("Request: {}", request.to_payload());
+    if let Ok(res) = shopify::send_shopify_request(request.to_payload()).await {
+        let body = res.text().await.unwrap();
+        println!("{}", body);
+        let parsed: FullUpdateItemResponse = serde_json::from_str(&body).unwrap();
+        let parsed = parsed.data.add_item;
+        if let Some(parsed) = parsed {
+            if parsed.user_errors.as_ref().is_some_and(|v| !v.is_empty()) {
+                return actix_web::HttpResponse::BadRequest().body(format!("Error: {:?}", parsed.user_errors));
+            }
+            return actix_web::HttpResponse::Ok().body(serde_json::to_string(&parsed.cart).unwrap());
+        }
+        return actix_web::HttpResponse::BadRequest().body("Error updating item in cart");
+    } else {
+        return actix_web::HttpResponse::InternalServerError().body("Error updating item in cart");
     }
 }
 
 #[actix_web::post("/remove_item/{checkout_id}")]
 async fn remove_item_from_checkout(checkout_id: Path<String>, Json(payload): Json<ItemPayload>) -> actix_web::HttpResponse {
 
-    let initial_request = shopify::get_line_id_for_item_query(&checkout_id, &payload.shopify_id);
-    println!("{}", initial_request.to_payload());
-
-    let Ok(response) = shopify::send_shopify_request(initial_request.to_payload()).await else {
+    let ireq = shopify::get_cart_query(&checkout_id);
+    let Ok(response) = shopify::send_shopify_request(ireq.to_payload()).await else {
         return actix_web::HttpResponse::InternalServerError().body("{ \"error\": \"Error removing item from cart\" }");
     };
-    let body = response.text().await.unwrap();
-    println!("{}", body);
+    let res = serde_json::from_str::<FullCartGetResponse>(&response.text().await.unwrap()).unwrap();
+    let res = res.data.cart;
+    let line_id = &res.lines.nodes.iter().find(|line| line.merchandise.id == payload.product_id);
+    let Some(line_id) = line_id else {
+        return actix_web::HttpResponse::BadRequest().body("{ \"error\": \"Item not found in cart\" }");
+    };
+
+    let line_id = &line_id.id;
 
     // Remove an item from a checkout session
-    let request = shopify::remove_item_mutation(&checkout_id, &payload.shopify_id);
-
-    println!("{}", request.to_payload());
+    let request = shopify::remove_item_mutation(&checkout_id, line_id);
 
     if let Ok(res) = shopify::send_shopify_request(request.to_payload()).await {
         let body = res.text().await.unwrap();
-        println!("{}", body);
         let parsed: FullRemoveItemResponse = serde_json::from_str(&body).unwrap();
         let parsed = parsed.data.remove_item;
-        if !parsed.user_errors.is_empty() {
-            return actix_web::HttpResponse::BadRequest().body(format!("Error: {:?}", parsed.user_errors));
+        if let Some(parsed) = parsed.user_errors {
+            return actix_web::HttpResponse::BadRequest().body(format!("Error: {:?}", parsed));
         }
-        return actix_web::HttpResponse::Ok().body("Item removed from cart");
+        return actix_web::HttpResponse::Ok().body(serde_json::to_string(&parsed.cart).unwrap());
     } else {
         return actix_web::HttpResponse::InternalServerError().body("Error removing item from cart");
     }
@@ -168,11 +219,8 @@ async fn get_checkout(checkout_id: Path<String>) -> actix_web::HttpResponse {
     // Get the checkout session
     let get_checkout_query = shopify::get_cart_query(&checkout_id);
 
-    println!("{}", get_checkout_query.to_payload());
-
     if let Ok(res) = shopify::send_shopify_request(get_checkout_query.to_payload()).await {
         let body = res.text().await.unwrap();
-        println!("{}", body);
         let parsed: FullCartGetResponse = serde_json::from_str(&body).unwrap();
         let parsed = parsed.data.cart;
         return actix_web::HttpResponse::Ok().body(serde_json::to_string(&parsed).unwrap());
@@ -183,7 +231,7 @@ async fn get_checkout(checkout_id: Path<String>) -> actix_web::HttpResponse {
 
 async fn get_issue_count(s3client: &S3Client) -> Result<usize, S3Error> {
     if s3client.config().region().is_some_and(|reg| reg.as_ref() == "us-east-1") {
-        let Ok(issues) = s3client.list_objects_v2().bucket("nonothingissues").send().await else {
+        let Ok(issues) = s3client.list_objects_v2().bucket("nonothingissues1").send().await else {
             return Err(S3Error::NotFound(NotFound::builder().message("Issue with S3Client or bucket in us-east-1").build()));
         };
         Ok(issues.contents.unwrap_or_default().len())
@@ -195,22 +243,47 @@ async fn get_issue_count(s3client: &S3Client) -> Result<usize, S3Error> {
     } else {
         Err(S3Error::NotFound(NotFound::builder().message("Invalid region").build()))
     }
-    
 }
 
-async fn get_signed_url_for_issue(issue_number: usize, s3client: &S3Client) -> Result<String, S3Error> {
-    let issue_key = format!("issue_{}.pdf", issue_number);
-    // Generate a signed URL for the issue
+async fn get_signed_url_for_latest_issue(s3client: &S3Client) -> Result<String, S3Error> {
+    // Need to list all issues to check for latest, since some may be missing
     let bucket = {
         if s3client.config().region().is_some_and(|reg| reg.as_ref() == "us-east-1") {
-            "nonothingissues"
+            "nonothingissues1"
         } else if s3client.config().region().is_some_and(|reg| reg.as_ref() == "us-east-2") {
             "nonothingissues"
         } else {
             return Err(S3Error::NotFound(NotFound::builder().message("Invalid region").build()));
         }
     };
-    let conf = PresigningConfigBuilder::default().expires_in(Duration::from_secs(10)).build().unwrap();
+
+    let objects = s3client.list_objects_v2().bucket(bucket).send().await?.contents.unwrap_or_default();
+    let latest_issue = objects.iter().map(|obj| {
+        let key = obj.key.as_ref().unwrap();
+        // Key may include prefix before issue_, so we trim that off
+        // Trim up to end of "issue_":
+        let key = key.find("issue_").map(|idx| &key[idx..]).unwrap_or(key);
+        let issue_number = key.trim_start_matches("issue_").trim_end_matches(".pdf").parse::<usize>().unwrap();
+
+        issue_number
+    }).max().unwrap();
+
+    get_signed_url_for_issue(latest_issue, s3client).await
+}
+
+async fn get_signed_url_for_issue(issue_number: usize, s3client: &S3Client) -> Result<String, S3Error> {
+    let issue_key = format!("nnm_issues/issue_{}.pdf", issue_number);
+    // Generate a signed URL for the issue
+    let bucket = {
+        if s3client.config().region().is_some_and(|reg| reg.as_ref() == "us-east-1") {
+            "nonothingissues1"
+        } else if s3client.config().region().is_some_and(|reg| reg.as_ref() == "us-east-2") {
+            "nonothingissues"
+        } else {
+            return Err(S3Error::NotFound(NotFound::builder().message("Invalid region").build()));
+        }
+    };
+    let conf = PresigningConfigBuilder::default().expires_in(Duration::from_secs(30)).build().unwrap();
     let ret = s3client.get_object().bucket(bucket).key(issue_key).presigned(conf).await?;
     Ok(ret.uri().to_string())
 }
@@ -223,7 +296,17 @@ async fn new_issue(payload: Bytes) -> actix_web::HttpResponse {
     let issue_number = db::get_issue_count(&db::get_db_client().await.unwrap()).await.unwrap();
     let issue_key = format!("issue_{}.pdf", issue_number);
 
-    let put_req = s3client.put_object().bucket("nonothingissues").key(issue_key).body(payload.into());
+    // Need to upload to buckets in both regions
+    let bucket = {
+        if s3client.config().region().is_some_and(|reg| reg.as_ref() == "us-east-1") {
+            "nonothingissues1"
+        } else if s3client.config().region().is_some_and(|reg| reg.as_ref() == "us-east-2") {
+            "nonothingissues"
+        } else {
+            return actix_web::HttpResponse::InternalServerError().body("Invalid region");
+        }
+    };
+    let put_req = s3client.put_object().bucket(bucket).key(issue_key).body(payload.into());
     let res = put_req.send().await;
     if let Err(e) = res {
         return actix_web::HttpResponse::InternalServerError().body(format!("Error: {}", e));

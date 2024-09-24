@@ -1,13 +1,15 @@
-import Cart from "./cart";
+import Cart, { ItemResult } from "./cart";
 
 import React from 'react';
 import { useContext } from "react";
 import { CartContext } from "../pages/merch";
 
-function CartView() {
-    const cart: Cart = useContext(CartContext);
+interface CartViewProps {
+    cart: Cart;
+}
 
-    const [cartItems, setCartItems] = React.useState(cart.getItems());
+function CartView({ cart }: CartViewProps) {
+    const [cartItems, setCartItems] = React.useState<Array<ItemResult>>([]);
     const [checkoutURL, setCheckoutURL] = React.useState<string>("");
 
     React.useEffect(() => {

@@ -4,7 +4,7 @@ import Layout from '../components/layout';
 import PDFViewer from '../components/pdfviewer';
 import SegmentHeader from '../components/segmentheader';
 import getCount from '../util/count';
-import getIssueUrl from '../util/issue';
+import {getIssueUrl} from '../util/issue';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -22,7 +22,7 @@ const Catalog = () => {
                 setLoading(false);
                 return;
             }
-            getIssueUrl(issueCount).then(url => {
+            getIssueUrl(issueCount + 1).then(url => {
                 setPdfUrl(url);
                 setLoading(false);
             });
