@@ -3,6 +3,7 @@ import React from 'react';
 import Layout from '../components/layout';
 import SegmentHeader from '../components/segmentheader';
 import CenteredText from '../components/centered';
+import { HeadFC } from 'gatsby';
 
 const AboutPage: React.FC = () => {
     return (
@@ -20,3 +21,5 @@ const AboutPage: React.FC = () => {
 };
 
 export default AboutPage;
+
+export const Head: HeadFC = () => <title>no nothing magazine | about</title>

@@ -5,6 +5,7 @@ import getCount from '../util/count';
 import { getIssueData } from '../util/issue';
 import SegmentHeader from '../components/segmentheader';
 import handle_to_link from '../util/links';
+import { HeadFC } from 'gatsby';
 
 export interface FeaturedArtistsProps {
 
@@ -84,3 +85,5 @@ const FeaturedArtists: React.FC<FeaturedArtistsProps> = () => {
 }
 
 export default FeaturedArtists;
+
+export const Head: HeadFC = () => <title>no nothing magazine | featured</title>

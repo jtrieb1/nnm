@@ -9,6 +9,7 @@ import {getIssueData, getIssueUrl} from '../util/issue';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import handle_to_link from '../util/links';
+import { HeadFC } from 'gatsby';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -132,3 +133,5 @@ const Catalog = () => {
 }
 
 export default Catalog;
+
+export const Head: HeadFC = () => <title>no nothing magazine | catalog</title>

@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from '../components/layout';
 import SegmentHeader from '../components/segmentheader';
 import ProductCard from '../components/productcard';
-import { graphql, useStaticQuery } from 'gatsby';
+import { graphql, HeadFC, useStaticQuery } from 'gatsby';
 import { getImage } from 'gatsby-plugin-image';
 
 import {CartItemResult, ItemResult} from '../components/cart';
@@ -322,3 +322,5 @@ function MerchPage() {
 }
 
 export default MerchPage;
+
+export const Head: HeadFC = () => <title>no nothing magazine | merch</title>

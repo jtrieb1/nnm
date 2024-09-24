@@ -9,6 +9,7 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import { getIssueData, getLatestIssueUrl } from '../util/issue';
 import getCount from '../util/count';
 import handle_to_link from '../util/links';
+import { HeadFC } from 'gatsby';
 
 const Latest = () => {
     const [pdfUrl, setPdfUrl] = React.useState('');
@@ -53,3 +54,5 @@ const Latest = () => {
 }
 
 export default Latest;
+
+export const Head: HeadFC = () => <title>no nothing magazine | latest</title>
