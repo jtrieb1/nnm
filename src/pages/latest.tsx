@@ -7,6 +7,7 @@ import SegmentHeader from '../components/segmentheader';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { getIssueData, getLatestIssueUrl } from '../util/issue';
+import getCount from '../util/count';
 
 const Latest = () => {
     const [pdfUrl, setPdfUrl] = React.useState('');
@@ -15,14 +16,17 @@ const Latest = () => {
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
+        getCount().then(count => {
+            getIssueData(count + 1).then(data => {
+                setBlurb(data.blurb);
+                setContributors(data.contributors);
+            });
+        });
         getLatestIssueUrl().then(url => {
             setPdfUrl(url);
             setLoading(false);
         });
-        // getIssueData(issueCount).then(data => {
-        //    setBlurb(data.blurb);
-        //    setContributors(data.contributors);
-        // });
+        
     }, []);
 
     return (

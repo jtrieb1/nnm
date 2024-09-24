@@ -8,27 +8,31 @@ interface PDFViewerProps {
 
 const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
     const [page, setPage] = useState(0);
+    const [numPages, setNumPages] = useState(0);
 
     pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
+    function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
+        setNumPages(numPages);
+    }
+
     return (
         <div className='pdfviewer'>
+            <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
+                <div className='pageSpread'>
+                    {page != 0 ? <Page pageNumber={page} /> : <></>}
+                    {page != numPages ? <Page pageNumber={page + 1} /> : <></>}
+                </div>
+            </Document>
             <div className='buttonContainer'>
                 <button onClick={() => setPage(page - 2)} disabled={page <= 1} className='previousBtn'>
                     Previous
                 </button>
-                <button onClick={() => setPage(page + 2)} className='nextBtn'>
+                <button onClick={() => setPage(page + 2)} disabled={page + 2 > numPages} className='nextBtn'>
                     Next
                 </button>
             </div>
-
-            <Document file={pdfUrl}>
-                <div className='pageSpread'>
-                    {page != 0 ?? <Page pageNumber={page} />}
-                    <Page pageNumber={page + 1} />
-                </div>
-            </Document>
-        </div>
+        </div>  
     );
 };
 

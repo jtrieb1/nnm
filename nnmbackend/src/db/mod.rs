@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use anyhow::{Error, anyhow};
 use aws_config::{meta::region::RegionProviderChain, BehaviorVersion};
 use aws_sdk_dynamodb::{types::AttributeValue, Client as DynamoClient};
@@ -41,7 +39,7 @@ pub async fn get_db_client() -> Result<DynamoClient, Error> {
 pub async fn get_issue_count(client: &DynamoClient) -> Result<usize, Error> {
     let response = client
         .describe_table()
-        .table_name("Issues")
+        .table_name("nnmIssueData")
         .send()
         .await?;
     Ok(response.table.unwrap().item_count.unwrap() as usize)
@@ -50,8 +48,8 @@ pub async fn get_issue_count(client: &DynamoClient) -> Result<usize, Error> {
 pub async fn get_issue_data(issue_number: usize, client: &DynamoClient) -> Result<DBIssue, Error> {
     let response = client
         .get_item()
-        .table_name("Issues")
-        .key("number", AttributeValue::N(issue_number.to_string()))
+        .table_name("nnmIssueData")
+        .key("issueNumber", AttributeValue::N(issue_number.to_string()))
         .send()
         .await?;
 
@@ -65,8 +63,9 @@ pub async fn get_issue_data(issue_number: usize, client: &DynamoClient) -> Resul
         .get("contributors").ok_or(anyhow!("Contributors not found"))?
         .as_l().map_err(|e| anyhow!(format!("{:?}", e)))?
         .iter().map(|contributor| {
-            let name = contributor.as_m().unwrap().get("name").unwrap().as_s().unwrap().to_string();
-            let handle = contributor.as_m().unwrap().get("handle").unwrap().as_s().unwrap().to_string();
+            let contributor = contributor.as_ss().unwrap(); // String-sets
+            let name = contributor.get(0).unwrap().to_string();
+            let handle = contributor.get(1).unwrap().to_string();
             DBContributor { name, handle }
         }).collect();
     
@@ -75,15 +74,12 @@ pub async fn get_issue_data(issue_number: usize, client: &DynamoClient) -> Resul
 
 pub async fn put_issue_data(issue: DBIssue, client: &DynamoClient) -> Result<(), aws_sdk_dynamodb::Error> {
     let contributors = AttributeValue::L(issue.contributors.iter().map(|contributor| {
-        let mut map = HashMap::new();
-        map.insert("name".to_string(), AttributeValue::S(contributor.name.to_string()));
-        map.insert("handle".to_string(), AttributeValue::S(contributor.handle.to_string()));
-        AttributeValue::M(map)
+        AttributeValue::Ss(vec![contributor.name.to_string(), contributor.handle.to_string()])
     }).collect::<Vec<AttributeValue>>());
     client
         .put_item()
-        .table_name("Issues")
-        .item("number", AttributeValue::N(issue.number.to_string()))
+        .table_name("nnmIssueData")
+        .item("issueNumber", AttributeValue::N(issue.number.to_string()))
         .item("blurb", AttributeValue::S(issue.blurb))
         .item("contributors", contributors)
         .send()
