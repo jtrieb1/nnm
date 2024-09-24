@@ -7,6 +7,7 @@
     color: #eeeeee;
     padding: 20px;
     padding-bottom: 60px; /* Add padding to the bottom to avoid overlap */
+    margin-left: 20px; /* Add margin to the left to avoid overlap */
 }
 
 .pageCount {
@@ -73,6 +74,7 @@
     .pdfviewer {
         padding: 10px;
         padding-bottom: 60px; /* Add padding to the bottom to avoid overlap */
+        margin-left: 220px;
     }
 
     .pageCount {

@@ -27,7 +27,7 @@ const Catalog = () => {
             }
             const totalPages = Math.ceil(issueCount / ITEMS_PER_PAGE);
             setCurrentPage(totalPages);
-            getIssueUrl(issueCount + 1).then(url => {
+            getIssueUrl(issueCount).then(url => {
                 setPdfUrl(url);
                 setLoading(false);
             });

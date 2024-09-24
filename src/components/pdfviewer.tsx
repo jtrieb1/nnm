@@ -9,6 +9,7 @@ interface PDFViewerProps {
 const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
     const [page, setPage] = useState(0);
     const [numPages, setNumPages] = useState(0);
+    const [pageWidth, setPageWidth] = useState(800);
 
     pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -18,10 +19,10 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
 
     return (
         <div className='pdfviewer'>
-            <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
+            <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess} className="pdfDocument">
                 <div className='pageSpread'>
-                    {page != 0 ? <Page pageNumber={page} /> : <></>}
-                    {page != numPages ? <Page pageNumber={page + 1} /> : <></>}
+                    {page != 0 ? <Page pageNumber={page} className="pdfPage" width={pageWidth}/> : <></>}
+                    {page != numPages ? <Page pageNumber={page + 1} width={pageWidth}/> : <></>}
                 </div>
             </Document>
             <div className='buttonContainer'>
