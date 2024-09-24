@@ -9,6 +9,12 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import { getIssueData, getLatestIssueUrl } from '../util/issue';
 import getCount from '../util/count';
 
+function ig_handle_to_link(handle: string) {
+    // Remove '@' symbol
+    handle = handle.substring(1);
+    return `https://instagram.com/${handle}`;
+}
+
 const Latest = () => {
     const [pdfUrl, setPdfUrl] = React.useState('');
     const [blurb, setBlurb] = React.useState('');
@@ -17,7 +23,7 @@ const Latest = () => {
 
     React.useEffect(() => {
         getCount().then(count => {
-            getIssueData(count + 1).then(data => {
+            getIssueData(count).then(data => {
                 setBlurb(data.blurb);
                 setContributors(data.contributors);
             });
@@ -38,12 +44,11 @@ const Latest = () => {
                 </div>
             ) : (
                 <div className='catalog-pdfviewer'>
-                    <h2>{blurb}</h2>
+                    <h2 className='latest-blurb'>{blurb}</h2>
                     <PDFViewer pdfUrl={pdfUrl} />
-                    <h3>Contributors</h3>
-                    <ul>
+                    <ul className='latest-contributors'>
                         {contributors.map((contributor, index) => (
-                            <li key={index}>{contributor.name} ({contributor.handle})</li>
+                            <li key={index}><a href={ig_handle_to_link(contributor.name)}>{contributor.name}</a> ({contributor.handle})</li>
                         ))}
                     </ul>
                 </div>
