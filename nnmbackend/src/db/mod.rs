@@ -28,7 +28,7 @@ impl DBIssue {
 }
 
 pub async fn get_db_client() -> Result<DynamoClient, Error> {
-    let region_provider = RegionProviderChain::default_provider().or_else("us-east-2");
+    let region_provider = RegionProviderChain::default_provider().or_else("us-east-1");
     let config = aws_config::defaults(BehaviorVersion::latest())
         .region(region_provider)
         .load()

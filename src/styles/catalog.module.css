@@ -1,4 +1,29 @@
-/* /home/jacob/Documents/projects/nonothing/nnm/src/styles/catalog.module.css */
+/* catalog.module.css */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    background-color: var(--color-secondary);
+    color: var(--color-background);
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:hover {
+    background-color: var(--color-accent);
+}
+
+.pagination button:disabled {
+    background-color: var(--color-primary);
+    cursor: not-allowed;
+}
 
 /* Color palette */
 :root {
@@ -69,4 +94,83 @@
     font-size: 16px;
     color: var(--color-background);
     margin-right: 10px;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .catalog {
+        padding: 15px;
+    }
+
+    .catalog-header {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+
+    .catalog-issues h2 {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+
+    .catalog-issues li {
+        margin-bottom: 8px;
+    }
+
+    .catalog-loading {
+        font-size: 14px;
+        margin-top: 15px;
+    }
+
+    .issueSelector {
+        flex-direction: row; /* Ensure horizontal layout */
+        align-items: center;
+    }
+
+    .issueID {
+        font-size: 14px;
+        margin-right: 10px; /* Keep margin-right for spacing */
+        margin-bottom: 0; /* Remove margin-bottom */
+    }
+}
+
+@media (max-width: 480px) {
+    .catalog {
+        padding: 10px;
+    }
+
+    .catalog-header {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .catalog-issues h2 {
+        font-size: 16px;
+        margin-bottom: 6px;
+    }
+
+    .catalog-issues ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .catalog-issues li {
+        margin-bottom: 0;
+    }
+
+    .catalog-loading {
+        font-size: 12px;
+        margin-top: 10px;
+    }
+
+    .issueSelector {
+        flex-direction: row; /* Ensure horizontal layout */
+        align-items: center;
+    }
+
+    .issueID {
+        font-size: 12px;
+        margin-right: 10px; /* Keep margin-right for spacing */
+        margin-bottom: 0; /* Remove margin-bottom */
+    }
 }

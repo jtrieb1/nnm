@@ -6,6 +6,7 @@
     background-color: #222831;
     color: #eeeeee;
     padding: 20px;
+    padding-bottom: 60px; /* Add padding to the bottom to avoid overlap */
 }
 
 .pageCount {
@@ -20,6 +21,10 @@
     margin-top: 10px;
     margin-top: auto;
     margin-bottom: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 10; /* Ensure the button container is above other content */
 }
 
 .previousBtn,
@@ -37,6 +42,7 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
+
 .spinner {
     border: 4px solid #00adb5;
     border-top: 4px solid transparent;
@@ -60,4 +66,60 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .pdfviewer {
+        padding: 10px;
+        padding-bottom: 60px; /* Add padding to the bottom to avoid overlap */
+    }
+
+    .pageCount {
+        font-size: 14px;
+    }
+
+    .buttonContainer {
+        flex-direction: column;
+        position: static;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .previousBtn,
+    .nextBtn {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .spinner {
+        width: 25px;
+        height: 25px;
+    }
+
+    .pageSpread {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .pdfviewer {
+        padding: 5px;
+        padding-bottom: 60px; /* Add padding to the bottom to avoid overlap */
+    }
+
+    .pageCount {
+        font-size: 12px;
+    }
+
+    .previousBtn,
+    .nextBtn {
+        padding: 8px 16px;
+    }
+
+    .spinner {
+        width: 20px;
+        height: 20px;
+    }
 }

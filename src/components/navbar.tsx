@@ -49,8 +49,13 @@ const links = [
   ]
  
 const Navbar: React.FC = () => {
+    let [responsive, setResponsive] = React.useState(false);
+
     return (
-        <nav className="navbar">
+        <nav className={responsive ? "navbar responsive" : "navbar"}>
+            <a href={void(0)} className="icon" onClick={() => setResponsive(!responsive)}>
+              <i className="fas fa-bars"></i>
+            </a>
             <ul className="navbarMenu">
                 {links.map(link => (
                     <li key={link.url} className="navbarMenuItem">

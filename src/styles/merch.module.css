@@ -36,3 +36,68 @@
 .merchItem p:last-child {
     margin-bottom: 0;
 }
+
+/* Media Queries for Responsiveness */
+@media (max-width: 1200px) {
+    .merch h1 {
+        font-size: 1.75rem;
+    }
+
+    .merchItem h2 {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .merch {
+        margin: 1.5rem;
+    }
+
+    .merch h1 {
+        font-size: 1.5rem;
+    }
+
+    .merchItem {
+        padding: 0.75rem;
+    }
+
+    .merchItem h2 {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .merch {
+        margin: 1rem;
+    }
+
+    .merch h1 {
+        font-size: 1.25rem;
+    }
+
+    .merchItem {
+        padding: 0.5rem;
+    }
+
+    .merchItem h2 {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .merch {
+        margin: 0.5rem;
+    }
+
+    .merch h1 {
+        font-size: 1rem;
+    }
+
+    .merchItem {
+        padding: 0.25rem;
+    }
+
+    .merchItem h2 {
+        font-size: 0.875rem;
+    }
+}
