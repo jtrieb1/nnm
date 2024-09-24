@@ -64,8 +64,8 @@ pub async fn get_issue_data(issue_number: usize, client: &DynamoClient) -> Resul
         .as_l().map_err(|e| anyhow!(format!("{:?}", e)))?
         .iter().map(|contributor| {
             let contributor = contributor.as_ss().unwrap(); // String-sets
-            let name = contributor.get(0).unwrap().to_string();
-            let handle = contributor.get(1).unwrap().to_string();
+            let handle = contributor.get(0).unwrap().to_string();
+            let name = contributor.get(1).unwrap().to_string();
             DBContributor { name, handle }
         }).collect();
     

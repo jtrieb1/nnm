@@ -4,7 +4,7 @@ import Layout from '../components/layout';
 import PDFViewer from '../components/pdfviewer';
 import SegmentHeader from '../components/segmentheader';
 import getCount from '../util/count';
-import {getIssueUrl} from '../util/issue';
+import {getIssueData, getIssueUrl} from '../util/issue';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -16,6 +16,8 @@ const Catalog = () => {
     const [loading, setLoading] = React.useState(true);
     const [count, setCount] = React.useState(0);
     const [currentPage, setCurrentPage] = React.useState(1);
+    const [blurb, setBlurb] = React.useState('');
+    const [contributors, setContributors] = React.useState(Array<{ name: string, handle: string }>());
 
     React.useEffect(() => {
         setLoading(true);
@@ -30,6 +32,10 @@ const Catalog = () => {
             getIssueUrl(issueCount).then(url => {
                 setPdfUrl(url);
                 setLoading(false);
+            });
+            getIssueData(issueCount).then(data => {
+                setBlurb(data.blurb);
+                setContributors(data.contributors);
             });
         });
     }, []);
@@ -66,6 +72,12 @@ const Catalog = () => {
         </div>
     );
 
+    function ig_handle_to_link(name: string): string {
+        // Remove '@' symbol
+        name = name.substring(1);
+        return `https://instagram.com/${name}`;
+    }
+
     return (
         <Layout>
             <div>
@@ -84,6 +96,10 @@ const Catalog = () => {
                                                 setPdfUrl(url);
                                                 setLoading(false);
                                             });
+                                            getIssueData((currentPage - 1) * ITEMS_PER_PAGE + index + 1).then(data => {
+                                                setBlurb(data.blurb);
+                                                setContributors(data.contributors);
+                                            });
                                         }}>
                                             {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
                                         </a>
@@ -95,11 +111,25 @@ const Catalog = () => {
                     )
                 }
                 {
+                    loading || blurb === ''
+                    ? <></>
+                    : <h2 className='catalog-blurb'>{blurb}</h2>
+                }
+                {
                     loading 
                     ? <p className='catalog-loading'>Loading...</p> 
                     : <div className='catalog-pdfviewer'>
                         <PDFViewer pdfUrl={pdfUrl} />
                         </div>
+                }
+                {
+                    loading || contributors.length === 0
+                    ? <></>
+                    : <ul className='catalog-contributors'>
+                        {contributors.map((contributor, index) => (
+                            <li key={index}><a href={ig_handle_to_link(contributor.handle)}>{contributor.name} ({contributor.handle})</a></li>
+                        ))}
+                    </ul>
                 }
             </div>
         </Layout>

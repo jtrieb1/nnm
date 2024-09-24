@@ -96,6 +96,24 @@
     margin-right: 10px;
 }
 
+.catalog-blurb {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.catalog-contributors {
+    list-style-type: none;
+    padding: 0;
+    text-align: center;
+    margin-bottom: 100px;
+}
+
+.catalog-contributors li {
+    font-size: 1.2em;
+    margin: 5px 0;
+}
+
 /* Media Queries for Responsiveness */
 @media (max-width: 768px) {
     .catalog {

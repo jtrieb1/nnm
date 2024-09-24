@@ -14,6 +14,13 @@ export async function getLatestIssueUrl() {
 
 export async function getIssueData(issueNumber: number) {
     const response = await fetch(`${BACKEND_URL}/issuedata/${issueNumber}`);
+    if (!response.ok) {
+        return {
+            issueNumber,
+            blurb: "",
+            contributors: []
+        };
+    }
     // Returns issue data in the following schema:
     // {
     //   number: number,
