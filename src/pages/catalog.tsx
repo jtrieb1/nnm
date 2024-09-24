@@ -8,6 +8,7 @@ import {getIssueData, getIssueUrl} from '../util/issue';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
+import handle_to_link from '../util/links';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -72,12 +73,6 @@ const Catalog = () => {
         </div>
     );
 
-    function ig_handle_to_link(name: string): string {
-        // Remove '@' symbol
-        name = name.substring(1);
-        return `https://instagram.com/${name}`;
-    }
-
     return (
         <Layout>
             <div>
@@ -127,7 +122,7 @@ const Catalog = () => {
                     ? <></>
                     : <ul className='catalog-contributors'>
                         {contributors.map((contributor, index) => (
-                            <li key={index}><a href={ig_handle_to_link(contributor.handle)}>{contributor.name} ({contributor.handle})</a></li>
+                            <li key={index}><a href={handle_to_link(contributor.handle)}>{contributor.name} ({contributor.handle})</a></li>
                         ))}
                     </ul>
                 }

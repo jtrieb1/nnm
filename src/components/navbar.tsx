@@ -35,6 +35,12 @@ const links = [
     },
     */
     {
+        text: "Featured",
+        url: "/featured",
+        description:
+          "See our featured artists",
+    },
+    {
         text: "Subscribe",
         url: "/subscribe",
         description:

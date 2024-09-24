@@ -122,6 +122,11 @@ struct ItemPayload {
 }
 
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct MultiItemPayload {
+    items: Vec<ItemPayload>,
+}
+
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
 struct CartItemPayload {
     product_id: String,
     title: String,
@@ -134,14 +139,15 @@ struct CartItemPayload {
 }
 
 #[actix_web::post("/add_item/{checkout_id}")]
-async fn add_item_to_checkout(checkout_id: Path<String>, Json(payload): Json<ItemPayload>) -> actix_web::HttpResponse {
+async fn add_item_to_checkout(checkout_id: Path<String>, Json(payload): Json<MultiItemPayload>) -> actix_web::HttpResponse {
 
     // Add an item to a checkout session
-    let request = shopify::add_item_mutation(&checkout_id, &payload.product_id, payload.quantity);
+    let request = shopify::add_item_mutation(&checkout_id, &payload.items);
+    println!("[line 146]: {}", request.to_payload());
 
     if let Ok(res) = shopify::send_shopify_request(request.to_payload()).await {
         let body = res.text().await.unwrap();
-        println!("[line 144]: {}", body);
+        println!("[line 149]: {}", body);
         let parsed: FullAddItemResponse = serde_json::from_str(&body).unwrap();
         let Some(parsed) = parsed.data.add_item else {
             // Send back GraphQL errors if there are any

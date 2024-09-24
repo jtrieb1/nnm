@@ -191,37 +191,44 @@ function MerchPage() {
       });
     }
 
-    async function add_item_to_cart(item: ItemResult): Promise<void> {
-      // Add a new line item
-      console.log(JSON.stringify(item));
-      let retval = await fetch (`${BACKEND_URL}/add_item/${checkoutID.replace("gid://shopify/Cart/", "")}`, { method: 'POST', body: JSON.stringify(item), headers: { 'Content-Type': 'application/json' } });
+    async function update_external_cart() {
+      let payload = {
+        items: cartItems
+      };
+
+      let retval = await fetch(`${BACKEND_URL}/add_item/${cleanID(checkoutID)}`, { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'application/json' } });
       let retjson = await retval.json();
       await sync_cart(retjson);
-      /*
+    }
+
+    async function add_item_to_cart(item: ItemResult): Promise<void> {
       let existingItem = cartItems.find(i => i.product_id == item.product_id);
       if (existingItem != null) {
         existingItem.quantity += item.quantity;
-        console.log(JSON.stringify(existingItem));
-        let retval = await fetch(`${BACKEND_URL}/update_item/${checkoutID.replace("gid://shopify/Cart/", "")}`, { method: 'POST', body: JSON.stringify(existingItem), headers: { 'Content-Type': 'application/json' } });
-        let retjson = await retval.json();
-        await sync_cart(retjson);
       } else {
-        // Add a new line item
-        console.log(JSON.stringify(item));
-        let retval = await fetch (`${BACKEND_URL}/add_item/${checkoutID.replace("gid://shopify/Cart/", "")}`, { method: 'POST', body: JSON.stringify(item), headers: { 'Content-Type': 'application/json' } });
-        let retjson = await retval.json();
-        await sync_cart(retjson);
+        cartItems.push({
+          line_id: "",
+          product_id: item.product_id,
+          title: item.title,
+          handle: item.handle,
+          description: item.description,
+          currency: item.currency,
+          price: item.price,
+          quantity: item.quantity
+        });
       }
-        */
+      await update_external_cart();
     }
 
     async function remove_item_from_cart(item: ItemResult): Promise<void> {
-      // Update shopify cart
-      // strip out the id prefix gid://shopify/Cart/
-      let strippedID = checkoutID.replace("gid://shopify/Cart/", "");
-      let retval = await fetch(`${BACKEND_URL}/remove_item/${strippedID}`, { method: 'POST', body: JSON.stringify(item), headers: { 'Content-Type': 'application/json' } });
-      let retjson = await retval.json();
-      await sync_cart(retjson);
+      let existingItem = cartItems.find(i => i.product_id == item.product_id);
+      if (existingItem != null) {
+        existingItem.quantity -= item.quantity;
+        if (existingItem.quantity <= 0) {
+          setCartItems(cartItems.filter(i => i.product_id != item.product_id));
+        }
+      }
+      await update_external_cart();
     }
 
     return (

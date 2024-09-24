@@ -8,12 +8,7 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { getIssueData, getLatestIssueUrl } from '../util/issue';
 import getCount from '../util/count';
-
-function ig_handle_to_link(handle: string) {
-    // Remove '@' symbol
-    handle = handle.substring(1);
-    return `https://instagram.com/${handle}`;
-}
+import handle_to_link from '../util/links';
 
 const Latest = () => {
     const [pdfUrl, setPdfUrl] = React.useState('');
@@ -48,7 +43,7 @@ const Latest = () => {
                     <PDFViewer pdfUrl={pdfUrl} />
                     <ul className='latest-contributors'>
                         {contributors.map((contributor, index) => (
-                            <li key={index}><a href={ig_handle_to_link(contributor.name)}>{contributor.name}</a> ({contributor.handle})</li>
+                            <li key={index}><a href={handle_to_link(contributor.name)}>{contributor.name}</a> ({contributor.handle})</li>
                         ))}
                     </ul>
                 </div>

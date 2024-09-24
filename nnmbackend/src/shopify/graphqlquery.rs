@@ -71,7 +71,7 @@ impl ToString for ShopifyGraphQLType {
             ShopifyGraphQLType::Int(_) => format!("Int!"),
             ShopifyGraphQLType::Float(_) => format!("Float!"),
             ShopifyGraphQLType::JSON(_) => format!("JSON!"),
-            ShopifyGraphQLType::Array(t) => format!("[{}]!", t.iter().map(|t| t.to_string()).collect::<Vec<String>>().join(", ")),
+            ShopifyGraphQLType::Array(t) => format!("[{}]!", t[0].to_string()),
             ShopifyGraphQLType::Object(h) => {
                 let mut s = String::new();
                 s.push_str("{");
