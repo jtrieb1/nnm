@@ -40,8 +40,10 @@ impl ShopifyGraphQLType {
                 for item in v {
                     s.push_str(&format!("{}, ", item.to_value_string()));
                 }
-                s.pop();
-                s.pop();
+                if s.ends_with(", ") {
+                    s.pop();
+                    s.pop();
+                }
                 s.push_str("]");
                 s
             },
@@ -51,8 +53,10 @@ impl ShopifyGraphQLType {
                 for (key, value) in v.iter() {
                     s.push_str(&format!("\"{}\": {}, ", key, value.to_value_string()));
                 }
-                s.pop();
-                s.pop();
+                if s.ends_with(", ") {
+                    s.pop();
+                    s.pop();
+                }
                 s.push_str("}");
                 s
             },
@@ -71,15 +75,17 @@ impl ToString for ShopifyGraphQLType {
             ShopifyGraphQLType::Int(_) => format!("Int!"),
             ShopifyGraphQLType::Float(_) => format!("Float!"),
             ShopifyGraphQLType::JSON(_) => format!("JSON!"),
-            ShopifyGraphQLType::Array(t) => format!("[{}]!", t[0].to_string()),
+            ShopifyGraphQLType::Array(t) => format!("[{}]!", if t.len() > 0 {t[0].to_string()} else { "".to_string() }),
             ShopifyGraphQLType::Object(h) => {
                 let mut s = String::new();
                 s.push_str("{");
                 for (key, value) in h.iter() {
                     s.push_str(&format!("{}: {}, ", key, value.to_string()));
                 }
-                s.pop();
-                s.pop();
+                if s.ends_with(", ") {
+                    s.pop();
+                    s.pop();
+                }
                 s.push_str("}");
                 s
             }
@@ -156,16 +162,20 @@ impl<T: GraphQLRepresentable + Clone> GraphQLQuery<T> {
                     for item in v {
                         s.push_str(&format!("{}, ", item.to_value_string()));
                     }
-                    s.pop();
-                    s.pop();
+                    if s.ends_with(", ") {
+                        s.pop();
+                        s.pop();
+                    }
                     s.push_str("], ");
                 },
                 ShopifyGraphQLType::Object(v) => s.push_str(&format!("\"{}\": {}, ", key, v.iter().map(|(k, v)| format!("\"{}\": {}", k, v.to_value_string())).collect::<Vec<String>>().join(", "))),  // Recursively format object
                 ShopifyGraphQLType::Custom(_, underlying) => s.push_str(&format!("\"{}\": {}, ", key, underlying.to_value_string()))
             }
         }
-        s.pop();
-        s.pop();
+        if s.ends_with(", ") {
+            s.pop();
+            s.pop();
+        }
         s.push_str("}");
         s
     }
@@ -188,8 +198,10 @@ impl<T: GraphQLRepresentable + Clone> GraphQLQuery<T> {
             for (key, value) in self.variables.iter() {
                 query.push_str(&format!("${}: {}, ", key, value.to_string()));
             }
-            query.pop();
-            query.pop();
+            if query.ends_with(", ") {
+                query.pop();
+                query.pop();
+            }
             query.push_str(")");
         }
         query.push_str(" {\n");
@@ -212,8 +224,10 @@ impl<T: GraphQLRepresentable + Clone> GraphQLQuery<T> {
             for (key, value) in self.variables.iter() {
                 query.push_str(&format!("${}: {}, ", key, value.to_string()));
             }
-            query.pop();
-            query.pop();
+            if query.ends_with(", ") {
+                query.pop();
+                query.pop();
+            }
             query.push_str(")");
         }
         query.push_str(" {\n");
@@ -230,8 +244,10 @@ impl<T: GraphQLRepresentable + Clone> GraphQLQuery<T> {
             for (key, _) in self.variables.iter() {
                 query.push_str(&format!("{}: ${}, ", key, key));
             }
-            query.pop();
-            query.pop();
+            if query.ends_with(", ") {
+                query.pop();
+                query.pop();
+            }
             query.push_str(")");
         }
         

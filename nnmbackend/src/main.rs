@@ -33,6 +33,7 @@ async fn main() -> Result<(), std::io::Error> {
             .service(remove_item_from_checkout)
             .service(update_item_in_checkout)
             .service(get_checkout)
+            .service(request_checkout)
     })
     .bind("127.0.0.1:8000")?
     .run()
@@ -138,11 +139,58 @@ struct CartItemPayload {
     line_id: String,
 }
 
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct MultiCartItemPayload {
+    items: Vec<CartItemPayload>,
+}
+
+#[actix_web::post("/request_checkout")]
+async fn request_checkout(Json(payload): Json<MultiItemPayload>) -> actix_web::HttpResponse {
+    
+    // First, request a new checkout
+    let request = shopify::create_cart_mutation();
+    let res = shopify::send_shopify_request(request.to_payload()).await;
+    if let Err(e) = res {
+        return actix_web::HttpResponse::InternalServerError().body(format!("{{\"error\": \"Error creating checkout session: {:?}\"}}", e));
+    }
+    let body = res.unwrap().text().await.unwrap();
+    let parsed: FullCartCreateResponse = serde_json::from_str(&body).unwrap();
+    let parsed = parsed.data.cart_create;
+    if let Some(errors) = parsed.user_errors {
+        if !errors.is_empty() {
+            // Send back GraphQL errors if there are any
+            return actix_web::HttpResponse::BadRequest().body(format!("{{\"error\": \"Error creating checkout session: {:?}\"}}", errors));
+        }
+    }
+    let cart_id = parsed.cart.id.strip_prefix("gid://shopify/Cart/").unwrap();
+
+    let request = shopify::add_items_mutation(&cart_id, &payload);
+    println!("[line 146]: {}", request.to_payload());
+
+    if let Ok(res) = shopify::send_shopify_request(request.to_payload()).await {
+        let body = res.text().await.unwrap();
+        println!("[line 149]: {}", body);
+        let parsed: FullAddItemResponse = serde_json::from_str(&body).unwrap();
+        let Some(parsed) = parsed.data.add_item else {
+            // Send back GraphQL errors if there are any
+            return actix_web::HttpResponse::BadRequest().body(format!("{{\"error\": \"Error: {:?}\" }}", parsed.errors));
+        };
+        if let Some(parsederrs) = parsed.user_errors {
+            if !parsederrs.is_empty() {
+                return actix_web::HttpResponse::BadRequest().body(format!("{{\"error\": \"Error: {:?}\" }}", parsederrs));
+            }
+        }
+        return actix_web::HttpResponse::Ok().body(serde_json::to_string(&parsed.cart).unwrap());
+    } else {
+        return actix_web::HttpResponse::InternalServerError().body("{ \"error\": \"Error adding item to cart\" }");
+    }
+}
+
 #[actix_web::post("/add_item/{checkout_id}")]
-async fn add_item_to_checkout(checkout_id: Path<String>, Json(payload): Json<MultiItemPayload>) -> actix_web::HttpResponse {
+async fn add_item_to_checkout(checkout_id: Path<String>, Json(payload): Json<ItemPayload>) -> actix_web::HttpResponse {
 
     // Add an item to a checkout session
-    let request = shopify::add_item_mutation(&checkout_id, &payload.items);
+    let request = shopify::add_item_mutation(&checkout_id, &payload);
     println!("[line 146]: {}", request.to_payload());
 
     if let Ok(res) = shopify::send_shopify_request(request.to_payload()).await {
@@ -168,7 +216,7 @@ async fn add_item_to_checkout(checkout_id: Path<String>, Json(payload): Json<Mul
 async fn update_item_in_checkout(checkout_id: Path<String>, Json(payload): Json<CartItemPayload>) -> actix_web::HttpResponse {
 
     // Update an item in a checkout session
-    let request = shopify::update_item_mutation(&checkout_id, &payload.product_id, &payload.line_id, payload.quantity);
+    let request = shopify::update_item_mutation(&checkout_id, &payload);
 
     println!("Request: {}", request.to_payload());
     if let Ok(res) = shopify::send_shopify_request(request.to_payload()).await {

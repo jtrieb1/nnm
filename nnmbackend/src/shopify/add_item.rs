@@ -1,4 +1,4 @@
-use crate::ItemPayload;
+use crate::{ItemPayload, MultiItemPayload};
 
 use super::{graphqlquery::{GraphQLQuery, ShopifyGraphQLType}, CartAPIRepresentation, GraphQLError, UserError};
 
@@ -30,13 +30,24 @@ fn create_shopify_line_entry(item_id: &str, item_qty: u32) -> ShopifyGraphQLType
     ).into())
 }
 
-pub fn add_item_mutation(cart_id: &str, items: &Vec<ItemPayload>) -> GraphQLQuery<CartAPIRepresentation> {
+pub fn add_item_mutation(cart_id: &str, item: &ItemPayload) -> GraphQLQuery<CartAPIRepresentation> {
     
     let mut aim = GraphQLQuery::mutation(CartAPIRepresentation::default(), Some("cartLinesAdd".to_string()));
     aim.add_variable("cartId".to_string(), ShopifyGraphQLType::ID(format!("gid://shopify/Cart/{}", cart_id)));
-    aim.add_variable("lines".to_string(), ShopifyGraphQLType::Array(
-        items.iter().map(|item: &ItemPayload| create_shopify_line_entry(&item.product_id, item.quantity)).collect::<Vec<ShopifyGraphQLType>>()
-    ));
+    aim.add_variable("lines".to_string(), ShopifyGraphQLType::Array(vec![
+        create_shopify_line_entry(&item.product_id, item.quantity)
+    ]));
     
     return aim;
+}
+
+pub fn add_items_mutation(cart_id: &str, item: &MultiItemPayload) -> GraphQLQuery<CartAPIRepresentation> {
+        
+        let mut aim = GraphQLQuery::mutation(CartAPIRepresentation::default(), Some("cartLinesAdd".to_string()));
+        aim.add_variable("cartId".to_string(), ShopifyGraphQLType::ID(format!("gid://shopify/Cart/{}", cart_id)));
+        aim.add_variable("lines".to_string(), ShopifyGraphQLType::Array(item.items.iter().map(|item| {
+            create_shopify_line_entry(&item.product_id, item.quantity)
+        }).collect()));
+        
+        return aim;
 }
