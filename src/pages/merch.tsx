@@ -140,7 +140,7 @@ function MerchPage() {
                     {cart.items.map((item) => (
                       <li key={item.product_id}>
                         <span>{item.title}</span>
-                        <span>{item.quantity} x ${item.price} {item.currency}</span>
+                        <span>{item.quantity} x ${item.price.toFixed(2)} {item.currency}</span>
                         <span>${(item.price * item.quantity).toFixed(2)} {item.currency}</span>
                       </li>
                     ))}

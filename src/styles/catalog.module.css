@@ -1,194 +1,102 @@
-/* catalog.module.css */
 .pagination {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
-}
-
-.pagination button {
-    background-color: var(--color-secondary);
-    color: var(--color-background);
-    border: none;
-    padding: 10px 15px;
-    margin: 0 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.pagination button:hover {
-    background-color: var(--color-accent);
-}
-
-.pagination button:disabled {
-    background-color: var(--color-primary);
-    cursor: not-allowed;
-}
-
-/* Color palette */
-:root {
-    --color-primary: #222831;
-    --color-secondary: #393E46;
-    --color-accent: #00ADB5;
-    --color-background: #EEEEEE;
-}
-
-/* Styles for the Catalog component */
-.catalog {
-    background-color: var(--color-background);
-    padding: 20px;
-}
-
-.catalog-header {
-    font-size: 24px;
-    color: var(--color-primary);
-    margin-bottom: 20px;
-}
-
-.catalog-issues {
-    margin-top: 20px;
-}
-
-.catalog-issues h2 {
-    font-size: 20px;
-    color: var(--color-primary);
-    margin-bottom: 10px;
-}
-
-.catalog-issues ul {
-    list-style-type: none;
-    padding: 0;
     margin: 0;
 }
 
-.catalog-issues li {
+.pagination button {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: none;
+    padding: 10px 20px;
+    margin: 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.pagination button:disabled {
+    background-color: var(--tertiary-color);
+    cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+    background-color: var(--button-hover-bg-color);
+}
+
+.issues {
+    margin: 20px auto;
+    border: 1px solid var(--card-border-color);
+    border-radius: 5px;
+    width: fit-content;
+    height: fit-content;
+}
+
+.issues * {
+    display: inline-block;
+}
+
+.issueSelectorHeader {
+    font-size: 1.5em;
     margin-bottom: 10px;
 }
 
-.catalog-issues a {
-    color: var(--color-primary);
-    text-decoration: none;
-}
-
-.catalog-issues a:hover {
-    text-decoration: underline;
-}
-
-.catalog-loading {
-    font-size: 16px;
-    color: var(--color-primary);
-    margin-top: 20px;
-}
-
-.catalog-pdfviewer {
-    margin-top: 20px;
-}
-
 .issueSelector {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.issueID {
-    font-size: 16px;
-    color: var(--color-background);
-    margin-right: 10px;
-}
-
-.catalog-blurb {
-    font-size: 1.5em;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.catalog-contributors {
-    list-style-type: none;
+    list-style: none;
     padding: 0;
-    text-align: center;
-    margin-bottom: 100px;
 }
 
-.catalog-contributors li {
-    font-size: 1.2em;
+.issueSelector li {
+    margin: 10px 0;
+    padding: 10px;
+    display: inline;
+}
+
+.issueSelector .issueID {
     margin: 5px 0;
 }
 
-/* Media Queries for Responsiveness */
-@media (max-width: 768px) {
-    .catalog {
-        padding: 15px;
-    }
-
-    .catalog-header {
-        font-size: 20px;
-        margin-bottom: 15px;
-    }
-
-    .catalog-issues h2 {
-        font-size: 18px;
-        margin-bottom: 8px;
-    }
-
-    .catalog-issues li {
-        margin-bottom: 8px;
-    }
-
-    .catalog-loading {
-        font-size: 14px;
-        margin-top: 15px;
-    }
-
-    .issueSelector {
-        flex-direction: row; /* Ensure horizontal layout */
-        align-items: center;
-    }
-
-    .issueID {
-        font-size: 14px;
-        margin-right: 10px; /* Keep margin-right for spacing */
-        margin-bottom: 0; /* Remove margin-bottom */
-    }
+.issueSelector .issueID a {
+    text-decoration: none;
+    color: var(--primary-color);
+    transition: color 0.3s;
 }
 
-@media (max-width: 480px) {
-    .catalog {
-        padding: 10px;
-    }
+.issueSelector .issueID a:hover {
+    color: var(--secondary-color);
+}
 
-    .catalog-header {
-        font-size: 18px;
-        margin-bottom: 10px;
-    }
+.catalog-blurb {
+    text-align: center;
+    font-size: 1.2em;
+    margin: 20px auto;
+}
 
-    .catalog-issues h2 {
-        font-size: 16px;
-        margin-bottom: 6px;
-    }
+.catalog-loading {
+    font-size: 1.2em;
+    color: var(--tertiary-color);
+}
 
-    .catalog-issues ul {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
+.catalog-pdfviewer {
+    margin: 20px 0;
+}
 
-    .catalog-issues li {
-        margin-bottom: 0;
-    }
+.catalog-contributors {
+    text-align: center;
+    list-style: none;
+    padding-bottom: 100px;
+    margin: 20px 0;
+}
 
-    .catalog-loading {
-        font-size: 12px;
-        margin-top: 10px;
-    }
+.catalog-contributors li {
+    margin: 5px 0;
+}
 
-    .issueSelector {
-        flex-direction: row; /* Ensure horizontal layout */
-        align-items: center;
-    }
+.catalog-contributors li a {
+    text-decoration: none;
+    color: var(--primary-color);
+    transition: color 0.3s;
+}
 
-    .issueID {
-        font-size: 12px;
-        margin-right: 10px; /* Keep margin-right for spacing */
-        margin-bottom: 0; /* Remove margin-bottom */
-    }
+.catalog-contributors li a:hover {
+    color: var(--secondary-color);
 }

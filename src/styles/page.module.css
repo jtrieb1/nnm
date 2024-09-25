@@ -1,15 +1,15 @@
 /* Global Styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #222831;
-    color: #EEEEEE;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 /* Header Styles */
 .header {
-    background-color: #393E46;
+    background-color: var(--tertiary-color);
     padding: 20px;
-    color: #EEEEEE;
+    color: var(--text-color);
 }
 
 .header h1 {
@@ -20,16 +20,16 @@ body {
 
 /* Main Content Styles */
 .main-content {
-    background-color: #EEEEEE;
+    background-color: var(--background-color);
     padding: 20px;
-    color: #222831;
+    color: var(--text-color);
 }
 
 /* Footer Styles */
 .footer {
-    background-color: #393E46;
+    background-color: var(--tertiary-color);
     padding: 20px;
-    color: #EEEEEE;
+    color: var(--text-color);
     text-align: center;
 }
 

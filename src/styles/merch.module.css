@@ -1,25 +1,7 @@
-:root {
-    --primary-color: #00ADB5;
-    --secondary-color: #EEEEEE;
-    --background-color: #222831;
-    --text-color: #EEEEEE;
-    --button-bg-color: #00ADB5;
-    --button-text-color: #fff;
-    --button-hover-bg-color: #393E46;
-    --card-bg-color: #393E46;
-    --card-border-color: #ddd;
-    --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-body {
+.merch {
     font-family: 'Arial', sans-serif;
     background-color: var(--background-color);
     color: var(--text-color);
-    margin: 0;
-    padding: 0;
-}
-
-.merch {
     display: flex;
     flex-direction: column;
     align-items: center;

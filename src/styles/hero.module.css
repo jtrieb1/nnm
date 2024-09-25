@@ -1,7 +1,7 @@
 .hero {
     position: relative;
-    background-color: #222831;
-    color: #eeeeee;
+    background-color: var(--background-color);
+    color: var(--text-color);
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -27,13 +27,13 @@
 }
 
 .hero-title {
-    color: #00adb5;
+    color: var(--primary-color);
     font-size: 24px;
     margin-bottom: 10px;
 }
 
 .hero-description {
-    color: #393e46;
+    color: var(--tertiary-color);
     font-size: 16px;
 }
 

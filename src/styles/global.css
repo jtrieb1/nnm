@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --primary-color: #00ADB5;
+    --secondary-color: #EEEEEE;
+    --tertiary-color: #393E46;
+    --background-color: #222831;
+    --text-color: #EEEEEE;
+    --button-bg-color: #00ADB5;
+    --button-text-color: #fff;
+    --button-hover-bg-color: #393E46;
+    --card-bg-color: #393E46;
+    --card-border-color: #ddd;
+    --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 @import "page.module.css";
 
 @import "navbar.module.css";
