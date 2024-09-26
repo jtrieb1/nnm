@@ -10,6 +10,7 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import handle_to_link from '../util/links';
 import { HeadFC } from 'gatsby';
+import PaginatedList from '../components/paginatedlist';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -48,22 +49,17 @@ const Catalog = () => {
         setCurrentPage(page);
     };
 
-    const renderPagination = () => (
-        <div className='pagination'>
-            <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-            >
-                {"<"}
-            </button>
-            <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-            >
-                {">"}
-            </button>
-        </div>
-    );
+    const handleIssueSelect = (issueNumber: number) => {
+        setLoading(true);
+        getIssueUrl(issueNumber).then(url => {
+            setPdfUrl(url);
+            setLoading(false);
+        });
+        getIssueData(issueNumber).then(data => {
+            setBlurb(data.blurb);
+            setContributors(data.contributors);
+        });
+    }
 
     return (
         <Layout>
@@ -73,28 +69,7 @@ const Catalog = () => {
                 </div>
                 {
                     count > 0 && (
-                        <div className='issues'>
-                            <ul className='issueSelector'>
-                                {[...Array(count)].slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE).map((_, index) => (
-                                    <li key={index} className='issueID'>
-                                        <a href="#" onClick={() => {
-                                            setLoading(true);
-                                            getIssueUrl((currentPage - 1) * ITEMS_PER_PAGE + index + 1).then(url => {
-                                                setPdfUrl(url);
-                                                setLoading(false);
-                                            });
-                                            getIssueData((currentPage - 1) * ITEMS_PER_PAGE + index + 1).then(data => {
-                                                setBlurb(data.blurb);
-                                                setContributors(data.contributors);
-                                            });
-                                        }}>
-                                            {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
-                                        </a>
-                                    </li>
-                                ))}
-                            </ul>
-                            {renderPagination()}
-                        </div>
+                        <PaginatedList totalItems={count} itemsPerPage={ITEMS_PER_PAGE} currentPage={currentPage} handleItemSelect={handleIssueSelect} handlePageChange={handlePageChange} />
                     )
                 }
                 {

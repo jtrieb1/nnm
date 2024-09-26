@@ -18,6 +18,7 @@
 
 @import "page.module.css";
 
+@import "paginatedlist.module.css";
 @import "navbar.module.css";
 @import "hero.module.css";
 @import "catalog.module.css";

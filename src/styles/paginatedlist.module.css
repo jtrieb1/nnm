@@ -1,0 +1,61 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+
+.pagination button {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: none;
+    padding: 10px 20px;
+    margin: 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.pagination button:disabled {
+    background-color: var(--tertiary-color);
+    cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+    background-color: var(--button-hover-bg-color);
+}
+
+.paginatedList {
+    margin: 20px auto;
+    border: 1px solid var(--card-border-color);
+    border-radius: 5px;
+    width: fit-content;
+    height: fit-content;
+}
+
+.paginatedList * {
+    display: inline;
+}
+
+.itemSelector {
+    list-style: none;
+    padding: 0;
+}
+
+.itemSelector li {
+    margin: 10px 0;
+    padding: 10px;
+    display: inline;
+}
+
+.itemSelector .itemID {
+    margin: 5px 0;
+}
+
+.itemSelector .itemID a {
+    text-decoration: none;
+    color: var(--primary-color);
+    transition: color 0.3s;
+}
+
+.itemSelector .itemID a:hover {
+    color: var(--secondary-color);
+}
