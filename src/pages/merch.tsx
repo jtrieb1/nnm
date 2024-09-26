@@ -49,7 +49,7 @@ export const pageQuery = graphql`
 
 function itemResultFromMerchNode(node: MerchNode): ItemResult {
     return {
-        product_id: node.node.id,
+        product_id: node.node.variants[0].shopifyId,
         title: node.node.title,
         handle: node.node.handle,
         description: node.node.description,

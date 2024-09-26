@@ -43,9 +43,8 @@ const ProductGrid: React.FC<ProductGridProps> = ({ cart, merchData, addItemCallb
     return (
         <div className='product-grid'>
             {merchData.map(({ node }) => (
-                <>
+                <div key={node.id}>
                 <ProductCard
-                    key={node.id}
                     title={node.title}
                     description={node.description}
                     img_src={node.featuredMedia.preview.image.gatsbyImageData}
@@ -64,7 +63,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ cart, merchData, addItemCallb
                 >
                     Remove from Cart
                 </button> 
-                </>
+                </div>
             ))}
         </div>
     );
