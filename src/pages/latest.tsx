@@ -10,18 +10,18 @@ import { getIssueData, getLatestIssueUrl } from '../util/issue';
 import getCount from '../util/count';
 import handle_to_link from '../util/links';
 import { HeadFC } from 'gatsby';
+import Blurb from '../components/blurb';
+import Contributors from '../components/contributors';
 
 const Latest = () => {
+    const [issueNumber, setIssueNumber] = React.useState(0);
     const [pdfUrl, setPdfUrl] = React.useState('');
-    const [blurb, setBlurb] = React.useState('');
-    const [contributors, setContributors] = React.useState(Array<{ name: string, handle: string }>());
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
         getCount().then(count => {
             getIssueData(count).then(data => {
-                setBlurb(data.blurb);
-                setContributors(data.contributors);
+                setIssueNumber(count);
             });
         });
         getLatestIssueUrl().then(url => {
@@ -40,13 +40,9 @@ const Latest = () => {
                 </div>
             ) : (
                 <div className='catalog-pdfviewer'>
-                    <h2 className='latest-blurb'>{blurb}</h2>
+                    <Blurb issueNumber={issueNumber} />
                     <PDFViewer pdfUrl={pdfUrl} />
-                    <ul className='latest-contributors'>
-                        {contributors.map((contributor, index) => (
-                            <li key={index}><a href={handle_to_link(contributor.handle)}>{contributor.name} ({contributor.handle})</a></li>
-                        ))}
-                    </ul>
+                    <Contributors issueNumber={issueNumber} />
                 </div>
             )}
         </Layout>

@@ -18,6 +18,8 @@
 
 @import "page.module.css";
 
+@import "blurb.module.css";
+@import "contributors.module.css";
 @import "paginatedlist.module.css";
 @import "navbar.module.css";
 @import "hero.module.css";

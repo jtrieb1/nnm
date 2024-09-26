@@ -1,35 +1,9 @@
-.catalog-blurb {
-    text-align: center;
-    font-size: 1.2em;
-    margin: 20px auto;
-}
-
 .catalog-loading {
     font-size: 1.2em;
     color: var(--tertiary-color);
+    text-align: center;
 }
 
 .catalog-pdfviewer {
     margin: 20px 0;
-}
-
-.catalog-contributors {
-    text-align: center;
-    list-style: none;
-    padding-bottom: 100px;
-    margin: 20px 0;
-}
-
-.catalog-contributors li {
-    margin: 5px 0;
-}
-
-.catalog-contributors li a {
-    text-decoration: none;
-    color: var(--primary-color);
-    transition: color 0.3s;
-}
-
-.catalog-contributors li a:hover {
-    color: var(--secondary-color);
 }

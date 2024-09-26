@@ -8,9 +8,10 @@ import {getIssueData, getIssueUrl} from '../util/issue';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-import handle_to_link from '../util/links';
 import { HeadFC } from 'gatsby';
 import PaginatedList from '../components/paginatedlist';
+import Contributors from '../components/contributors';
+import Blurb from '../components/blurb';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -18,9 +19,8 @@ const Catalog = () => {
     const [pdfUrl, setPdfUrl] = React.useState('');
     const [loading, setLoading] = React.useState(true);
     const [count, setCount] = React.useState(0);
+    const [currentIssue, setCurrentIssue] = React.useState(0);
     const [currentPage, setCurrentPage] = React.useState(1);
-    const [blurb, setBlurb] = React.useState('');
-    const [contributors, setContributors] = React.useState(Array<{ name: string, handle: string }>());
 
     React.useEffect(() => {
         setLoading(true);
@@ -32,18 +32,13 @@ const Catalog = () => {
             }
             const totalPages = Math.ceil(issueCount / ITEMS_PER_PAGE);
             setCurrentPage(totalPages);
+            setCurrentIssue(issueCount);
             getIssueUrl(issueCount).then(url => {
                 setPdfUrl(url);
                 setLoading(false);
             });
-            getIssueData(issueCount).then(data => {
-                setBlurb(data.blurb);
-                setContributors(data.contributors);
-            });
         });
     }, []);
-
-    const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -51,32 +46,23 @@ const Catalog = () => {
 
     const handleIssueSelect = (issueNumber: number) => {
         setLoading(true);
+        setCurrentIssue(issueNumber);
         getIssueUrl(issueNumber).then(url => {
             setPdfUrl(url);
             setLoading(false);
-        });
-        getIssueData(issueNumber).then(data => {
-            setBlurb(data.blurb);
-            setContributors(data.contributors);
         });
     }
 
     return (
         <Layout>
             <div>
-                <div>
-                    <SegmentHeader headerText="Catalog" />
-                </div>
+                <SegmentHeader headerText="Catalog" />
                 {
                     count > 0 && (
                         <PaginatedList totalItems={count} itemsPerPage={ITEMS_PER_PAGE} currentPage={currentPage} handleItemSelect={handleIssueSelect} handlePageChange={handlePageChange} />
                     )
                 }
-                {
-                    loading || blurb === ''
-                    ? <></>
-                    : <div className="catalog-blurb"><h2>{blurb}</h2></div>
-                }
+                <Blurb issueNumber={currentIssue} />
                 {
                     loading 
                     ? <p className='catalog-loading'>Loading...</p> 
@@ -84,15 +70,7 @@ const Catalog = () => {
                         <PDFViewer pdfUrl={pdfUrl} />
                         </div>
                 }
-                {
-                    loading || contributors.length === 0
-                    ? <></>
-                    : <ul className='catalog-contributors'>
-                        {contributors.map((contributor, index) => (
-                            <li key={index}><a href={handle_to_link(contributor.handle)}>{contributor.name} ({contributor.handle})</a></li>
-                        ))}
-                    </ul>
-                }
+                <Contributors issueNumber={currentIssue} />
             </div>
         </Layout>
     );
