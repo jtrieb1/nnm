@@ -44,7 +44,7 @@ const Latest = () => {
                     <PDFViewer pdfUrl={pdfUrl} />
                     <ul className='latest-contributors'>
                         {contributors.map((contributor, index) => (
-                            <li key={index}><a href={handle_to_link(contributor.name)}>{contributor.name}</a> ({contributor.handle})</li>
+                            <li key={index}><a href={handle_to_link(contributor.handle)}>{contributor.name} ({contributor.handle})</a></li>
                         ))}
                     </ul>
                 </div>

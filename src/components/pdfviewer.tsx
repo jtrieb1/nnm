@@ -19,6 +19,15 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
 
     return (
         <div className='pdfviewer'>
+            <div className="resizer">
+                <button onClick={() => setPageWidth(pageWidth - 100)} disabled={pageWidth <= 100} className='resizeBtn'>
+                    -
+                </button>
+                <span style={{padding: "10px"}}>Page Size: {pageWidth}</span>
+                <button onClick={() => setPageWidth(pageWidth + 100)} disabled={pageWidth >= 1000} className='resizeBtn'>
+                    +
+                </button>
+            </div>
             <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess} className="pdfDocument">
                 <div className='pageSpread'>
                     {page != 0 ? <Page pageNumber={page} className="pdfPage" width={pageWidth} onClick={() => setPage(page - 2)} /> : <></>}
