@@ -21,8 +21,8 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
         <div className='pdfviewer'>
             <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess} className="pdfDocument">
                 <div className='pageSpread'>
-                    {page != 0 ? <Page pageNumber={page} className="pdfPage" width={pageWidth}/> : <></>}
-                    {page != numPages ? <Page pageNumber={page + 1} width={pageWidth}/> : <></>}
+                    {page != 0 ? <Page pageNumber={page} className="pdfPage" width={pageWidth} onClick={() => setPage(page - 2)} /> : <></>}
+                    {page != numPages ? <Page pageNumber={page + 1} width={pageWidth} onClick={() => setPage(page + 2)} /> : <></>}
                 </div>
             </Document>
             <div className='buttonContainer'>
