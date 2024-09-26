@@ -6,6 +6,7 @@ import SegmentHeader from '../components/segmentheader';
 import { Cart, ItemResult } from '../components/cart';
 import CartView from '../components/cartview';
 import ProductGrid, { MerchNode } from '../components/productgrid';
+import CenteredText from '../components/centered';
 
 // Query for the merch data
 export const pageQuery = graphql`
@@ -95,8 +96,16 @@ function MerchPage() {
         <Layout>
             <SegmentHeader headerText="Merch" />
             <div className="merch">
-                <ProductGrid cart={cart} merchData={merchData} addItemCallback={add_item} removeItemCallback={remove_item} />
-                <CartView cart={cart} checkoutFn={initiate_checkout} />
+              {
+                merchData.length === 0 ? (
+                  <CenteredText children={["no merch available", "bummer"]} />
+                ) : (
+                  <>
+                    <ProductGrid cart={cart} merchData={merchData} addItemCallback={add_item} removeItemCallback={remove_item} />
+                    <CartView cart={cart} checkoutFn={initiate_checkout} />
+                  </>
+                )
+              }
             </div>
         </Layout>
     );
