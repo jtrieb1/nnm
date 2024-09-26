@@ -1,39 +1,31 @@
-import Cart, { ItemResult } from "./cart";
+import { Cart } from "./cart";
 
 import React from 'react';
-import { useContext } from "react";
-import { CartContext } from "../pages/merch";
 
 interface CartViewProps {
     cart: Cart;
+    checkoutFn: () => void;
 }
 
-function CartView({ cart }: CartViewProps) {
-    const [cartItems, setCartItems] = React.useState<Array<ItemResult>>([]);
-    const [checkoutURL, setCheckoutURL] = React.useState<string>("");
-
-    React.useEffect(() => {
-        setCartItems(cart.getItems());
-        cart.getCheckoutURL().then((url) => setCheckoutURL(url));
-    }, [cart]);
-
-    function initiate_checkout() {
-        window.location.href = checkoutURL;
-        cart.destruct();
-    }
-
+function CartView({ cart, checkoutFn }: CartViewProps) {
     return (
-        <div>
-            <h1>Cart</h1>
-            <ul>
-                {cartItems.map((item) => (
-                    <li key={item.handle}>
-                        {item.title} - ${item.price} {item.currency} - {item.quantity} : ${item.price * item.quantity} {item.currency}
-                    </li>
-                ))}
-            </ul>
-            <button onClick={initiate_checkout}>Checkout</button>
-        </div>
+    <div className='cart-summary'>
+        <h2>Cart Summary</h2>
+        <ul>
+        {cart.items.map((item) => (
+            <li key={item.product_id}>
+            <span>{item.title}</span>
+            <span>{item.quantity} x ${item.price.toFixed(2)} {item.currency}</span>
+            <span>${(item.price * item.quantity).toFixed(2)} {item.currency}</span>
+            </li>
+        ))}
+        </ul>
+        <button 
+        onClick={checkoutFn} 
+        >
+        Checkout
+        </button>
+    </div>
     );
 }
 

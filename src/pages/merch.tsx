@@ -1,13 +1,11 @@
 import React from 'react';
+import { graphql, HeadFC, useStaticQuery } from 'gatsby';
 
 import Layout from '../components/layout';
 import SegmentHeader from '../components/segmentheader';
-import ProductCard from '../components/productcard';
-import { graphql, HeadFC, useStaticQuery } from 'gatsby';
-import { getImage } from 'gatsby-plugin-image';
-
 import { Cart, ItemResult } from '../components/cart';
-
+import CartView from '../components/cartview';
+import ProductGrid, { MerchNode } from '../components/productgrid';
 
 // Query for the merch data
 export const pageQuery = graphql`
@@ -49,6 +47,17 @@ export const pageQuery = graphql`
 }
 `;
 
+function itemResultFromMerchNode(node: MerchNode): ItemResult {
+    return {
+        product_id: node.node.id,
+        title: node.node.title,
+        handle: node.node.handle,
+        description: node.node.description,
+        price: Number(node.node.priceRangeV2.minVariantPrice.amount),
+        currency: node.node.priceRangeV2.minVariantPrice.currencyCode,
+        quantity: 1,
+    };
+}
 
 function MerchPage() {
     // Use the graphql query to get the merch data
@@ -70,14 +79,14 @@ function MerchPage() {
       window.location.href = cart.url();
     }
 
-    async function add_item(item: ItemResult) {
-      await cart.add_item(item).then(() => {
+    async function add_item(item: MerchNode) {
+      await cart.add_item(itemResultFromMerchNode(item)).then(() => {
         setCart(cart.dupe());
       });
     }
 
-    async function remove_item(item: ItemResult) {
-      await cart.remove_item(item).then(() => {
+    async function remove_item(item: MerchNode) {
+      await cart.remove_item(itemResultFromMerchNode(item)).then(() => {
         setCart(cart.dupe());
       });
     }
@@ -86,71 +95,8 @@ function MerchPage() {
         <Layout>
             <SegmentHeader headerText="Merch" />
             <div className="merch">
-                <div className='merchGrid'>
-                {
-                    merchData.map(({ node }: { node: any }) => {
-                        const { title, handle, description, priceRangeV2, featuredMedia, variants, id } = node;
-                  
-                        const price = priceRangeV2.minVariantPrice.amount;
-                        const img_src = getImage(featuredMedia.preview.image);
-                        if (!img_src) {
-                            return null;
-                        }
-
-                        const item = {
-                          title: title,
-                          handle: handle,
-                          description: description,
-                          currency: priceRangeV2.minVariantPrice.currencyCode,
-                          price: Number(price),
-                          product_id: variants[0].shopifyId,
-                          quantity: 1
-                        };
-
-                        return (
-                          <div key={id} className="merchItem">
-                          <ProductCard 
-                              key={id} 
-                              title={title} 
-                              description={description} 
-                              img_src={img_src} 
-                              price={price} 
-                              currency={priceRangeV2.minVariantPrice.currencyCode}
-                            />
-                            <button
-                                  onClick={async () => await add_item(item)}
-                            >
-                                Add to Cart
-                            </button>
-                            <button
-                                onClick={async () => await remove_item(item)}
-                                disabled={cart.items.every(i => i.product_id != variants[0].shopifyId)}
-                                style={{"display": `${cart.items.some(i => i.product_id == variants[0].shopifyId) ? 'block' : 'none'}`}}
-                            >
-                                Remove from Cart
-                            </button> 
-                          </div>
-                        );
-                    })
-                }
-                </div>
-                <div className='cart-summary'>
-                  <h2>Cart Summary</h2>
-                  <ul>
-                    {cart.items.map((item) => (
-                      <li key={item.product_id}>
-                        <span>{item.title}</span>
-                        <span>{item.quantity} x ${item.price.toFixed(2)} {item.currency}</span>
-                        <span>${(item.price * item.quantity).toFixed(2)} {item.currency}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <button 
-                    onClick={initiate_checkout} 
-                  >
-                    Checkout
-                  </button>
-                </div>
+                <ProductGrid cart={cart} merchData={merchData} addItemCallback={add_item} removeItemCallback={remove_item} />
+                <CartView cart={cart} checkoutFn={initiate_checkout} />
             </div>
         </Layout>
     );

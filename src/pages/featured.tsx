@@ -1,53 +1,93 @@
 import React from 'react';
-
-import Layout from '../components/layout';
-import getCount from '../util/count';
-import { getIssueData } from '../util/issue';
-import SegmentHeader from '../components/segmentheader';
-import handle_to_link from '../util/links';
 import { HeadFC } from 'gatsby';
 
-export interface FeaturedArtistsProps {
+import Layout from '../components/layout';
+import SegmentHeader from '../components/segmentheader';
 
+import getCount from '../util/count';
+import { getIssueData } from '../util/issue';
+import handle_to_link from '../util/links';
+
+export interface FeaturedArtistsProps {}
+
+class HandleNameMap {
+    map: Map<string, string>;
+
+    constructor() {
+        this.map = new Map<string, string>();
+    }
+
+    set(handle: string, name: string) {
+        this.map.set(handle, name);
+    }
+
+    get(handle: string): string {
+        return this.map.get(handle)!;
+    }
+}
+
+class HandleCountMap {
+    map: Map<string, number>;
+
+    constructor() {
+        this.map = new Map<string, number>();
+    }
+
+    get(handle: string): number {
+        return this.map.get(handle)!;
+    }
+
+    increment(handle: string) {
+        if (this.map.has(handle)) {
+            this.map.set(handle, this.map.get(handle)! + 1);
+        } else {
+            this.map.set(handle, 1);
+        }
+    }
+}
+
+class HandleRanker {
+    handleNameMap: HandleNameMap;
+    handleCountMap: HandleCountMap;
+
+    constructor() {
+        this.handleNameMap = new HandleNameMap();
+        this.handleCountMap = new HandleCountMap();
+    }
+
+    addContributor(handle: string, name: string) {
+        this.handleNameMap.set(handle, name);
+        this.handleCountMap.increment(handle);
+    }
+
+    getTopContributors(): Array<{name: string, handle: string}> {
+        let sorted = Array.from(this.handleCountMap.map.entries()).sort((a, b) => b[1] - a[1]);
+        let top_contributors = [];
+        for (let i = 0; i < Math.min(12, sorted.length); i++) {
+            top_contributors.push({name: this.handleNameMap.get(sorted[i][0]), handle: sorted[i][0]});
+        }
+        return top_contributors;
+    }
 }
 
 async function get_top_contributors(): Promise<Array<{name: string, handle: string}>> {
-    let hmap = new Map<string, string>();
-    let map = new Map<string, number>();
+    let ranker = new HandleRanker();
+    
     let cretval = await getCount();
     let allIssueData = await Promise.all(Array.from({length: cretval}, (_, i) => i + 1).map(async (i) => {
         return await getIssueData(i);
-    }
-    ));
+    }));
+
     for (let data of allIssueData) {
         if (data === null) {
             continue;
         }
         data.contributors.forEach((contributor: {name: string, handle: string}) => {
-            if (map.has(contributor.handle)) {
-                map.set(contributor.handle, map.get(contributor.handle)! + 1);
-                if (!hmap.has(contributor.handle)) {
-                    hmap.set(contributor.handle, contributor.name);
-                }
-                if (hmap.get(contributor.handle) !== contributor.name) {
-                    // Keep the longest
-                    if (contributor.name.length > hmap.get(contributor.handle)!.length) {
-                        hmap.set(contributor.handle, contributor.name);
-                    }
-                }
-            } else {
-                map.set(contributor.handle, 1);
-                hmap.set(contributor.handle, contributor.name);
-            }
+            ranker.addContributor(contributor.handle, contributor.name);
         });
     }
 
-    let sorted = Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
-    let top_contributors = [];
-    for (let i = 0; i < Math.min(12, sorted.length); i++) {
-        top_contributors.push({name: hmap.get(sorted[i][0])!, handle: sorted[i][0]});
-    }
-    return top_contributors;
+    return ranker.getTopContributors();
 }
 
 const FeaturedArtists: React.FC<FeaturedArtistsProps> = () => {

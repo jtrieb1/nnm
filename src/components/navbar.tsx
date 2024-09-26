@@ -26,14 +26,13 @@ const links = [
         description:
           "Browse our catalog",
     },
-    /* // Taken out until ready
+    // Taken out until ready
     {
         text: "Merch",
         url: "/merch",
         description:
           "Browse our merch store",
     },
-    */
     {
         text: "Featured",
         url: "/featured",

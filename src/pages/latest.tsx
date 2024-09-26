@@ -1,17 +1,17 @@
 import React from 'react';
+import { HeadFC } from 'gatsby';
 
+import Blurb from '../components/blurb';
+import Contributors from '../components/contributors';
 import Layout from '../components/layout';
 import PDFViewer from '../components/pdfviewer';
 import SegmentHeader from '../components/segmentheader';
 
-import 'react-pdf/dist/Page/AnnotationLayer.css';
-import 'react-pdf/dist/Page/TextLayer.css';
 import { getIssueData, getLatestIssueUrl } from '../util/issue';
 import getCount from '../util/count';
-import handle_to_link from '../util/links';
-import { HeadFC } from 'gatsby';
-import Blurb from '../components/blurb';
-import Contributors from '../components/contributors';
+
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 
 const Latest = () => {
     const [issueNumber, setIssueNumber] = React.useState(0);
