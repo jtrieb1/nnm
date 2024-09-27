@@ -62,8 +62,10 @@ const Catalog = () => {
                     ? <p className='catalog-loading'>Loading...</p> 
                     : <div className='catalog-pdfviewer'>
                         <Blurb issueNumber={currentIssue} />
-                        <PDFViewer pdfUrl={pdfUrl} />
-                        <Contributors issueNumber={currentIssue} />
+                        <div className='contentSection'>
+                            <PDFViewer pdfUrl={pdfUrl} />
+                            <Contributors issueNumber={currentIssue} />
+                        </div>
                       </div>
                 }
             </div>

@@ -41,8 +41,10 @@ const Latest = () => {
             ) : (
                 <div className='catalog-pdfviewer'>
                     <Blurb issueNumber={issueNumber} />
-                    <PDFViewer pdfUrl={pdfUrl} />
-                    <Contributors issueNumber={issueNumber} />
+                    <div className='contentSection'>
+                        <PDFViewer pdfUrl={pdfUrl} />
+                        <Contributors issueNumber={issueNumber} />
+                    </div>
                 </div>
             )}
         </Layout>

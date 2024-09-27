@@ -7,3 +7,10 @@
 .catalog-pdfviewer {
     margin: 20px 0;
 }
+
+.contentSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}

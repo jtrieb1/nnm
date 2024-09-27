@@ -3,3 +3,57 @@
     font-size: 1.2em;
     margin: 20px auto;
 }
+
+.blurbholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.dialogpanel {
+    align-content: center;
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    border-color: var(--tertiary-color);
+    border-width: 3px;
+
+    display: inline-block;
+    display: flex;
+    justify-content: space-between;
+    width: 25%;
+    color: var(--tertiary-color)
+}
+
+.carpetface {
+    background-color: var(--primary-color);
+    border-width: 2px;
+    border-color: var(--tertiary-color);
+    border-radius: 5px;
+    padding: 10px;
+    display: inline;
+    max-width: 8rem;
+    color: var(--tertiary-color);
+}
+
+.speechbubble {
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px;
+    display: inline;
+    color: var(--tertiary-color);
+    text-align: left;
+}
+
+.quoteintro {
+    font-size: 1.5em;
+    font-weight: bold;
+    font-family:'Courier New', Courier, monospace;
+    color: var(--tertiary-color);
+}
+
+.quote {
+    font-size: 1.2em;
+    color: var(--tertiary-color);
+}

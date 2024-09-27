@@ -15,3 +15,10 @@
     font-size: 1.2em;
     margin: 5px 0;
 }
+
+.contentSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
