@@ -1,7 +1,7 @@
 use std::io::Read;
 
-use crate::utils::s3::get_s3_client;
 use crate::utils::dynamodb as db;
+use crate::utils::s3::get_s3_client;
 
 use actix_multipart::form::{tempfile::TempFile, MultipartForm};
 use actix_web::Responder;
@@ -42,16 +42,28 @@ async fn upload(MultipartForm(form): MultipartForm<UploadForm>) -> impl Responde
 
     // Need to upload to buckets in both regions
     let bucket = {
-        if s3client.config().region().is_some_and(|reg| reg.as_ref() == "us-east-1") {
+        if s3client
+            .config()
+            .region()
+            .is_some_and(|reg| reg.as_ref() == "us-east-1")
+        {
             "nonothingissues1"
-        } else if s3client.config().region().is_some_and(|reg| reg.as_ref() == "us-east-2") {
+        } else if s3client
+            .config()
+            .region()
+            .is_some_and(|reg| reg.as_ref() == "us-east-2")
+        {
             "nonothingissues"
         } else {
             return actix_web::HttpResponse::InternalServerError().body("Invalid region");
         }
     };
 
-    let put_req = s3client.put_object().bucket(bucket).key(issue_key).body(bytes.into());
+    let put_req = s3client
+        .put_object()
+        .bucket(bucket)
+        .key(issue_key)
+        .body(bytes.into());
 
     let res = put_req.send().await;
     if let Err(e) = res {

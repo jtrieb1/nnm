@@ -1,6 +1,8 @@
 use actix_web::web::Path;
 
-use crate::utils::s3::{get_s3_client, get_issue_count, get_signed_url_for_latest_issue, get_signed_url_for_issue};
+use crate::utils::s3::{
+    get_issue_count, get_s3_client, get_signed_url_for_issue, get_signed_url_for_latest_issue,
+};
 
 #[actix_web::get("/count")]
 async fn count_issues() -> String {

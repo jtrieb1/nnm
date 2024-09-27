@@ -1,28 +1,18 @@
-
-use actix_web::{http, App, HttpServer};
 use actix_cors::Cors;
+use actix_web::{http, App, HttpServer};
 
 mod routes;
 mod utils;
 
 use routes::{
-    upload,
     dynamodb::get_issue_data,
-    s3::{
-        count_issues,
-        get_issue,
-        get_latest_issue,
-    },
-    shopify::{
-        create_checkout,
-        request_checkout,
-        get_checkout
-    }
+    s3::{count_issues, get_issue, get_latest_issue},
+    shopify::{create_checkout, get_checkout, request_checkout},
+    upload,
 };
 
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
-
     println!("Starting server on port 443...");
     HttpServer::new(|| {
         let cors = Cors::default()

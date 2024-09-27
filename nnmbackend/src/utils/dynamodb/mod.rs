@@ -1,23 +1,27 @@
-use anyhow::{Error, anyhow};
+use anyhow::{anyhow, Error};
 use aws_config::{meta::region::RegionProviderChain, BehaviorVersion};
 use aws_sdk_dynamodb::{types::AttributeValue, Client as DynamoClient};
 
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
 pub struct DBContributor {
     pub name: String,
-    pub handle: String
+    pub handle: String,
 }
 
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
 pub struct DBIssue {
     pub number: usize,
     pub blurb: String,
-    pub contributors: Vec<DBContributor>
+    pub contributors: Vec<DBContributor>,
 }
 
 impl DBIssue {
     pub fn new(number: usize, blurb: String, contributors: Vec<DBContributor>) -> Self {
-        DBIssue { number, blurb, contributors }
+        DBIssue {
+            number,
+            blurb,
+            contributors,
+        }
     }
 }
 
@@ -40,27 +44,49 @@ pub async fn get_issue_data(issue_number: usize, client: &DynamoClient) -> Resul
 
     let item = response.item.ok_or(anyhow!("Could not retrieve item"))?;
     let blurb = item
-        .get("blurb").ok_or(anyhow!("Blurb not found"))?
-        .as_s().map_err(|e| anyhow!(format!("{:?}", e)))?
+        .get("blurb")
+        .ok_or(anyhow!("Blurb not found"))?
+        .as_s()
+        .map_err(|e| anyhow!(format!("{:?}", e)))?
         .to_string();
 
     let contributors = item
-        .get("contributors").ok_or(anyhow!("Contributors not found"))?
-        .as_l().map_err(|e| anyhow!(format!("{:?}", e)))?
-        .iter().map(|contributor| {
+        .get("contributors")
+        .ok_or(anyhow!("Contributors not found"))?
+        .as_l()
+        .map_err(|e| anyhow!(format!("{:?}", e)))?
+        .iter()
+        .map(|contributor| {
             let contributor = contributor.as_ss().unwrap(); // String-sets
-            let handle = contributor.get(0).unwrap().to_string();
+            let handle = contributor.first().unwrap().to_string();
             let name = contributor.get(1).unwrap().to_string();
             DBContributor { name, handle }
-        }).collect();
-    
-    Ok(DBIssue { number: issue_number, blurb, contributors })
+        })
+        .collect();
+
+    Ok(DBIssue {
+        number: issue_number,
+        blurb,
+        contributors,
+    })
 }
 
-pub async fn put_issue_data(issue: DBIssue, client: &DynamoClient) -> Result<(), aws_sdk_dynamodb::Error> {
-    let contributors = AttributeValue::L(issue.contributors.iter().map(|contributor| {
-        AttributeValue::Ss(vec![contributor.name.to_string(), contributor.handle.to_string()])
-    }).collect::<Vec<AttributeValue>>());
+pub async fn put_issue_data(
+    issue: DBIssue,
+    client: &DynamoClient,
+) -> Result<(), aws_sdk_dynamodb::Error> {
+    let contributors = AttributeValue::L(
+        issue
+            .contributors
+            .iter()
+            .map(|contributor| {
+                AttributeValue::Ss(vec![
+                    contributor.name.to_string(),
+                    contributor.handle.to_string(),
+                ])
+            })
+            .collect::<Vec<AttributeValue>>(),
+    );
     client
         .put_item()
         .table_name("nnmIssueData")

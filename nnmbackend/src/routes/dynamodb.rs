@@ -1,5 +1,5 @@
-use actix_web::web::Path;
 use crate::utils::dynamodb as db;
+use actix_web::web::Path;
 
 #[actix_web::get("/issuedata/{issue_number}")]
 async fn get_issue_data(issue_number: Path<usize>) -> actix_web::HttpResponse {

@@ -9,14 +9,13 @@ pub enum ShopifyGraphQLType {
     Boolean(bool),
     Int(i64),
     Float(f64),
-    JSON(String),
+    Json(String),
     Array(Vec<ShopifyGraphQLType>),
     Object(HashMap<String, ShopifyGraphQLType>),
-    Custom(String, Box<ShopifyGraphQLType>)
+    Custom(String, Box<ShopifyGraphQLType>),
 }
 
 impl ShopifyGraphQLType {
-
     pub fn to_object(&self, key: &str) -> HashMap<String, ShopifyGraphQLType> {
         match self {
             ShopifyGraphQLType::Object(obj) => obj.clone(),
@@ -35,10 +34,10 @@ impl ShopifyGraphQLType {
             ShopifyGraphQLType::Boolean(v) => format!("{}", v),
             ShopifyGraphQLType::Int(v) => format!("{}", v),
             ShopifyGraphQLType::Float(v) => format!("{}", v),
-            ShopifyGraphQLType::JSON(v) => format!("{}", v),
+            ShopifyGraphQLType::Json(v) => v.to_string(),
             ShopifyGraphQLType::Array(v) => {
                 let mut s = String::new();
-                s.push_str("[");
+                s.push('[');
                 for item in v {
                     s.push_str(&format!("{}, ", item.to_value_string()));
                 }
@@ -46,12 +45,12 @@ impl ShopifyGraphQLType {
                     s.pop();
                     s.pop();
                 }
-                s.push_str("]");
+                s.push(']');
                 s
-            },
+            }
             ShopifyGraphQLType::Object(v) => {
                 let mut s = String::new();
-                s.push_str("{");
+                s.push('{');
                 for (key, value) in v.iter() {
                     s.push_str(&format!("\"{}\": {}, ", key, value.to_value_string()));
                 }
@@ -59,39 +58,46 @@ impl ShopifyGraphQLType {
                     s.pop();
                     s.pop();
                 }
-                s.push_str("}");
+                s.push('}');
                 s
-            },
-            ShopifyGraphQLType::Custom(_, underlying) => underlying.to_value_string()
+            }
+            ShopifyGraphQLType::Custom(_, underlying) => underlying.to_value_string(),
         }
     }
-
 }
 
-impl ToString for ShopifyGraphQLType {
-    fn to_string(&self) -> String {
+impl std::fmt::Display for ShopifyGraphQLType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ShopifyGraphQLType::ID(_) => format!("ID!"),
-            ShopifyGraphQLType::String(_) => format!("String!"),
-            ShopifyGraphQLType::Boolean(_) => format!("Boolean!"),
-            ShopifyGraphQLType::Int(_) => format!("Int!"),
-            ShopifyGraphQLType::Float(_) => format!("Float!"),
-            ShopifyGraphQLType::JSON(_) => format!("JSON!"),
-            ShopifyGraphQLType::Array(t) => format!("[{}]!", if t.len() > 0 {t[0].to_string()} else { "".to_string() }),
+            ShopifyGraphQLType::ID(_) => write!(f, "ID!"),
+            ShopifyGraphQLType::String(_) => write!(f, "String!"),
+            ShopifyGraphQLType::Boolean(_) => write!(f, "Boolean!"),
+            ShopifyGraphQLType::Int(_) => write!(f, "Int!"),
+            ShopifyGraphQLType::Float(_) => write!(f, "Float!"),
+            ShopifyGraphQLType::Json(_) => write!(f, "JSON!"),
+            ShopifyGraphQLType::Array(t) => write!(
+                f,
+                "[{}]!",
+                if !t.is_empty() {
+                    t[0].to_string()
+                } else {
+                    "".to_string()
+                }
+            ),
             ShopifyGraphQLType::Object(h) => {
                 let mut s = String::new();
-                s.push_str("{");
+                s.push('{');
                 for (key, value) in h.iter() {
-                    s.push_str(&format!("{}: {}, ", key, value.to_string()));
+                    s.push_str(&format!("{}: {}, ", key, value));
                 }
                 if s.ends_with(", ") {
                     s.pop();
                     s.pop();
                 }
-                s.push_str("}");
-                s
+                s.push('}');
+                write!(f, "{}", s)
             }
-            ShopifyGraphQLType::Custom(t, _) => format!("{}!", t.clone())
+            ShopifyGraphQLType::Custom(t, _) => write!(f, "{}!", t.clone()),
         }
     }
 }
@@ -109,7 +115,7 @@ impl GraphQLRepresentable for MoneyV2 {
     }
 
     fn to_graphql(&self, _: HashMap<String, ShopifyGraphQLType>) -> String {
-        format!("{{\n\tamount\n\tcurrencyCode\n}}")
+        "{\n\tamount\n\tcurrencyCode\n}".to_string()
     }
 }
 
@@ -143,7 +149,7 @@ impl GraphQLRepresentable for CostRepresentation {
     fn to_graphql(&self, args: HashMap<String, ShopifyGraphQLType>) -> String {
         let mut s = String::new();
 
-        if args.len() > 0 {
+        if !args.is_empty() {
             s.push_str("cost(");
             for arg in args {
                 s.push_str(&arg.0);
@@ -156,15 +162,15 @@ impl GraphQLRepresentable for CostRepresentation {
             s.push_str("cost {\n");
         }
 
-        s.push_str(&format!("checkoutChargeAmount {{\n\tamount\n\tcurrencyCode\n}}\n"));
-        s.push_str(&format!("subtotalAmount {{\n\tamount\n\tcurrencyCode\n}}\n"));
-        s.push_str(&format!("subtotalAmountEstimated\n"));
-        s.push_str(&format!("totalAmount {{\n\tamount\n\tcurrencyCode\n}}\n"));
-        s.push_str(&format!("totalAmountEstimated\n"));
-        s.push_str(&format!("totalDutyAmount {{\n\tamount\n\tcurrencyCode\n}}\n"));
-        s.push_str(&format!("totalDutyAmountEstimated\n"));
-        s.push_str(&format!("totalTaxAmount {{\n\tamount\n\tcurrencyCode\n}}\n"));
-        s.push_str(&format!("totalTaxAmountEstimated\n}}"));
+        s.push_str("checkoutChargeAmount {\n\tamount\n\tcurrencyCode\n}\n");
+        s.push_str("subtotalAmount {\n\tamount\n\tcurrencyCode\n}\n");
+        s.push_str("subtotalAmountEstimated\n");
+        s.push_str("totalAmount {\n\tamount\n\tcurrencyCode\n}\n");
+        s.push_str("totalAmountEstimated\n");
+        s.push_str("totalDutyAmount {\n\tamount\n\tcurrencyCode\n}\n");
+        s.push_str("totalDutyAmountEstimated\n");
+        s.push_str("totalTaxAmount {\n\tamount\n\tcurrencyCode\n}\n");
+        s.push_str("totalTaxAmountEstimated\n}");
         s
     }
 }
@@ -185,7 +191,8 @@ impl GraphQLRepresentable for CartLineCost {
     }
 
     fn to_graphql(&self, _: HashMap<String, ShopifyGraphQLType>) -> String {
-        format!("{{\n\tamountPerQuantity {}\n\tsubtotalAmount {}\n\ttotalAmount {}\n}}",
+        format!(
+            "{{\n\tamountPerQuantity {}\n\tsubtotalAmount {}\n\ttotalAmount {}\n}}",
             self.amount_per_quantity.to_graphql(HashMap::new()),
             self.subtotal_amount.to_graphql(HashMap::new()),
             self.total_amount.to_graphql(HashMap::new())
@@ -204,7 +211,7 @@ impl GraphQLRepresentable for Merchandise {
         "merchandise".to_string()
     }
     fn to_graphql(&self, _: HashMap<String, ShopifyGraphQLType>) -> String {
-        format!("{{\n... on ProductVariant {{\nid\ntitle\n}}\n}}")
+        "{\n... on ProductVariant {\nid\ntitle\n}\n}".to_string()
     }
 }
 
@@ -213,7 +220,7 @@ pub struct LineItem {
     pub id: String,
     pub quantity: u32,
     pub merchandise: Merchandise,
-    pub cost: CartLineCost
+    pub cost: CartLineCost,
 }
 
 impl GraphQLRepresentable for LineItem {
@@ -221,6 +228,10 @@ impl GraphQLRepresentable for LineItem {
         "lines".to_string()
     }
     fn to_graphql(&self, args: HashMap<String, ShopifyGraphQLType>) -> String {
-        format!("{{\nid\nquantity\nmerchandise {}\ncost {}}}", self.merchandise.to_graphql(HashMap::new()), self.cost.to_graphql(args))
+        format!(
+            "{{\nid\nquantity\nmerchandise {}\ncost {}}}",
+            self.merchandise.to_graphql(HashMap::new()),
+            self.cost.to_graphql(args)
+        )
     }
 }

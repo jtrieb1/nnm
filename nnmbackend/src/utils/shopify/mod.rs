@@ -24,4 +24,3 @@ pub async fn send_shopify_request(requestbody: String) -> Result<Response, Error
         .send()
         .await
 }
-

@@ -5,22 +5,26 @@ use super::{traits::GraphQLRepresentable, types::ShopifyGraphQLType};
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub enum GraphQLAction {
     Query,
-    Mutation(Option<String>)
+    Mutation(Option<String>),
 }
 
 #[derive(Debug, Clone)]
 pub struct GraphQLQuery<T: GraphQLRepresentable> {
     pub action: GraphQLAction,
     pub query: T,
-    pub variables: HashMap<String, ShopifyGraphQLType>
+    pub variables: HashMap<String, ShopifyGraphQLType>,
 }
 
 impl<T: GraphQLRepresentable> GraphQLQuery<T> {
-    pub fn new(action: GraphQLAction, query: T, variables: HashMap<String, ShopifyGraphQLType>) -> Self {
+    pub fn new(
+        action: GraphQLAction,
+        query: T,
+        variables: HashMap<String, ShopifyGraphQLType>,
+    ) -> Self {
         Self {
             action,
             query,
-            variables
+            variables,
         }
     }
 
@@ -28,7 +32,7 @@ impl<T: GraphQLRepresentable> GraphQLQuery<T> {
         Self {
             action: GraphQLAction::Query,
             query: qobj,
-            variables: HashMap::new()
+            variables: HashMap::new(),
         }
     }
 
@@ -36,7 +40,7 @@ impl<T: GraphQLRepresentable> GraphQLQuery<T> {
         Self {
             action: GraphQLAction::Mutation(name),
             query: qobj,
-            variables: HashMap::new()
+            variables: HashMap::new(),
         }
     }
 
@@ -47,9 +51,9 @@ impl<T: GraphQLRepresentable> GraphQLQuery<T> {
     fn get_fmt_variables(&self) -> String {
         // Format as JSON object
         let mut s = String::new();
-        s.push_str("{");
+        s.push('{');
         if self.variables.is_empty() {
-            s.push_str("}");
+            s.push('}');
             return s;
         }
         for (key, value) in self.variables.iter() {
@@ -59,7 +63,7 @@ impl<T: GraphQLRepresentable> GraphQLQuery<T> {
                 ShopifyGraphQLType::Boolean(v) => s.push_str(&format!("\"{}\": {}, ", key, v)),
                 ShopifyGraphQLType::Int(v) => s.push_str(&format!("\"{}\": {}, ", key, v)),
                 ShopifyGraphQLType::Float(v) => s.push_str(&format!("\"{}\": {}, ", key, v)),
-                ShopifyGraphQLType::JSON(v) => s.push_str(&format!("\"{}\": {}, ", key, v)),
+                ShopifyGraphQLType::Json(v) => s.push_str(&format!("\"{}\": {}, ", key, v)),
                 ShopifyGraphQLType::Array(v) => {
                     s.push_str(&format!("\"{}\": [", key));
                     for item in v {
@@ -70,21 +74,34 @@ impl<T: GraphQLRepresentable> GraphQLQuery<T> {
                         s.pop();
                     }
                     s.push_str("], ");
-                },
-                ShopifyGraphQLType::Object(v) => s.push_str(&format!("\"{}\": {}, ", key, v.iter().map(|(k, v)| format!("\"{}\": {}", k, v.to_value_string())).collect::<Vec<String>>().join(", "))),  // Recursively format object
-                ShopifyGraphQLType::Custom(_, underlying) => s.push_str(&format!("\"{}\": {}, ", key, underlying.to_value_string()))
+                }
+                ShopifyGraphQLType::Object(v) => s.push_str(&format!(
+                    "\"{}\": {}, ",
+                    key,
+                    v.iter()
+                        .map(|(k, v)| format!("\"{}\": {}", k, v.to_value_string()))
+                        .collect::<Vec<String>>()
+                        .join(", ")
+                )), // Recursively format object
+                ShopifyGraphQLType::Custom(_, underlying) => {
+                    s.push_str(&format!("\"{}\": {}, ", key, underlying.to_value_string()))
+                }
             }
         }
         if s.ends_with(", ") {
             s.pop();
             s.pop();
         }
-        s.push_str("}");
+        s.push('}');
         s
     }
 
     pub fn to_payload(&self) -> String {
-        format!("{{\"query\":\"{}\", \"variables\": {}}}", self.to_graphql(self.variables.clone()), self.get_fmt_variables())
+        format!(
+            "{{\"query\":\"{}\", \"variables\": {}}}",
+            self.to_graphql(self.variables.clone()),
+            self.get_fmt_variables()
+        )
     }
 }
 
@@ -99,18 +116,22 @@ impl<T: GraphQLRepresentable> GraphQLQuery<T> {
         if !self.variables.is_empty() {
             query.push_str(" (");
             for (key, value) in self.variables.iter() {
-                query.push_str(&format!("${}: {}, ", key, value.to_string()));
+                query.push_str(&format!("${}: {}, ", key, value));
             }
             if query.ends_with(", ") {
                 query.pop();
                 query.pop();
             }
-            query.push_str(")");
+            query.push(')');
         }
         query.push_str(" {\n");
         if self.variables.contains_key(self.query.label().as_str()) {
             let subargs = args.get(self.query.label().as_str()).unwrap();
-            query.push_str(self.query.to_graphql(subargs.clone().to_object(&self.query.label()).clone()).as_str());
+            query.push_str(
+                self.query
+                    .to_graphql(subargs.clone().to_object(&self.query.label()).clone())
+                    .as_str(),
+            );
         } else {
             query.push_str(self.query.to_graphql(args).as_str());
         }
@@ -121,29 +142,29 @@ impl<T: GraphQLRepresentable> GraphQLQuery<T> {
     pub fn mutation_to_graphql(&self) -> Option<String> {
         let mut query = String::new();
         query.push_str("mutation");
-        
+
         if !self.variables.is_empty() {
             query.push_str(" (");
             for (key, value) in self.variables.iter() {
-                query.push_str(&format!("${}: {}, ", key, value.to_string()));
+                query.push_str(&format!("${}: {}, ", key, value));
             }
             if query.ends_with(", ") {
                 query.pop();
                 query.pop();
             }
-            query.push_str(")");
+            query.push(')');
         }
         query.push_str(" {\n");
         if self.action != GraphQLAction::Mutation(None) {
-            query.push_str(" ");
+            query.push(' ');
             let name = match &self.action {
                 GraphQLAction::Mutation(Some(name)) => name,
-                _ => return None
+                _ => return None,
             };
-            query.push_str(&name);
+            query.push_str(name);
         }
         if !self.variables.is_empty() {
-            query.push_str("(");
+            query.push('(');
             for (key, _) in self.variables.iter() {
                 query.push_str(&format!("{}: ${}, ", key, key));
             }
@@ -151,9 +172,9 @@ impl<T: GraphQLRepresentable> GraphQLQuery<T> {
                 query.pop();
                 query.pop();
             }
-            query.push_str(")");
+            query.push(')');
         }
-        
+
         query.push_str(" {\n");
         query.push_str(self.query.to_graphql(HashMap::new()).as_str());
         query.push_str("\n}");
@@ -165,16 +186,27 @@ impl<T: GraphQLRepresentable> GraphQLQuery<T> {
 impl<T: GraphQLRepresentable> GraphQLRepresentable for GraphQLQuery<T> {
     fn label(&self) -> String {
         match self {
-            GraphQLQuery { action: GraphQLAction::Query, .. } => self.query.label(),
-            GraphQLQuery { action: GraphQLAction::Mutation(Some(name)), .. } => name.clone(),
-            GraphQLQuery { action: GraphQLAction::Mutation(None), .. } => "mutation".to_string()
+            GraphQLQuery {
+                action: GraphQLAction::Query,
+                ..
+            } => self.query.label(),
+            GraphQLQuery {
+                action: GraphQLAction::Mutation(Some(name)),
+                ..
+            } => name.clone(),
+            GraphQLQuery {
+                action: GraphQLAction::Mutation(None),
+                ..
+            } => "mutation".to_string(),
         }
     }
 
     fn to_graphql(&self, args: HashMap<String, ShopifyGraphQLType>) -> String {
         match &self.action {
-            GraphQLAction::Query => return self.query_to_graphql(args).unwrap_or(String::new()),
-            GraphQLAction::Mutation(_) => return self.mutation_to_graphql().unwrap_or(String::new())
+            GraphQLAction::Query => self.query_to_graphql(args).unwrap_or_default(),
+            GraphQLAction::Mutation(_) => {
+                self.mutation_to_graphql().unwrap_or_default()
+            }
         }
     }
 }
