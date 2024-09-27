@@ -18,6 +18,12 @@ class HandleNameMap {
     }
 
     set(handle: string, name: string) {
+        let existing = this.map.get(handle);
+        if (existing !== undefined && existing !== name) {
+            if (existing.length >= name.length) {
+                return;
+            }
+        }
         this.map.set(handle, name);
     }
 

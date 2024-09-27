@@ -11,11 +11,26 @@ const CenteredText: React.FC<{ children: string[] }> = ({ children }) => {
                 flexDirection: 'column',
             }}
         >
-            {children.map((child: any, index: number) => (
-                <div key={index} style={{ textAlign: 'center', margin: '10px' }}>
-                    {child}
-                </div>
-            ))}
+            <div
+                style={
+                    {
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        flexDirection: 'column',
+                        width: '80%',
+                        maxWidth: '800px',
+                        padding: '20px',
+                        borderRadius: '10px',
+                    }
+                }
+            >
+                {children.map((child: any, index: number) => (
+                    <div key={index} style={{ textAlign: 'center', margin: '10px' }}>
+                        {child}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };

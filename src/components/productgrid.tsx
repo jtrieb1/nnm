@@ -51,6 +51,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ cart, merchData, addItemCallb
                     price={node.priceRangeV2.minVariantPrice.amount}
                     currency={node.priceRangeV2.minVariantPrice.currencyCode}
                 />
+                <div className="button-container">
                 <button
                     onClick={() => addItemCallback({node})}
                 >
@@ -59,10 +60,10 @@ const ProductGrid: React.FC<ProductGridProps> = ({ cart, merchData, addItemCallb
                 <button
                     onClick={() => removeItemCallback({node})}
                     disabled={cart.items.every(i => i.product_id != node.variants[0].shopifyId)}
-                    style={{"display": `${cart.items.some(i => i.product_id == node.variants[0].shopifyId) ? 'block' : 'none'}`}}
                 >
                     Remove from Cart
                 </button> 
+                </div>
                 </div>
             ))}
         </div>

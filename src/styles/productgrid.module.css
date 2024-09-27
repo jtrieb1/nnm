@@ -1,0 +1,51 @@
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    background-color: var(--background-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.product-grid > div {
+    background: var(--tertiary-color);
+    border: 1px solid var(--text-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    min-width: 300px;
+}
+
+.product-grid > div:hover {
+    transform: translateY(-5px);
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.button-container button {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button-container button:hover {
+    background-color: var(--secondary-color);
+    color: var(--tertiary-color);
+}
+
+.button-container button:disabled {
+    background-color: var(--background-color);
+    cursor: not-allowed;
+}

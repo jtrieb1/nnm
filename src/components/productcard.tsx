@@ -18,12 +18,19 @@ class ProductCard extends React.Component<ProductCardProps> {
 
     render() {
         return (
-            <a href={`#`}>
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                padding: '10px',
+                margin: '10px',
+                borderRadius: '10px',
+            }}>
                 <h2>{this.props.title}</h2>
                 <GatsbyImage image={this.props.img_src} alt={this.props.title} />
                 <p>{this.props.description}</p>
                 <p>{this.props.price} {this.props.currency}</p>
-            </a>
+            </div>
         );
     }
 }
