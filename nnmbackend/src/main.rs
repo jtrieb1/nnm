@@ -7,7 +7,7 @@ mod utils;
 use routes::{
     dynamodb::get_issue_data,
     s3::{count_issues, get_issue, get_latest_issue},
-    shopify::{create_checkout, get_checkout, request_checkout},
+    shopify::{create_checkout, get_checkout, execute_checkout},
     upload,
 };
 
@@ -30,7 +30,7 @@ async fn main() -> Result<(), std::io::Error> {
             .service(get_issue_data)
             .service(create_checkout)
             .service(get_checkout)
-            .service(request_checkout)
+            .service(execute_checkout)
             .service(upload)
     })
     .bind("127.0.0.1:8000")?

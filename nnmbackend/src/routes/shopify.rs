@@ -38,7 +38,7 @@ async fn create_checkout() -> actix_web::HttpResponse {
 }
 
 #[actix_web::post("/request_checkout")]
-async fn request_checkout(Json(payload): Json<MultiItemPayload>) -> actix_web::HttpResponse {
+async fn execute_checkout(Json(payload): Json<MultiItemPayload>) -> actix_web::HttpResponse {
     // First, request a new checkout
     let request = create_cart_mutation();
     let res = send_shopify_request(request.to_payload()).await;
