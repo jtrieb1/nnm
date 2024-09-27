@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 
-use super::{graphqlquery::GraphQLQuery, CartAPIRepresentation, UserError};
+use crate::utils::shopify::graphql::{actions::{GraphQLAction, GraphQLQuery}, api::{CartAPIRepresentation, UserError}};
+
+
 
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
 pub struct CartCreateAPIResponse {
@@ -22,7 +24,7 @@ pub struct FullCartCreateResponse {
 
 pub fn create_cart_mutation() -> GraphQLQuery<CartAPIRepresentation> {
     GraphQLQuery::new(
-        super::graphqlquery::GraphQLAction::Mutation(Some("cartCreate".to_string())), 
+        GraphQLAction::Mutation(Some("cartCreate".to_string())), 
         CartAPIRepresentation::default(), 
         HashMap::new()
     )

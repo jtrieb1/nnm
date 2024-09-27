@@ -1,5 +1,6 @@
-use super::{graphqlquery::{GraphQLQuery, ShopifyGraphQLType}, CartAPIRepresentation, GraphQLError, UserError};
-use super::payloads::MultiItemPayload;
+use crate::utils::shopify::{graphql::{actions::GraphQLQuery, api::{CartAPIRepresentation, GraphQLError, UserError}, types::ShopifyGraphQLType}, payloads::MultiItemPayload};
+
+
 
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
 pub struct AddItemAPIResponse {

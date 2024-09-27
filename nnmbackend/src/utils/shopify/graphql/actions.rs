@@ -1,103 +1,6 @@
 use std::collections::HashMap;
 
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
-pub enum ShopifyGraphQLType {
-    ID(String),
-    String(String),
-    Boolean(bool),
-    Int(i64),
-    Float(f64),
-    JSON(String),
-    Array(Vec<ShopifyGraphQLType>),
-    Object(HashMap<String, ShopifyGraphQLType>),
-    Custom(String, Box<ShopifyGraphQLType>)
-}
-
-impl ShopifyGraphQLType {
-
-    pub fn to_object(&self, key: &str) -> HashMap<String, ShopifyGraphQLType> {
-        match self {
-            ShopifyGraphQLType::Object(obj) => obj.clone(),
-            _ => {
-                let mut map = HashMap::new();
-                map.insert(key.to_string(), self.clone());
-                map
-            }
-        }
-    }
-
-    pub fn to_value_string(&self) -> String {
-        match self {
-            ShopifyGraphQLType::ID(v) => format!("\"{}\"", v),
-            ShopifyGraphQLType::String(v) => format!("\"{}\"", v),
-            ShopifyGraphQLType::Boolean(v) => format!("{}", v),
-            ShopifyGraphQLType::Int(v) => format!("{}", v),
-            ShopifyGraphQLType::Float(v) => format!("{}", v),
-            ShopifyGraphQLType::JSON(v) => format!("{}", v),
-            ShopifyGraphQLType::Array(v) => {
-                let mut s = String::new();
-                s.push_str("[");
-                for item in v {
-                    s.push_str(&format!("{}, ", item.to_value_string()));
-                }
-                if s.ends_with(", ") {
-                    s.pop();
-                    s.pop();
-                }
-                s.push_str("]");
-                s
-            },
-            ShopifyGraphQLType::Object(v) => {
-                let mut s = String::new();
-                s.push_str("{");
-                for (key, value) in v.iter() {
-                    s.push_str(&format!("\"{}\": {}, ", key, value.to_value_string()));
-                }
-                if s.ends_with(", ") {
-                    s.pop();
-                    s.pop();
-                }
-                s.push_str("}");
-                s
-            },
-            ShopifyGraphQLType::Custom(_, underlying) => underlying.to_value_string()
-        }
-    }
-
-}
-
-impl ToString for ShopifyGraphQLType {
-    fn to_string(&self) -> String {
-        match self {
-            ShopifyGraphQLType::ID(_) => format!("ID!"),
-            ShopifyGraphQLType::String(_) => format!("String!"),
-            ShopifyGraphQLType::Boolean(_) => format!("Boolean!"),
-            ShopifyGraphQLType::Int(_) => format!("Int!"),
-            ShopifyGraphQLType::Float(_) => format!("Float!"),
-            ShopifyGraphQLType::JSON(_) => format!("JSON!"),
-            ShopifyGraphQLType::Array(t) => format!("[{}]!", if t.len() > 0 {t[0].to_string()} else { "".to_string() }),
-            ShopifyGraphQLType::Object(h) => {
-                let mut s = String::new();
-                s.push_str("{");
-                for (key, value) in h.iter() {
-                    s.push_str(&format!("{}: {}, ", key, value.to_string()));
-                }
-                if s.ends_with(", ") {
-                    s.pop();
-                    s.pop();
-                }
-                s.push_str("}");
-                s
-            }
-            ShopifyGraphQLType::Custom(t, _) => format!("{}!", t.clone())
-        }
-    }
-}
-
-pub trait GraphQLRepresentable {
-    fn to_graphql(&self, args: HashMap<String, ShopifyGraphQLType>) -> String;
-    fn label(&self) -> String;
-}
+use super::{traits::GraphQLRepresentable, types::ShopifyGraphQLType};
 
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 pub enum GraphQLAction {
@@ -275,4 +178,3 @@ impl<T: GraphQLRepresentable + Clone> GraphQLRepresentable for GraphQLQuery<T> {
         }
     }
 }
-

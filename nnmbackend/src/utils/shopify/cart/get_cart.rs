@@ -1,4 +1,5 @@
-use super::{graphqlquery::{GraphQLQuery, ShopifyGraphQLType}, CartAPIRepresentation};
+use crate::utils::shopify::graphql::{actions::GraphQLQuery, api::CartAPIRepresentation, types::ShopifyGraphQLType};
+
 
 
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
