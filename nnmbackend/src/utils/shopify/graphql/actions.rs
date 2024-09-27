@@ -15,7 +15,7 @@ pub struct GraphQLQuery<T: GraphQLRepresentable> {
     pub variables: HashMap<String, ShopifyGraphQLType>
 }
 
-impl<T: GraphQLRepresentable + Clone> GraphQLQuery<T> {
+impl<T: GraphQLRepresentable> GraphQLQuery<T> {
     pub fn new(action: GraphQLAction, query: T, variables: HashMap<String, ShopifyGraphQLType>) -> Self {
         Self {
             action,
@@ -88,7 +88,7 @@ impl<T: GraphQLRepresentable + Clone> GraphQLQuery<T> {
     }
 }
 
-impl<T: GraphQLRepresentable + Clone> GraphQLQuery<T> {
+impl<T: GraphQLRepresentable> GraphQLQuery<T> {
     pub fn query_to_graphql(&self, args: HashMap<String, ShopifyGraphQLType>) -> Option<String> {
         if self.action != GraphQLAction::Query {
             return None;
@@ -162,7 +162,7 @@ impl<T: GraphQLRepresentable + Clone> GraphQLQuery<T> {
     }
 }
 
-impl<T: GraphQLRepresentable + Clone> GraphQLRepresentable for GraphQLQuery<T> {
+impl<T: GraphQLRepresentable> GraphQLRepresentable for GraphQLQuery<T> {
     fn label(&self) -> String {
         match self {
             GraphQLQuery { action: GraphQLAction::Query, .. } => self.query.label(),
