@@ -8,12 +8,6 @@ pub struct DBContributor {
     pub handle: String
 }
 
-impl DBContributor {
-    pub fn new(name: String, handle: String) -> Self {
-        DBContributor { name, handle }
-    }
-}
-
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
 pub struct DBIssue {
     pub number: usize,
@@ -34,15 +28,6 @@ pub async fn get_db_client() -> Result<DynamoClient, Error> {
         .load()
         .await;
     Ok(DynamoClient::new(&config))
-}
-
-pub async fn get_issue_count(client: &DynamoClient) -> Result<usize, Error> {
-    let response = client
-        .describe_table()
-        .table_name("nnmIssueData")
-        .send()
-        .await?;
-    Ok(response.table.unwrap().item_count.unwrap() as usize)
 }
 
 pub async fn get_issue_data(issue_number: usize, client: &DynamoClient) -> Result<DBIssue, Error> {

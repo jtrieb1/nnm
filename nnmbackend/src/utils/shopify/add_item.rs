@@ -1,6 +1,5 @@
-use crate::{ItemPayload, MultiItemPayload};
-
 use super::{graphqlquery::{GraphQLQuery, ShopifyGraphQLType}, CartAPIRepresentation, GraphQLError, UserError};
+use super::payloads::MultiItemPayload;
 
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
 pub struct AddItemAPIResponse {
@@ -28,17 +27,6 @@ fn create_shopify_line_entry(item_id: &str, item_qty: u32) -> ShopifyGraphQLType
             ("quantity".to_string(), ShopifyGraphQLType::Int(item_qty as i64))
         ].into_iter().collect()
     ).into())
-}
-
-pub fn add_item_mutation(cart_id: &str, item: &ItemPayload) -> GraphQLQuery<CartAPIRepresentation> {
-    
-    let mut aim = GraphQLQuery::mutation(CartAPIRepresentation::default(), Some("cartLinesAdd".to_string()));
-    aim.add_variable("cartId".to_string(), ShopifyGraphQLType::ID(format!("gid://shopify/Cart/{}", cart_id)));
-    aim.add_variable("lines".to_string(), ShopifyGraphQLType::Array(vec![
-        create_shopify_line_entry(&item.product_id, item.quantity)
-    ]));
-    
-    return aim;
 }
 
 pub fn add_items_mutation(cart_id: &str, item: &MultiItemPayload) -> GraphQLQuery<CartAPIRepresentation> {

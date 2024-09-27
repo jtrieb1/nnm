@@ -2,8 +2,7 @@ mod add_item;
 mod create_cart;
 mod get_cart;
 mod graphqlquery;
-mod remove_item;
-mod update_item;
+pub mod payloads;
 
 use std::collections::HashMap;
 
@@ -11,8 +10,6 @@ pub use add_item::*;
 pub use create_cart::*;
 pub use get_cart::*;
 use graphqlquery::{GraphQLRepresentable, ShopifyGraphQLType};
-pub use remove_item::*;
-pub use update_item::*;
 use reqwest::{Error, Response};
 
 fn add_tabs_to_lines(s: &str, tabs: u32) -> String {
