@@ -16,3 +16,6 @@ tokio = { version = "1.40.0", features = ["full"] }
 security-framework = { version = "2.11.1" }
 reqwest = "0.12.7"
 openssl = "0.10.66"
+actix-multipart = "0.7.2"
+futures-util = "0.3.30"
+futures = "0.3.30"

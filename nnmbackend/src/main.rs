@@ -1,12 +1,13 @@
-use std::time::Duration;
+use std::{io::Read, time::Duration};
 
-use actix_web::{http, web::{Bytes, Json, Path}, App, HttpServer};
-use aws_config::meta::region::RegionProviderChain;
-use aws_config::BehaviorVersion;
+use actix_multipart::form::{tempfile::TempFile, MultipartForm};
+use actix_web::{http, web::{Bytes, Json, Path}, App, HttpServer, Responder};
+use aws::get_s3_client;
 use aws_sdk_s3::{presigning::PresigningConfigBuilder, types::error::NotFound, Client as S3Client, Error as S3Error};
 use actix_cors::Cors;
 use shopify::{FullAddItemResponse, FullCartCreateResponse, FullCartGetResponse, FullRemoveItemResponse, FullUpdateItemResponse};
 
+mod aws;
 mod db;
 mod shopify;
 
@@ -34,19 +35,11 @@ async fn main() -> Result<(), std::io::Error> {
             .service(update_item_in_checkout)
             .service(get_checkout)
             .service(request_checkout)
+            .service(upload)
     })
     .bind("127.0.0.1:8000")?
     .run()
     .await
-}
-
-async fn get_s3_client() -> S3Client {
-    let region_provider = RegionProviderChain::default_provider().or_else("us-east-2");
-    let config = aws_config::defaults(BehaviorVersion::latest())
-        .region(region_provider)
-        .load()
-        .await;
-    S3Client::new(&config)
 }
 
 #[actix_web::get("/count")]
@@ -340,6 +333,64 @@ async fn get_signed_url_for_issue(issue_number: usize, s3client: &S3Client) -> R
     let conf = PresigningConfigBuilder::default().expires_in(Duration::from_secs(30)).build().unwrap();
     let ret = s3client.get_object().bucket(bucket).key(issue_key).presigned(conf).await?;
     Ok(ret.uri().to_string())
+}
+
+#[derive(Debug, MultipartForm)]
+struct UploadForm {
+    file: TempFile,
+    api_key: actix_multipart::form::text::Text<String>,
+    issue_number: actix_multipart::form::text::Text<usize>,
+    blurb: actix_multipart::form::text::Text<String>,
+}
+
+#[actix_web::post("/upload")]
+async fn upload(MultipartForm(form): MultipartForm<UploadForm>) -> impl Responder {
+    // Check API key
+    let api_key = std::env::var("NNM_API_KEY").unwrap_or("".to_string());
+    if api_key.is_empty() {
+        return actix_web::HttpResponse::InternalServerError().body("API key not set");
+    }
+
+    if form.api_key.0 != api_key {
+        return actix_web::HttpResponse::Unauthorized().body("Invalid API key");
+    }
+
+    // Get file as bytes
+    let mut file = form.file.file.as_file();
+    let mut bytes = Vec::new();
+    file.read_to_end(&mut bytes).unwrap();
+
+    // Upload the issue to S3
+    let s3client = get_s3_client().await;
+    let issue_number = form.issue_number.0;
+    let issue_key = format!("nnm_issues/issue_{}.pdf", issue_number);
+
+    // Need to upload to buckets in both regions
+    let bucket = {
+        if s3client.config().region().is_some_and(|reg| reg.as_ref() == "us-east-1") {
+            "nonothingissues1"
+        } else if s3client.config().region().is_some_and(|reg| reg.as_ref() == "us-east-2") {
+            "nonothingissues"
+        } else {
+            return actix_web::HttpResponse::InternalServerError().body("Invalid region");
+        }
+    };
+
+    let put_req = s3client.put_object().bucket(bucket).key(issue_key).body(bytes.into());
+
+    let res = put_req.send().await;
+    if let Err(e) = res {
+        return actix_web::HttpResponse::InternalServerError().body(format!("Error: {}", e));
+    }
+
+    // Add the issue to the database
+    let issue = db::DBIssue::new(issue_number, form.blurb.0.clone(), vec![]);
+    let put_res = db::put_issue_data(issue, &db::get_db_client().await.unwrap()).await;
+    if let Err(e) = put_res {
+        return actix_web::HttpResponse::InternalServerError().body(format!("Error: {}", e));
+    }
+
+    actix_web::HttpResponse::Ok().body("Issue uploaded and added to database")
 }
 
 

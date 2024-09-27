@@ -5,6 +5,7 @@ src/gatsby-types.d.ts
 .env
 *.env
 nnmagent/node_modules
+nnmuploader
 nnmbackend/target
 nnmbackend/Cargo.lock
 package-lock.json
