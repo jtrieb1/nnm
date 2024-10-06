@@ -35,6 +35,9 @@
     display: inline;
 }
 
+
+
+/* Default styles for larger screens */
 .itemSelector {
     list-style: none;
     padding: 0;
@@ -58,4 +61,43 @@
 .itemSelector .itemID:hover {
     background-color: var(--item-hover-bg-color);
     cursor: pointer;
+}
+
+/* Media Queries */
+@media (max-width: 600px) {
+    .paginatedList {
+        width: 50%;
+        border: none;
+    }
+
+    .pagination button {
+        font-size: 12px; /* Smaller font size for smaller screens */
+        padding: 8px 12px; /* Adjust padding if needed */
+        display: none; /* Hide pagination buttons on small screens */
+    }
+
+    .itemSelector {
+        display: block; /* Show the dropdown on small screens */
+        background-color: var(--tertiary-color);
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .itemSelector select {
+        width: 100%;
+        padding: 10px;
+        font-size: 12px; /* Smaller font size for smaller screens */
+    }
+}
+
+@media (max-width: 400px) {
+    .pagination button {
+        font-size: 10px; /* Even smaller font size for very small screens */
+        padding: 6px 10px; /* Adjust padding if needed */
+        display: none; /* Hide pagination buttons on very small screens */
+    }
+
+    .itemSelector select {
+        font-size: 10px; /* Even smaller font size for very small screens */
+    }
 }

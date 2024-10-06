@@ -11,13 +11,6 @@
     overflow: hidden;
 }
 
-.hero-image {
-    flex: 1;
-    position: absolute;
-    top: 0; 
-    left: 0; 
-}
-
 .hero-content {
     margin-top: 20px;
     text-align: center;
@@ -26,7 +19,7 @@
 }
 
 .hero-title {
-    color: var(--text-color);
+    color: var(--background-color);
     font-size: 64px;
     margin-bottom: 10px;
     font-family: var(--header-font);
@@ -74,6 +67,7 @@
     }
 
     .hero-title {
+        color: var(--text-color);
         font-size: 18px;
     }
 

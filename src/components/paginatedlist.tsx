@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PageTurnButtons from './pageturnbuttons';
 
 export interface PaginatedListProps {
@@ -10,26 +10,56 @@ export interface PaginatedListProps {
     handleItemSelect: (item: number) => void;
 }
 
-const PaginatedList: React.FC<PaginatedListProps> = ({ currentSelection, totalItems, itemsPerPage, currentPage, handleItemSelect, handlePageChange}) => {
+const PaginatedList: React.FC<PaginatedListProps> = ({ currentSelection, totalItems, itemsPerPage, currentPage, handleItemSelect, handlePageChange }) => {
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const items = [...Array(totalItems)].slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
     return (
         <div className="paginatedList">
-            <ul className="itemSelector">
-                {[...Array(totalItems)].slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((_, index) => (
-                    <li 
-                        key={index} 
-                        onClick={() => {
-                            if ((currentPage - 1) * itemsPerPage + index + 1 !== currentPage) {
-                                handleItemSelect((currentPage - 1) * itemsPerPage + index + 1);
-                            }
-                        }}
-                        className={"itemID" + ((currentPage - 1) * itemsPerPage + index + 1 === currentSelection ? ' active' : '')}
-                        style={{ pointerEvents: (currentPage - 1) * itemsPerPage + index + 1 === currentSelection ? 'none' : 'auto' }}
-                    >
-                        {(currentPage - 1) * itemsPerPage + index + 1}
-                    </li>
-                ))}
-            </ul>
-            <PageTurnButtons currentPage={currentPage} totalPages={totalItems / itemsPerPage} handlePageChange={handlePageChange} />
+            {isMobile ? (
+                <select
+                    className="itemSelector"
+                    value={currentSelection}
+                    onChange={(e) => handleItemSelect(Number(e.target.value))}
+                >
+                    {[...Array(totalItems)].map((_, index) => (
+                        <option
+                            key={index}
+                            value={index + 1}
+                        >
+                            {index + 1}
+                        </option>
+                    ))}
+                </select>
+            ) : (
+                <ul className="itemSelector">
+                    {items.map((_, index) => (
+                        <li
+                            key={index}
+                            onClick={() => {
+                                if ((currentPage - 1) * itemsPerPage + index + 1 !== currentSelection) {
+                                    handleItemSelect((currentPage - 1) * itemsPerPage + index + 1);
+                                }
+                            }}
+                            className={"itemID" + ((currentPage - 1) * itemsPerPage + index + 1 === currentSelection ? ' active' : '')}
+                            style={{ pointerEvents: (currentPage - 1) * itemsPerPage + index + 1 === currentSelection ? 'none' : 'auto' }}
+                        >
+                            {(currentPage - 1) * itemsPerPage + index + 1}
+                        </li>
+                    ))}
+                </ul>
+            )}
+            <PageTurnButtons currentPage={currentPage} totalPages={Math.ceil(totalItems / itemsPerPage)} handlePageChange={handlePageChange} />
         </div>
     );
 }

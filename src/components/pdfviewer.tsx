@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
+import { Document, Page, pdfjs, useDocumentContext } from 'react-pdf';
+import { DocumentCallback } from 'react-pdf/dist/cjs/shared/types';
 
 interface PDFViewerProps {
     pdfUrl: string;
@@ -17,8 +18,8 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
 
     pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
-    function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
-        setNumPages(numPages);
+    function onDocumentLoadSuccess(document: DocumentCallback) {
+        setNumPages(document.numPages);
     }
 
     return (
