@@ -12,8 +12,7 @@
 }
 
 .hero-image {
-    width: 100%;
-    height: 100%;
+    flex: 1;
     position: absolute;
     top: 0; 
     left: 0; 
@@ -34,7 +33,7 @@
 }
 
 .hero-description {
-    color: var(--tertiary-color);
+    color: var(--primary-color);
     font-family: var(--handwritten-font);
     font-size: 48px;
 }

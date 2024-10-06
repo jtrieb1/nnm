@@ -12,7 +12,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
     const [pageWidth, setPageWidth] = useState(800);
 
     React.useEffect(() => {
-        window.matchMedia('(min-width: 768px)').matches ? setPageWidth(800) : setPageWidth(600);
+        window.matchMedia('(min-width: 768px)').matches ? setPageWidth(800) : setPageWidth(400);
     }, []);
 
     pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
