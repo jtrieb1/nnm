@@ -5,10 +5,7 @@ mod routes;
 mod utils;
 
 use routes::{
-    dynamodb::get_issue_data,
-    s3::{count_issues, get_issue, get_latest_issue},
-    shopify::{create_checkout, get_checkout, execute_checkout},
-    upload,
+    dynamodb::get_issue_data, get_news, s3::{count_issues, get_issue, get_latest_issue}, shopify::{create_checkout, execute_checkout, get_checkout}, upload
 };
 
 #[actix_web::main]
@@ -32,6 +29,7 @@ async fn main() -> Result<(), std::io::Error> {
             .service(get_checkout)
             .service(execute_checkout)
             .service(upload)
+            .service(get_news)
     })
     .bind("127.0.0.1:8000")?
     .run()

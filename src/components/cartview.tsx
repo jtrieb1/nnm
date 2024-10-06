@@ -10,17 +10,19 @@ interface CartViewProps {
 function CartView({ cart, checkoutFn }: CartViewProps) {
     return (
     <div className='cart-summary'>
-        <h2>Cart Summary</h2>
-        <ul>
+        <h2 className="cart-summary-header">Cart Summary</h2>
+        <ul className="cart-summary-items">
         {cart.items.map((item) => (
-            <li key={item.product_id}>
-            <span>{item.title}</span>
-            <span>{item.quantity} x ${item.price.toFixed(2)} {item.currency}</span>
-            <span>${(item.price * item.quantity).toFixed(2)} {item.currency}</span>
+            <li key={item.product_id} className="cart-item">
+            <span className="cart-item-name">{item.title}</span>
+            <span className="cart-item-breakdown">{item.quantity} x ${item.price.toFixed(2)} {item.currency}</span>
+            <span className="cart-item-total">${(item.price * item.quantity).toFixed(2)} {item.currency}</span>
             </li>
         ))}
         </ul>
         <button 
+        className="checkout-button"
+        disabled={cart.items.length === 0}
         onClick={checkoutFn} 
         >
         Checkout

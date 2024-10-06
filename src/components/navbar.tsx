@@ -1,5 +1,6 @@
 import React from "react"
 import { Link } from "gatsby"
+import { FaBars } from "react-icons/fa"
 
 const links = [
     {
@@ -59,7 +60,7 @@ const Navbar: React.FC = () => {
     return (
         <nav className={responsive ? "navbar responsive" : "navbar"}>
             <a href={void(0)} className="icon" onClick={() => setResponsive(!responsive)}>
-              <i className="fas fa-bars"></i>
+                <FaBars />
             </a>
             <ul className="navbarMenu">
                 {links.map(link => (

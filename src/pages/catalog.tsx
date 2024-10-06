@@ -55,7 +55,7 @@ const Catalog = () => {
             <div>
                 <SegmentHeader headerText="Catalog" />
                 {
-                    count > 0 && <PaginatedList totalItems={count} itemsPerPage={ITEMS_PER_PAGE} currentPage={currentPage} handleItemSelect={handleIssueSelect} handlePageChange={handlePageChange} />
+                    count > 0 && <PaginatedList currentSelection={currentIssue} totalItems={count} itemsPerPage={ITEMS_PER_PAGE} currentPage={currentPage} handleItemSelect={handleIssueSelect} handlePageChange={handlePageChange} />
                 }
                 {
                     loading 

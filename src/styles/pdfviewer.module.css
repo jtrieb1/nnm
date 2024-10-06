@@ -74,7 +74,7 @@
     .pdfviewer {
         padding: 10px;
         padding-bottom: 60px; /* Add padding to the bottom to avoid overlap */
-        margin-left: 220px;
+        margin-left: 20px;
     }
 
     .pageCount {
@@ -109,7 +109,7 @@
     .pdfviewer {
         padding: 5px;
         padding-bottom: 60px; /* Add padding to the bottom to avoid overlap */
-        margin-left: 220px; /* Prevent PDF from running off left of page */
+        margin-left: 20px; /* Prevent PDF from running off left of page */
     }
 
     .pageCount {

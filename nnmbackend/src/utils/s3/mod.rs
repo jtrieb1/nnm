@@ -14,71 +14,69 @@ pub async fn get_s3_client() -> S3Client {
 }
 
 pub async fn get_issue_count(s3client: &S3Client) -> Result<usize, S3Error> {
+    let bucket = get_bucket_for_client(s3client);
+
+    let Ok(issues) = s3client
+        .list_objects_v2()
+        .bucket(bucket)
+        .send()
+        .await
+    else {
+        return Err(S3Error::NotFound(
+            NotFound::builder()
+                .message("Issue with S3Client or bucket")
+                .build(),
+        ));
+    };
+
+    let latest_issue = issues.contents()
+        .iter()
+        .map(|obj| {
+            let key = obj.key.as_ref().unwrap();
+            // Key may include prefix before issue_, so we trim that off
+            // Trim up to end of "issue_":
+            let key = key.find("issue_").map(|idx| &key[idx..]).unwrap_or(key);
+            // check if key is a pdf
+            if !key.ends_with(".pdf") {
+                return 0;
+            }
+            println!("{}", key);
+            let issue_number = key
+                .trim_start_matches("issue_")
+                .trim_end_matches(".pdf")
+                .parse::<usize>()
+                .unwrap();
+
+            issue_number
+        })
+        .max()
+        .unwrap();
+
+    return Ok(latest_issue);
+}
+
+pub fn get_bucket_for_client(s3client: &S3Client) -> &'static str {
     if s3client
         .config()
         .region()
         .is_some_and(|reg| reg.as_ref() == "us-east-1")
     {
-        let Ok(issues) = s3client
-            .list_objects_v2()
-            .bucket("nonothingissues1")
-            .send()
-            .await
-        else {
-            return Err(S3Error::NotFound(
-                NotFound::builder()
-                    .message("Issue with S3Client or bucket in us-east-1")
-                    .build(),
-            ));
-        };
-        Ok(issues.contents.unwrap_or_default().len())
+        "nonothingissues1"
     } else if s3client
         .config()
         .region()
         .is_some_and(|reg| reg.as_ref() == "us-east-2")
     {
-        let Ok(issues) = s3client
-            .list_objects_v2()
-            .bucket("nonothingissues")
-            .send()
-            .await
-        else {
-            return Err(S3Error::NotFound(
-                NotFound::builder()
-                    .message("Issue with S3Client or bucket in us-east-2")
-                    .build(),
-            ));
-        };
-        Ok(issues.contents.unwrap_or_default().len())
+        "nonothingissues"
     } else {
-        Err(S3Error::NotFound(
-            NotFound::builder().message("Invalid region").build(),
-        ))
+        panic!("Invalid region");
     }
 }
 
 pub async fn get_signed_url_for_latest_issue(s3client: &S3Client) -> Result<String, S3Error> {
     // Need to list all issues to check for latest, since some may be missing
-    let bucket = {
-        if s3client
-            .config()
-            .region()
-            .is_some_and(|reg| reg.as_ref() == "us-east-1")
-        {
-            "nonothingissues1"
-        } else if s3client
-            .config()
-            .region()
-            .is_some_and(|reg| reg.as_ref() == "us-east-2")
-        {
-            "nonothingissues"
-        } else {
-            return Err(S3Error::NotFound(
-                NotFound::builder().message("Invalid region").build(),
-            ));
-        }
-    };
-
+    let bucket = get_bucket_for_client(s3client);
+    
     let objects = s3client
         .list_objects_v2()
         .bucket(bucket)
@@ -93,6 +91,11 @@ pub async fn get_signed_url_for_latest_issue(s3client: &S3Client) -> Result<Stri
             // Key may include prefix before issue_, so we trim that off
             // Trim up to end of "issue_":
             let key = key.find("issue_").map(|idx| &key[idx..]).unwrap_or(key);
+            // check if key is a pdf
+            if !key.ends_with(".pdf") {
+                return 0;
+            }
+            println!("{}", key);
             let issue_number = key
                 .trim_start_matches("issue_")
                 .trim_end_matches(".pdf")
@@ -113,25 +116,8 @@ pub async fn get_signed_url_for_issue(
 ) -> Result<String, S3Error> {
     let issue_key = format!("nnm_issues/issue_{}.pdf", issue_number);
     // Generate a signed URL for the issue
-    let bucket = {
-        if s3client
-            .config()
-            .region()
-            .is_some_and(|reg| reg.as_ref() == "us-east-1")
-        {
-            "nonothingissues1"
-        } else if s3client
-            .config()
-            .region()
-            .is_some_and(|reg| reg.as_ref() == "us-east-2")
-        {
-            "nonothingissues"
-        } else {
-            return Err(S3Error::NotFound(
-                NotFound::builder().message("Invalid region").build(),
-            ));
-        }
-    };
+    let bucket = get_bucket_for_client(s3client);
+    
     let conf = PresigningConfigBuilder::default()
         .expires_in(Duration::from_secs(30))
         .build()

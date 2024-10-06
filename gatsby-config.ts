@@ -21,6 +21,27 @@ const config: GatsbyConfig = {
         storeUrl: process.env.GATSBY_MYSHOPIFY_URL,
       },
     },
+    {
+      resolve: `gatsby-omni-font-loader`,
+      options: {
+        enableListener: true,
+        preconnect: [`https://fonts.googleapis.com`, `https://fonts.gstatic.com`],
+        web: [
+          {
+            name: `Shadows Into Light`,
+            file: `https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap`,
+          },
+          {
+            name: `Rowdies`,
+            file: `https://fonts.googleapis.com/css2?family=Rowdies:wght@300&display=swap`,
+          },
+          {
+            name: `Permanent Marker`,
+            file: `https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap`,
+          }
+        ],
+      },
+    },
   ],
 };
 

@@ -21,11 +21,16 @@
 .navbarMenu {
     display: flex;
     gap: 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 .navbarMenuItem {
     color: var(--text-color);
     text-decoration: none;
+    font-family: var(--navbar-font);
+    font-size: larger;
     padding: 0.5rem;
     transition: color 0.3s ease;
 }
@@ -40,24 +45,29 @@
 }
 
 @media screen and (max-width: 600px) {
-    .navbar a:not(:first-child) {
-        display: none;
-    }
-    .navbar .icon {
-        display: block;
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
-    .navbar.responsive {
-        position: relative;
+    .navbarMenu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
     }
-    .navbar.responsive .icon {
-        position: absolute;
-        right: 0;
-        top: 0;
-    }
-    .navbar.responsive a {
-        float: none;
+
+    .navbar .icon {
         display: block;
+        cursor: pointer;
+        align-self: flex-start;
+    }
+
+    .navbar.responsive .navbarMenu {
+        display: flex;
+    }
+
+    .navbar.responsive .navbarMenuItem {
         text-align: left;
+        width: 100%;
     }
 }

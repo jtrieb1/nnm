@@ -1,6 +1,6 @@
 use std::io::Read;
 
-use crate::utils::dynamodb as db;
+use crate::utils::{dynamodb as db, get_latest_news, NewsItem};
 use crate::utils::s3::get_s3_client;
 
 use actix_multipart::form::{tempfile::TempFile, MultipartForm};
@@ -78,4 +78,19 @@ async fn upload(MultipartForm(form): MultipartForm<UploadForm>) -> impl Responde
     }
 
     actix_web::HttpResponse::Ok().body("Issue uploaded and added to database")
+}
+
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+pub struct NewsAPIResponse {
+    pub articles: Vec<NewsItem>
+}
+
+#[actix_web::get("/news")]
+pub async fn get_news() -> impl Responder {
+    let dbclient = db::get_db_client().await.unwrap();
+    let s3client = get_s3_client().await;
+
+    let news_items = get_latest_news(&dbclient, &s3client).await.unwrap();
+    let response = NewsAPIResponse { articles: news_items };
+    actix_web::HttpResponse::Ok().json(response)
 }

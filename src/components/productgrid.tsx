@@ -44,26 +44,26 @@ const ProductGrid: React.FC<ProductGridProps> = ({ cart, merchData, addItemCallb
         <div className='product-grid'>
             {merchData.map(({ node }) => (
                 <div key={node.id}>
-                <ProductCard
-                    title={node.title}
-                    description={node.description}
-                    img_src={node.featuredMedia.preview.image.gatsbyImageData}
-                    price={node.priceRangeV2.minVariantPrice.amount}
-                    currency={node.priceRangeV2.minVariantPrice.currencyCode}
-                />
-                <div className="button-container">
-                <button
-                    onClick={() => addItemCallback({node})}
-                >
-                    Add to Cart
-                </button>
-                <button
-                    onClick={() => removeItemCallback({node})}
-                    disabled={cart.items.every(i => i.product_id != node.variants[0].shopifyId)}
-                >
-                    Remove from Cart
-                </button> 
-                </div>
+                    <ProductCard
+                        title={node.title}
+                        description={node.description}
+                        img_src={node.featuredMedia.preview.image.gatsbyImageData}
+                        price={node.priceRangeV2.minVariantPrice.amount}
+                        currency={node.priceRangeV2.minVariantPrice.currencyCode}
+                    />
+                    <div className="button-container">
+                        <button
+                            onClick={() => addItemCallback({node})}
+                        >
+                            Add to Cart
+                        </button>
+                        <button
+                            onClick={() => removeItemCallback({node})}
+                            disabled={cart.items.every(i => i.product_id != node.variants[0].shopifyId)}
+                        >
+                            Remove from Cart
+                        </button> 
+                    </div>
                 </div>
             ))}
         </div>

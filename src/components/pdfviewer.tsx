@@ -11,6 +11,10 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
     const [numPages, setNumPages] = useState(0);
     const [pageWidth, setPageWidth] = useState(800);
 
+    React.useEffect(() => {
+        window.matchMedia('(min-width: 768px)').matches ? setPageWidth(800) : setPageWidth(600);
+    }, []);
+
     pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
     function onDocumentLoadSuccess({ numPages }: { numPages: number }) {

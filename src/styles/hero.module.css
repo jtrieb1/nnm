@@ -13,8 +13,8 @@
 
 .hero-image {
     width: 100%;
-    height: auto;
-    position: absolute; 
+    height: 100%;
+    position: absolute;
     top: 0; 
     left: 0; 
 }
@@ -27,14 +27,16 @@
 }
 
 .hero-title {
-    color: var(--primary-color);
-    font-size: 24px;
+    color: var(--text-color);
+    font-size: 64px;
     margin-bottom: 10px;
+    font-family: var(--header-font);
 }
 
 .hero-description {
     color: var(--tertiary-color);
-    font-size: 16px;
+    font-family: var(--handwritten-font);
+    font-size: 48px;
 }
 
 /* Media Queries for responsiveness */

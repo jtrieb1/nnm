@@ -20,8 +20,10 @@
 
     display: inline-block;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
-    width: 25%;
+    max-width: 50%;
+    max-height: 200px;
     color: var(--tertiary-color)
 }
 
@@ -32,8 +34,8 @@
     border-radius: 5px;
     padding: 10px;
     display: inline;
-    max-width: 8rem;
     color: var(--tertiary-color);
+    flex: 1;
 }
 
 .speechbubble {
@@ -44,6 +46,7 @@
     display: inline;
     color: var(--tertiary-color);
     text-align: left;
+    flex: 2;
 }
 
 .quoteintro {
@@ -55,5 +58,12 @@
 
 .quote {
     font-size: 1.2em;
+    font-family: var(--handwritten-font);
     color: var(--tertiary-color);
+}
+
+@media (max-width: 600px) {
+    .blurb {
+        display: none;
+    }
 }

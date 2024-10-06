@@ -14,6 +14,20 @@
     --card-bg-color: #393E46;
     --card-border-color: #ddd;
     --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --handwritten-font: 'Shadows Into Light', cursive;
+    --standard-font: 'Roboto', sans-serif;
+    --header-font: 'Permanent Marker', cursive;
+    --navbar-font: 'Rowdies', cursive;
+    --active-item-color: #00ADB5;
+    --item-hover-bg-color: #393E46;
+}
+
+.segmentHeader {
+    font-size: 48px;
+    font-weight: bold;
+    font-family: var(--header-font);
+    color: var(--text-color);
+    text-align: center;
 }
 
 @import "page.module.css";
@@ -26,5 +40,6 @@
 @import "catalog.module.css";
 @import "latest.module.css";
 @import "merch.module.css";
+@import "news.module.css";
 @import "pdfviewer.module.css";
 @import "productgrid.module.css";

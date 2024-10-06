@@ -1,0 +1,50 @@
+import React from 'react';
+import BACKEND_URL from '../util/aws';
+import { GatsbyImage, StaticImage } from 'gatsby-plugin-image';
+
+const NewsItem: React.FC<{ title: string, description: string, image_url: string }> = ({ title, description, image_url }) => {
+    return (
+        <div className="news-item">
+            <img src={image_url}
+                alt="News Image"
+                className="news-image" />
+            <div className="news-content">
+                <h2 className="news-title">{title}</h2>
+                <p className="news-description">{description}</p>
+            </div>
+        </div>
+    );
+}
+
+type NewsAPIResponse = {
+    articles: Array<{ title: string, description: string, image_url: string }>;
+}
+
+const NewsContainer: React.FC<{}> = () => {
+    let [news, setNews] = React.useState<NewsAPIResponse>({ articles: [] });
+
+    React.useEffect(() => {
+        fetch(BACKEND_URL + '/news')
+            .then(response => response.json())
+            .then(data => setNews(data));
+    }, []);
+
+    return (
+        <>
+        {
+            news.articles.length === 0 ?
+                null :
+                <div className="news-container">
+                    <StaticImage src="../images/news_bg.jpg" alt="News" className="news-image" />
+                    <div className="news-list">
+                        {news.articles.map((newsItem, index) => (
+                            <NewsItem key={index} {...newsItem} />
+                        ))}
+                    </div>
+                </div>
+        }
+        </>
+    )
+}
+
+export default NewsContainer;
