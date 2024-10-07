@@ -34,6 +34,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
     }
 
     return (
+        <div role="region" aria-label="PDF Viewer">
         <div className='pdfviewer'>
             <div className="resizer">
                 <button onClick={() => setPageWidth(pageWidth - 100)} disabled={pageWidth <= 100} className='resizeBtn'>
@@ -59,6 +60,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
                 </button>
             </div>
         </div>  
+        </div>
     );
 };
 

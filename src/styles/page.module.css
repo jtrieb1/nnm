@@ -20,7 +20,7 @@ body {
 }
 
 /* Main Content Styles */
-.main-content {
+.mainContent {
     background-color: var(--background-color);
     padding: 20px;
     color: var(--text-color);

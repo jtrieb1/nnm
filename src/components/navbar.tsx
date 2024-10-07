@@ -59,16 +59,22 @@ const Navbar: React.FC = () => {
     let [responsive, setResponsive] = React.useState(false);
 
     return (
-        <nav className={responsive ? "navbar responsive" : "navbar"}>
-            <a href={void(0)} className="icon" onClick={() => setResponsive(!responsive)}>
-                <FaBars />
-            </a>
-            <ul className="navbarMenu">
-                {links.map(link => (
-                    <li key={link.url} className="navbarMenuItem">
-                        <Link to={link.url}>{link.text}</Link>
-                    </li>
-                ))}
+        <nav className={responsive ? "navbar responsive" : "navbar"} aria-label="Main Navigation">
+            <button 
+            className="icon" 
+            onClick={() => setResponsive(!responsive)} 
+            aria-expanded={responsive} 
+            aria-controls="navbarMenu"
+            aria-label="Toggle navigation menu"
+            >
+            <FaBars />
+            </button>
+            <ul id="navbarMenu" className="navbarMenu">
+            {links.map(link => (
+                <li key={link.url} className="navbarMenuItem">
+                <Link to={link.url} aria-label={link.description}>{link.text}</Link>
+                </li>
+            ))}
             </ul>
         </nav>
     )

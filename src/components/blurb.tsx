@@ -31,13 +31,18 @@ const Blurb: React.FC<BlurbProps> = ({ issueNumber }) => {
             ) : (
                 blurb !== '' &&
                 // Blurb should include cartoon mascot
-                <div className="blurbholder">
-                    <div className='dialogpanel'>
-                        <StaticImage src={"../images/carpetface.png"} alt="Carpet" className='carpetface' />
-                        <div className='speechbubble'>
-                            <div className="quoteIntro">carpet sez:</div>
-                            <div className="quote">{blurb}</div>
-                        </div>    
+                <div role="dialog" aria-labelledby="blurb-title" aria-describedby="blurb-content">
+                    <h2 id="blurb-title" className="sr-only">Blurb for Issue {issueNumber}</h2>
+                    <div id="blurb-content">
+                        <div className="blurbholder">
+                            <div className='dialogpanel'>
+                                <StaticImage src={"../images/carpetface.png"} alt="Carpet" className='carpetface' />
+                                <div className='speechbubble'>
+                                    <div className="quoteIntro">carpet sez:</div>
+                                    <div className="quote">{blurb}</div>
+                                </div>    
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

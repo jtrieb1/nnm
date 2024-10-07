@@ -27,6 +27,32 @@ const PaginatedList: React.FC<PaginatedListProps> = ({ currentSelection, totalIt
     }, []);
 
     const items = [...Array(totalItems)].slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'ArrowRight' && currentPage < Math.ceil(totalItems / itemsPerPage)) {
+                currentSelection += 1;
+                if (currentSelection > totalItems) {
+                    currentSelection = totalItems;
+                }
+                if (currentSelection > currentPage * itemsPerPage) {
+                    handlePageChange(currentPage + 1);
+                }
+                handleItemSelect(currentSelection);
+            } else if (e.key === 'ArrowLeft' && currentPage > 1) {
+                currentSelection -= 1;
+                if (currentSelection < 1) {
+                    currentSelection = 1;
+                }
+                if (currentSelection < (currentPage - 1) * itemsPerPage + 1) {
+                    handlePageChange(currentPage - 1);
+                }
+                handleItemSelect(currentSelection);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [currentPage, totalItems, itemsPerPage, handlePageChange]);
 
     return (
         <div className="paginatedList">
@@ -46,10 +72,11 @@ const PaginatedList: React.FC<PaginatedListProps> = ({ currentSelection, totalIt
                     ))}
                 </select>
             ) : (
-                <ul className="itemSelector">
+                <ul className="itemSelector" role="listbox" aria-activedescendant={`item-${currentSelection}`}>
                     {items.map((_, index) => (
                         <li
                             key={index}
+                            id={`item-${(currentPage - 1) * itemsPerPage + index + 1}`}
                             onClick={() => {
                                 if ((currentPage - 1) * itemsPerPage + index + 1 !== currentSelection) {
                                     handleItemSelect((currentPage - 1) * itemsPerPage + index + 1);
@@ -57,6 +84,8 @@ const PaginatedList: React.FC<PaginatedListProps> = ({ currentSelection, totalIt
                             }}
                             className={"itemID" + ((currentPage - 1) * itemsPerPage + index + 1 === currentSelection ? ' active' : '')}
                             style={{ pointerEvents: (currentPage - 1) * itemsPerPage + index + 1 === currentSelection ? 'none' : 'auto' }}
+                            role="option"
+                            aria-selected={(currentPage - 1) * itemsPerPage + index + 1 === currentSelection}
                         >
                             {(currentPage - 1) * itemsPerPage + index + 1}
                         </li>

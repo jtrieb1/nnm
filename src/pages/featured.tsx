@@ -115,13 +115,13 @@ const FeaturedArtists: React.FC<FeaturedArtistsProps> = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {
                         top_contributors.length === 0 ? (
-                            <div className="bg-white shadow-md rounded-md p-4">
+                            <div className="bg-white shadow-md rounded-md p-4" role="status" aria-live="polite">
                                 <h2 className="text-2xl font-bold" style={{color: "#222831"}}>Loading...</h2>
                             </div>
                         )
                         : top_contributors.map((contributor, index) => (
                         <div key={index} className="bg-white shadow-md rounded-md p-4">
-                            <a href={handle_to_link(contributor.handle)} target="_blank" rel="noreferrer" style={{color: "#222831"}}>
+                            <a href={handle_to_link(contributor.handle)} target="_blank" rel="noreferrer" style={{color: "#222831"}} aria-label={`Visit ${contributor.name}'s profile`}>
                             <h2 className="text-2xl font-bold">{contributor.name}</h2>
                             <p className="text-lg">{contributor.handle}</p>
                             </a>

@@ -4,7 +4,7 @@ import React from 'react';
 /// Mostly used for consistency in styling
 const SegmentHeader: React.FC<{headerText: string}> = ({headerText}) => {
     return (
-        <h1 className='segmentHeader'>
+        <h1 className='segmentHeader' aria-label={headerText}>
             {headerText}
         </h1>
     );

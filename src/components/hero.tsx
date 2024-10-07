@@ -9,7 +9,7 @@ interface HeroProps {
 /// Hero image component that displays a title and description over a background image
 const Hero: React.FC<HeroProps> = ({ title, description }) => {
     return (
-        <div className="hero">
+        <div className="hero" role="banner" aria-labelledby="hero-title" aria-describedby="hero-description">
             <StaticImage 
                 src={"../images/splash.jpg"} 
                 alt="Hero Image" 
@@ -23,8 +23,8 @@ const Hero: React.FC<HeroProps> = ({ title, description }) => {
                 formats={['auto', 'webp', 'avif']}
             />
             <div className="hero-content">
-                <h1 className="hero-title">{title}</h1>
-                <p className="hero-description">{description}</p>
+                <h1 id="hero-title" className="hero-title">{title}</h1>
+                <p id="hero-description" className="hero-description">{description}</p>
             </div>
         </div>
     );

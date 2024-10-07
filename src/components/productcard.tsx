@@ -17,6 +17,8 @@ class ProductCard extends React.Component<ProductCardProps> {
     }
 
     render() {
+        const { title, description, price, currency } = this.props;
+        const ariaLabel = `${title}, ${description}, Price: ${price} ${currency}`;
         return (
             <div style={{
                 display: 'flex',
@@ -25,7 +27,9 @@ class ProductCard extends React.Component<ProductCardProps> {
                 padding: '10px',
                 margin: '10px',
                 borderRadius: '10px',
-            }}>
+            }}
+                aria-label={ariaLabel}
+            >
                 <h2>{this.props.title}</h2>
                 <GatsbyImage image={this.props.img_src} alt={this.props.title} />
                 <p>{this.props.description}</p>

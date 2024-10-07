@@ -25,7 +25,9 @@ const Contributors: React.FC<ContributorsProps> = ({ issueNumber }) => {
     }, [issueNumber]);
 
     return (
-        <div className="contributors">
+        <>
+            <h2 id="contributors-header" style={{display: "none"}}>Contributors</h2>
+            <div className="contributors" aria-labelledby="contributors-header">
             {loading ? (
                 <div className='contributors-loading'>Loading...</div>
             ) : (
@@ -40,7 +42,8 @@ const Contributors: React.FC<ContributorsProps> = ({ issueNumber }) => {
                     </ul>
                 </>
             )}
-        </div>
+            </div>
+        </>
     );
 }
 

@@ -44,7 +44,7 @@ export interface ProductGridProps {
 /// ProductGrid is a component that displays a grid of products in the merch store
 const ProductGrid: React.FC<ProductGridProps> = ({ cart, merchData, addItemCallback, removeItemCallback }) => {
     return (
-        <div className='product-grid'>
+        <div className='product-grid' aria-label="product-grid">
             {merchData.map(({ node }) => (
                 <div key={node.id}>
                     <ProductCard
@@ -57,15 +57,17 @@ const ProductGrid: React.FC<ProductGridProps> = ({ cart, merchData, addItemCallb
                     <div className="button-container">
                         <button
                             onClick={() => addItemCallback({node})}
+                            aria-label={`Add ${node.title} to Cart`}
                         >
                             Add to Cart
                         </button>
                         <button
                             onClick={() => removeItemCallback({node})}
                             disabled={cart.items.every(i => i.product_id != node.variants[0].shopifyId)}
+                            aria-label={`Remove ${node.title} from Cart`}
                         >
                             Remove from Cart
-                        </button> 
+                        </button>
                     </div>
                 </div>
             ))}

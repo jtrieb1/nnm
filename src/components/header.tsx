@@ -6,8 +6,7 @@ import Navbar from "./navbar";
 const Header = () => {
   return (
     <header>
-        <title>no nothing magazine</title>
-        <Navbar />
+      <Navbar />
     </header>
   );
 };

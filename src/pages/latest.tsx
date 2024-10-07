@@ -37,11 +37,11 @@ const Latest = () => {
             <Header />
             <SegmentHeader headerText="Latest Issue" />
             {loading ? (
-                <div className='catalog-loading'>
-                    <div className='spinner'></div>
+                <div className='catalog-loading' role="status" aria-live="polite">
+                    <div className='spinner' aria-label="Loading"></div>
                 </div>
             ) : (
-                <div className='catalog-pdfviewer'>
+                <div className='catalog-pdfviewer' role="main">
                     <Blurb issueNumber={issueNumber} />
                     <div className='contentSection'>
                         <PDFViewer pdfUrl={pdfUrl} />

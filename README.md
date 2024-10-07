@@ -5,7 +5,7 @@ their website as part of my portfolio.
 This website currently consists of two components:
 
 ## Frontend
-The frontend is written in React, using Gatsby. Gatsby was chosen for ease of integration with Shopify in the future.
+The frontend is written in React, using Gatsby. Gatsby was chosen for ease of integration with Shopify.
 
 ## Backend
 The backend is written in Rust, using actix-web. This was not the most efficient choice, due to the lack of viable
