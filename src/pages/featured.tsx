@@ -7,6 +7,8 @@ import SegmentHeader from '../components/segmentheader';
 import getCount from '../util/count';
 import { getIssueData } from '../util/issue';
 import handle_to_link from '../util/links';
+import Footer from '../components/footer';
+import Header from '../components/header';
 
 export interface FeaturedArtistsProps {}
 
@@ -106,8 +108,9 @@ const FeaturedArtists: React.FC<FeaturedArtistsProps> = () => {
     }, []);
 
     return (
-        <Layout>
-            <div className="container mx-auto">
+        <>
+            <Header />
+            <div className="container mx-auto" style={{flex: 1, height: "100vh"}}>
                 <SegmentHeader headerText="Featured Artists" />
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {
@@ -126,7 +129,8 @@ const FeaturedArtists: React.FC<FeaturedArtistsProps> = () => {
                     ))}
                 </div>
             </div>
-        </Layout>
+            <Footer />
+        </>
     );
 }
 

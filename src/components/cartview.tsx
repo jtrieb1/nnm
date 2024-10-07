@@ -7,6 +7,7 @@ interface CartViewProps {
     checkoutFn: () => void;
 }
 
+/// CartView is a component that displays the cart summary and a checkout button on the merch page
 function CartView({ cart, checkoutFn }: CartViewProps) {
     return (
     <div className='cart-summary'>

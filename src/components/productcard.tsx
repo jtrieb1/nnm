@@ -1,6 +1,5 @@
 import React from 'react';
 import { GatsbyImage, IGatsbyImageData } from 'gatsby-plugin-image';
-import {CartItemResult, ItemResult} from './cart';
 
 
 interface ProductCardProps {
@@ -11,6 +10,7 @@ interface ProductCardProps {
     currency: string;
 }
 
+/// ProductCard is a component that displays a product in the merch store
 class ProductCard extends React.Component<ProductCardProps> {
     constructor(props: ProductCardProps) {
         super(props);

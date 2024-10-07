@@ -2,6 +2,7 @@ import React from "react"
 import { Link } from "gatsby"
 import { FaBars } from "react-icons/fa"
 
+/// Navigation links for the site
 const links = [
     {
       text: "Home",
@@ -27,7 +28,6 @@ const links = [
         description:
           "Browse our catalog",
     },
-    // Taken out until ready
     {
         text: "Merch",
         url: "/merch",
@@ -54,6 +54,7 @@ const links = [
     }
   ]
  
+/// Navbar component that displays the navigation links
 const Navbar: React.FC = () => {
     let [responsive, setResponsive] = React.useState(false);
 

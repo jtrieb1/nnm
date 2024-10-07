@@ -2,6 +2,8 @@ import React from 'react';
 import ProductCard from './productcard';
 import { Cart } from './cart';
 
+/// MerchNode is a type that represents a piece of merchandise.
+/// These fields are returned from the current graphql queries.
 export interface MerchNode {
     node: {
         id: string;
@@ -39,6 +41,7 @@ export interface ProductGridProps {
     removeItemCallback: (item: MerchNode) => void;
 }
 
+/// ProductGrid is a component that displays a grid of products in the merch store
 const ProductGrid: React.FC<ProductGridProps> = ({ cart, merchData, addItemCallback, removeItemCallback }) => {
     return (
         <div className='product-grid'>

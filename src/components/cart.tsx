@@ -1,5 +1,6 @@
 import BACKEND_URL from "../util/aws";
 
+/// ItemResult is the result of a product query
 export interface ItemResult {
     product_id: string;
     title: string;
@@ -10,6 +11,7 @@ export interface ItemResult {
     quantity: number;
 }
 
+/// CartItemResult is the result of a cart query
 export interface CartItemResult {
     line_id: string;
     title: string;
@@ -21,6 +23,8 @@ export interface CartItemResult {
     quantity: number;
 }
 
+/// Convert an ItemResult to a CartItemResult, since they're essentially the same
+/// Going backwards is easier, so we don't need a separate function for that
 export function convertToCartItem(item: ItemResult): CartItemResult {
     return {
         line_id: "", // Blank for now
@@ -34,11 +38,13 @@ export function convertToCartItem(item: ItemResult): CartItemResult {
     };
 }
 
+/// Money is a representation of the Shopify MoneyV2 object
 interface Money {
     amount: number;
     currencyCode: string;
 }  
 
+/// CartLine is a representation of the Shopify CartLine object
 interface CartLine {
     id: string;
     merchandise: {
@@ -53,6 +59,7 @@ interface CartLine {
     quantity: number;
 }
 
+/// Convert a CartLine and a context to a CartItemResult
 function cartItemFromCartLineAndCtx(cartline: CartLine, merchData: any): CartItemResult {
     let merchline = merchData.find((m: any) => m.node.variants[0].shopifyId == cartline.merchandise.id);
     return {
@@ -67,13 +74,21 @@ function cartItemFromCartLineAndCtx(cartline: CartLine, merchData: any): CartIte
     }
   }
 
+/// Cart is a representation of a Shopify cart, but we handle most of the mechanisms
+/// on the client side ourselves to prevent unnecessary server calls
 export class Cart {
 
+    // Private fields
+    /// The Shopify ID of the corresponding cart object in the backend
     #id: string;
+    /// The generated checkout URL for the cart
     #url: string;
+    /// The items in the cart
     items: CartItemResult[];
+    /// The data for all items offered in the store, for quick lookup
     merchData: {node: any}[];
 
+    /// Create a new cart object
     constructor(id: string, merchData: {node: any}[]) {
         this.#id = id.replace("gid://shopify/Cart/", "");
         this.#url = "";
@@ -81,6 +96,7 @@ export class Cart {
         this.merchData = merchData;
     }
 
+    /// Create a deep copy of the cart
     dupe(): Cart {
         let ct = new Cart(this.id(), [...this.merchData]);
         ct.set_url(this.url());
@@ -88,6 +104,7 @@ export class Cart {
         return ct;
     }
 
+    /// Initialize the cart from the backend
     async init(): Promise<void> {
         let existingID = localStorage.getItem('nnmcheckoutID');
         if (existingID) {
@@ -114,6 +131,8 @@ export class Cart {
         return this.#id;
     }
 
+    /// Set the ID of the cart, but strip the Shopify prefix
+    /// This is because we send the ID as a URL parameter, and the prefix is unnecessary
     set_id(id: string) {
         this.#id = id.replace("gid://shopify/Cart/", "");
         localStorage.setItem('nnmcheckoutID', this.#id);
@@ -127,6 +146,7 @@ export class Cart {
         this.#url = url;
     }
 
+    /// Sync the cart with the backend
     async sync(): Promise<void> {
         // If the cart is empty, don't bother
         if (this.items.length == 0) {
@@ -145,6 +165,7 @@ export class Cart {
         this.set_url(retjson.checkoutUrl);
     }
 
+    /// Add an item to the cart
     async add_item(item: ItemResult): Promise<void> {
         let existing = this.items.find((i) => i.product_id == item.product_id);
         let filtered = this.items.filter((i) => i.product_id != item.product_id);
@@ -160,6 +181,7 @@ export class Cart {
         await this.sync();
     }
 
+    /// Remove an item from the cart
     async remove_item(item: ItemResult): Promise<void> {
         let existing = this.items.find((i) => i.product_id == item.product_id);
         let filtered = this.items.filter((i) => i.product_id != item.product_id);

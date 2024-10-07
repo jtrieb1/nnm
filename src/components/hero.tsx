@@ -6,6 +6,7 @@ interface HeroProps {
     description: string;
 }
 
+/// Hero image component that displays a title and description over a background image
 const Hero: React.FC<HeroProps> = ({ title, description }) => {
     return (
         <div className="hero">

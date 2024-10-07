@@ -1,5 +1,7 @@
 import React from 'react';
 
+/// CenteredText is a component that displays text in the center of the screen
+/// Kind of like the bumper text on Adult Swim, that's the feeling I'm going for
 const CenteredText: React.FC<{ children: string[] }> = ({ children }) => {
     return (
         <div

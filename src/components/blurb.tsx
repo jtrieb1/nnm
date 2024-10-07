@@ -6,6 +6,8 @@ export interface BlurbProps {
     issueNumber: number;
 }
 
+/// Blurb component that displays the blurb for a given issue number
+/// Blurb displays as a dialog panel with a cartoon mascot (Carpet) and a speech bubble
 const Blurb: React.FC<BlurbProps> = ({ issueNumber }) => {
     const [loading, setLoading] = React.useState(true);
     const [blurb, setBlurb] = React.useState<string>('');

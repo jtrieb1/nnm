@@ -3,7 +3,6 @@ import { HeadFC } from 'gatsby';
 
 import Blurb from '../components/blurb';
 import Contributors from '../components/contributors';
-import Layout from '../components/layout';
 import PaginatedList from '../components/paginatedlist';
 import PDFViewer from '../components/pdfviewer';
 import SegmentHeader from '../components/segmentheader';
@@ -13,6 +12,8 @@ import { getIssueUrl } from '../util/issue';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
+import Header from '../components/header';
+import Footer from '../components/footer';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -51,8 +52,9 @@ const Catalog = () => {
     }, []);
 
     return (
-        <Layout>
-            <div>
+        <>
+            <Header />
+            <div style={{flex: 1, height: "100%"}}>
                 <SegmentHeader headerText="Catalog" />
                 {
                     count > 0 && <PaginatedList currentSelection={currentIssue} totalItems={count} itemsPerPage={ITEMS_PER_PAGE} currentPage={currentPage} handleItemSelect={handleIssueSelect} handlePageChange={handlePageChange} />
@@ -66,10 +68,11 @@ const Catalog = () => {
                             <PDFViewer pdfUrl={pdfUrl} />
                             <Contributors issueNumber={currentIssue} />
                         </div>
+                        <Footer />
                       </div>
                 }
             </div>
-        </Layout>
+        </>
     );
 }
 

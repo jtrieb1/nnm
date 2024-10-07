@@ -63,6 +63,10 @@
     }
 }
 
+.pageLoading {
+    color: var(--tertiary-color);
+}
+
 .pageSpread {
     display: flex;
     justify-content: space-between;

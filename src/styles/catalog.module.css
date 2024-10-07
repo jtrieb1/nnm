@@ -2,10 +2,12 @@
     font-size: 1.2em;
     color: var(--tertiary-color);
     text-align: center;
+    height: 100vh;
 }
 
 .catalog-pdfviewer {
     margin: 20px 0;
+    height: 100vh;
 }
 
 .contentSection {

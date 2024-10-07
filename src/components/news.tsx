@@ -1,7 +1,9 @@
 import React from 'react';
 import BACKEND_URL from '../util/aws';
-import { GatsbyImage, StaticImage } from 'gatsby-plugin-image';
+import { StaticImage } from 'gatsby-plugin-image';
 
+/// NewsItem is a component that displays a single news item
+/// NewsItem displays an image, title, and description.
 const NewsItem: React.FC<{ title: string, description: string, image_url: string }> = ({ title, description, image_url }) => {
     return (
         <div className="news-item">
@@ -16,10 +18,12 @@ const NewsItem: React.FC<{ title: string, description: string, image_url: string
     );
 }
 
+/// NewsAPIResponse is the expected response shape from the news API
 type NewsAPIResponse = {
     articles: Array<{ title: string, description: string, image_url: string }>;
 }
 
+/// NewsContainer is a component that fetches and displays a list of news items
 const NewsContainer: React.FC<{}> = () => {
     let [news, setNews] = React.useState<NewsAPIResponse>({ articles: [] });
 

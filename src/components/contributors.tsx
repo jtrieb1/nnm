@@ -7,6 +7,7 @@ export interface ContributorsProps {
     issueNumber: number;
 }
 
+/// Contributors component that displays the contributors for a given issue number
 const Contributors: React.FC<ContributorsProps> = ({ issueNumber }) => {
     const [loading, setLoading] = React.useState(true);
     const [contributors, setContributors] = React.useState(Array<{ name: string, handle: string }>());
@@ -26,7 +27,7 @@ const Contributors: React.FC<ContributorsProps> = ({ issueNumber }) => {
     return (
         <div className="contributors">
             {loading ? (
-                <></>
+                <div className='contributors-loading'>Loading...</div>
             ) : (
                 <>
                     <SegmentHeader headerText="Contributors" />

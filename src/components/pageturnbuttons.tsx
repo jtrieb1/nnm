@@ -1,5 +1,7 @@
 import React from 'react';
 
+/// Pagination component that displays buttons to turn pages
+/// Generic enough to be used in any pagination context
 const PageTurnButtons: React.FC<{ currentPage: number, totalPages: number, handlePageChange: (page: number) => void }> = ({ currentPage, totalPages, handlePageChange }) => {
     return (
         <div className='pagination'>

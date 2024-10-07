@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PageTurnButtons from './pageturnbuttons';
 
+
 export interface PaginatedListProps {
     currentSelection: number;
     totalItems: number;
@@ -10,6 +11,9 @@ export interface PaginatedListProps {
     handleItemSelect: (item: number) => void;
 }
 
+/// PaginatedList component that displays a list of indices with pagination
+/// Does not support listing item names at present because it isn't needed in the current use case
+/// Component will render a dropdown selector on mobile and a list of items on desktop
 const PaginatedList: React.FC<PaginatedListProps> = ({ currentSelection, totalItems, itemsPerPage, currentPage, handleItemSelect, handlePageChange }) => {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
