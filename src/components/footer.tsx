@@ -4,16 +4,7 @@ import React from "react";
 const Footer: React.FC = () => {
     return (
         <footer 
-            style={{ 
-            position: "relative", 
-            bottom: "0", 
-            width: "100%", 
-            backgroundColor: "#f2f2f2", 
-            padding: "10px", 
-            textAlign: "right", 
-            fontSize: "14px", 
-            color: "#666" 
-            }}
+            className="footer"
             aria-label="Footer"
         >
             <p role="contentinfo">

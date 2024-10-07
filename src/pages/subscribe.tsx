@@ -2,6 +2,7 @@ import React from 'react';
 
 import Layout from '../components/layout';
 import CenteredText from '../components/centered';
+import { HeadFC } from 'gatsby';
 
 function SubscribePage() {
     return (
@@ -12,3 +13,5 @@ function SubscribePage() {
 }
 
 export default SubscribePage;
+
+export const Head: HeadFC = () => <title>no nothing magazine | subscribe</title>
