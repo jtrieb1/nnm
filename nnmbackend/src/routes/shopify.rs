@@ -1,3 +1,38 @@
+/// This module defines the routes for handling Shopify checkout operations.
+///
+/// The routes are defined using Actix-web and handle various operations related to Shopify checkouts,
+/// including creating a checkout session, adding items to a checkout, and retrieving checkout details.
+///
+/// # Routes
+///
+/// - `GET /create_checkout`: Creates a new checkout session.
+/// - `POST /request_checkout`: Requests a new checkout and adds items to it.
+/// - `GET /checkout/{checkout_id}`: Retrieves the details of an existing checkout session.
+///
+/// # Example
+///
+/// ```
+/// use actix_web::{web, App, HttpServer};
+/// use nnmbackend::routes::shopify;
+///
+/// #[actix_web::main]
+/// async fn main() -> std::io::Result<()> {
+///     HttpServer::new(|| {
+///         App::new()
+///             .service(shopify::create_checkout)
+///             .service(shopify::execute_checkout)
+///             .service(shopify::get_checkout)
+///     })
+///     .bind("127.0.0.1:8080")?
+///     .run()
+///     .await
+/// }
+/// ```
+///
+/// # Errors
+///
+/// These routes return an `InternalServerError` if there is an issue processing the Shopify request.
+/// They may also return a `BadRequest` if there are user errors in the GraphQL response.
 use actix_web::web::{Json, Path};
 
 use crate::utils::shopify::{

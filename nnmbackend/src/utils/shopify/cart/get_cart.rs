@@ -1,3 +1,30 @@
+/// This module provides utilities for interacting with Shopify's cart functionality via GraphQL.
+///
+/// The utilities include definitions for GraphQL queries, API representations, and Shopify-specific types.
+///
+/// # Modules
+///
+/// - `actions::GraphQLQuery`: Defines the structure and execution of GraphQL queries.
+/// - `api::CartAPIRepresentation`: Represents the API structure for Shopify cart interactions.
+/// - `types::ShopifyGraphQLType`: Contains type definitions specific to Shopify's GraphQL API.
+///
+/// # Example
+///
+/// ```
+/// use crate::utils::shopify::cart::get_cart;
+/// use crate::utils::shopify::graphql::actions::GraphQLQuery;
+///
+/// fn example() {
+///     // Example usage of the GraphQLQuery for Shopify cart
+///     let query = GraphQLQuery::new("query { cart { id } }");
+///     // Further implementation...
+/// }
+/// ```
+///
+/// # Errors
+///
+/// Errors in this module may arise from issues with GraphQL query execution or API representation mismatches.
+
 use crate::utils::shopify::graphql::{
     actions::GraphQLQuery, api::CartAPIRepresentation, types::ShopifyGraphQLType,
 };

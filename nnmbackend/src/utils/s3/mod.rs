@@ -1,3 +1,37 @@
+/// This module provides utility functions for interacting with AWS S3.
+///
+/// The functions include creating an S3 client, retrieving the latest issue count,
+/// generating signed URLs for accessing issues, and determining the appropriate S3 bucket
+/// based on the client's region.
+///
+/// # Functions
+///
+/// - `get_s3_client`: Creates and returns an S3 client configured with the appropriate region.
+/// - `get_issue_count`: Retrieves the count of issues available in the S3 bucket.
+/// - `get_bucket_for_client`: Determines the appropriate S3 bucket based on the client's region.
+/// - `get_signed_url_for_latest_issue`: Generates a signed URL for the latest issue available in the S3 bucket.
+/// - `get_signed_url_for_issue`: Generates a signed URL for a specific issue based on the issue number.
+///
+/// # Example
+///
+/// ```
+/// use nnmbackend::utils::s3::{get_s3_client, get_signed_url_for_latest_issue};
+///
+/// #[tokio::main]
+/// async fn main() {
+///     let s3client = get_s3_client().await;
+///     match get_signed_url_for_latest_issue(&s3client).await {
+///         Ok(url) => println!("Signed URL: {}", url),
+///         Err(e) => eprintln!("Error generating signed URL: {}", e),
+///     }
+/// }
+/// ```
+///
+/// # Errors
+///
+/// These functions return various errors related to S3 operations, such as `S3Error::NotFound`
+/// if the specified bucket or object is not found, or other errors related to AWS SDK operations.
+
 use std::time::Duration;
 
 use aws_config::{meta::region::RegionProviderChain, BehaviorVersion};

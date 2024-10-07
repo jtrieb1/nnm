@@ -1,3 +1,37 @@
+/// This module defines the routes for handling interactions with S3.
+///
+/// The routes are defined using Actix-web and handle various operations such as counting issues,
+/// retrieving the latest issue, and getting a specific issue by its number.
+///
+/// # Routes
+///
+/// - `GET /count`: Returns the count of issues in S3.
+/// - `GET /latest`: Returns a signed URL for the latest issue.
+/// - `GET /issue/{issue_number}`: Returns a signed URL for a specific issue by its number.
+///
+/// # Example
+///
+/// ```
+/// use actix_web::{web, App, HttpServer};
+/// use nnmbackend::routes::s3;
+///
+/// #[actix_web::main]
+/// async fn main() -> std::io::Result<()> {
+///     HttpServer::new(|| {
+///         App::new()
+///             .service(s3::count_issues)
+///             .service(s3::get_latest_issue)
+///             .service(s3::get_issue)
+///     })
+///     .bind("127.0.0.1:8080")?
+///     .run()
+///     .await
+/// }
+/// ```
+///
+/// # Errors
+///
+/// These routes return an `InternalServerError` if there is an issue interacting with S3.
 use actix_web::web::Path;
 
 use crate::utils::s3::{

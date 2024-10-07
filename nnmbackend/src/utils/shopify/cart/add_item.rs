@@ -1,3 +1,39 @@
+/// This module provides functionality for adding items to a Shopify cart using GraphQL.
+///
+/// The module defines the necessary structures and functions to create and execute a GraphQL mutation
+/// for adding items to a Shopify cart.
+///
+/// # Structs
+///
+/// - `AddItemAPIResponse`: Represents the response from the Shopify API when adding an item to the cart.
+/// - `AddItemResponse`: Represents the nested response structure for the `cartLinesAdd` mutation.
+/// - `FullAddItemResponse`: Represents the full response from the Shopify API, including potential errors.
+///
+/// # Functions
+///
+/// - `create_shopify_line_entry`: Creates a Shopify GraphQL line entry for a given item ID and quantity.
+/// - `add_items_mutation`: Constructs a GraphQL mutation for adding items to a Shopify cart.
+///
+/// # Example
+///
+/// ```
+/// use nnmbackend::utils::shopify::cart::add_item::{add_items_mutation, MultiItemPayload};
+///
+/// let cart_id = "example_cart_id";
+/// let item_payload = MultiItemPayload {
+///     items: vec![
+///         // Add items here
+///     ],
+/// };
+///
+/// let mutation = add_items_mutation(cart_id, &item_payload);
+/// // Execute the mutation using your GraphQL client
+/// ```
+///
+/// # Errors
+///
+/// This module may return errors related to GraphQL query execution or Shopify API responses.
+
 use crate::utils::shopify::{
     graphql::{
         actions::GraphQLQuery,

@@ -1,3 +1,37 @@
+/// This module defines the route for fetching issue data from DynamoDB.
+///
+/// The route is defined using Actix-web and interacts with DynamoDB through utility functions.
+///
+/// # Routes
+///
+/// - `GET /issuedata/{issue_number}`: Fetches issue data for the given issue number.
+///
+/// # Functions
+///
+/// - `get_issue_data`: Asynchronously fetches issue data from DynamoDB and returns an HTTP response.
+///
+/// # Example
+///
+/// ```
+/// use actix_web::{web, App, HttpServer};
+/// use nnmbackend::routes::dynamodb::get_issue_data;
+///
+/// #[actix_web::main]
+/// async fn main() -> std::io::Result<()> {
+///     HttpServer::new(|| {
+///         App::new()
+///             .route("/issuedata/{issue_number}", web::get().to(get_issue_data))
+///     })
+///     .bind("127.0.0.1:8080")?
+///     .run()
+///     .await
+/// }
+/// ```
+///
+/// # Errors
+///
+/// This function returns an `InternalServerError` if there is an issue fetching data from DynamoDB.
+
 use crate::utils::dynamodb as db;
 use actix_web::web::Path;
 

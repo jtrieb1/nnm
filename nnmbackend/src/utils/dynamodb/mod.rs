@@ -1,3 +1,52 @@
+/// This module provides utility functions for interacting with DynamoDB.
+///
+/// The functions include creating a DynamoDB client, retrieving issue data, and storing issue data.
+///
+/// # Structs
+///
+/// - `DBContributor`: Represents a contributor with a name and handle.
+/// - `DBIssue`: Represents an issue with a number, blurb, and a list of contributors.
+///
+/// # Functions
+///
+/// - `get_db_client`: Asynchronously creates and returns a DynamoDB client.
+/// - `get_issue_data`: Asynchronously retrieves issue data from DynamoDB based on the issue number.
+/// - `put_issue_data`: Asynchronously stores issue data in DynamoDB.
+///
+/// # Example
+///
+/// ```
+/// use nnmbackend::utils::dynamodb::{get_db_client, get_issue_data, put_issue_data, DBIssue, DBContributor};
+/// use aws_sdk_dynamodb::Client;
+///
+/// #[tokio::main]
+/// async fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     let client = get_db_client().await?;
+///
+///     let issue = DBIssue::new(
+///         1,
+///         "Issue blurb".to_string(),
+///         vec![DBContributor {
+///             name: "Contributor Name".to_string(),
+///             handle: "contributor_handle".to_string(),
+///         }],
+///     );
+///
+///     put_issue_data(issue, &client).await?;
+///
+///     let retrieved_issue = get_issue_data(1, &client).await?;
+///     println!("{:?}", retrieved_issue);
+///
+///     Ok(())
+/// }
+/// ```
+///
+/// # Errors
+///
+/// - `get_db_client`: Returns an `Error` if there is an issue creating the DynamoDB client.
+/// - `get_issue_data`: Returns an `Error` if there is an issue retrieving the item from DynamoDB or parsing the item attributes.
+/// - `put_issue_data`: Returns an `Error` if there is an issue storing the item in DynamoDB.
+
 use anyhow::{anyhow, Error};
 use aws_config::{meta::region::RegionProviderChain, BehaviorVersion};
 use aws_sdk_dynamodb::{types::AttributeValue, Client as DynamoClient};

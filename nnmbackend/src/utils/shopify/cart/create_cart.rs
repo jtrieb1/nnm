@@ -1,3 +1,31 @@
+/// This module provides utility functions for creating Shopify carts.
+///
+/// The utilities leverage `std::collections::HashMap` to manage cart data.
+///
+/// # Functions
+///
+/// - `create_cart`: Initializes a new cart with given items and quantities.
+///
+/// # Example
+///
+/// ```
+/// use std::collections::HashMap;
+/// use nnmbackend::utils::shopify::cart::create_cart;
+///
+/// fn main() {
+///     let mut items = HashMap::new();
+///     items.insert("item1".to_string(), 2);
+///     items.insert("item2".to_string(), 1);
+///
+///     let cart = create_cart(items);
+///     println!("{:?}", cart);
+/// }
+/// ```
+///
+/// # Errors
+///
+/// The `create_cart` function may return an error if the input data is invalid or if there is an issue initializing the cart.
+
 use std::collections::HashMap;
 
 use crate::utils::shopify::graphql::{

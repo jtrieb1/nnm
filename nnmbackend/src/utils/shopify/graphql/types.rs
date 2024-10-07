@@ -2,6 +2,38 @@ use std::collections::HashMap;
 
 use super::traits::GraphQLRepresentable;
 
+/// Represents various types that can be used in Shopify GraphQL queries and responses.
+///
+/// This enum provides a way to handle different types of values that can be encountered
+/// in Shopify's GraphQL API. Each variant corresponds to a specific GraphQL type.
+///
+/// # Variants
+///
+/// - `ID(String)`: Represents a GraphQL ID type.
+/// - `String(String)`: Represents a GraphQL String type.
+/// - `Boolean(bool)`: Represents a GraphQL Boolean type.
+/// - `Int(i64)`: Represents a GraphQL Int type.
+/// - `Float(f64)`: Represents a GraphQL Float type.
+/// - `Json(String)`: Represents a JSON string.
+/// - `Array(Vec<ShopifyGraphQLType>)`: Represents a GraphQL list type.
+/// - `Object(HashMap<String, ShopifyGraphQLType>)`: Represents a GraphQL object type.
+/// - `Custom(String, Box<ShopifyGraphQLType>)`: Represents a custom GraphQL type with a name and an underlying type.
+///
+/// # Methods
+///
+/// - `to_object(&self, key: &str) -> HashMap<String, ShopifyGraphQLType>`:
+///   Converts the enum variant to a `HashMap` with the given key if it's not already an object.
+///
+/// - `to_value_string(&self) -> String`:
+///   Converts the enum variant to its corresponding GraphQL value string representation.
+///
+/// # Example
+///
+/// ```
+/// let id = ShopifyGraphQLType::ID("123".to_string());
+/// let value_string = id.to_value_string();
+/// assert_eq!(value_string, "\"123\"");
+/// ```
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
 pub enum ShopifyGraphQLType {
     ID(String),
@@ -102,6 +134,8 @@ impl std::fmt::Display for ShopifyGraphQLType {
     }
 }
 
+/// This struct is used to represent monetary values in Shopify's GraphQL API.
+/// It contains the amount and currency code for the value.
 #[derive(Debug, Default, Clone, serde::Deserialize, serde::Serialize)]
 pub struct MoneyV2 {
     pub amount: String,
@@ -119,6 +153,11 @@ impl GraphQLRepresentable for MoneyV2 {
     }
 }
 
+/// This struct represents the cost of a cart in Shopify's GraphQL API.
+/// It contains the checkout charge amount, subtotal amount, total amount, total duty amount, and total tax amount.
+/// Each amount is represented as a `MoneyV2` struct.
+/// The `subtotalAmountEstimated`, `totalAmountEstimated`, `totalDutyAmountEstimated`, and `totalTaxAmountEstimated` fields
+/// indicate whether the amounts are estimated.
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
 pub struct CostRepresentation {
     #[serde(rename = "checkoutChargeAmount")]
@@ -175,6 +214,8 @@ impl GraphQLRepresentable for CostRepresentation {
     }
 }
 
+/// This struct represents a merchandise item cost in Shopify's GraphQL API.
+/// It contains the amount per quantity, subtotal amount, and total amount.
 #[derive(Debug, Default, Clone, serde::Deserialize, serde::Serialize)]
 pub struct CartLineCost {
     #[serde(rename = "amountPerQuantity")]
@@ -200,6 +241,8 @@ impl GraphQLRepresentable for CartLineCost {
     }
 }
 
+/// This struct represents a merchandise item in Shopify's GraphQL API.
+/// It contains the ID and title of the merchandise.
 #[derive(Debug, Default, Clone, serde::Deserialize, serde::Serialize)]
 pub struct Merchandise {
     pub id: String,
@@ -215,6 +258,8 @@ impl GraphQLRepresentable for Merchandise {
     }
 }
 
+/// This struct represents a line item in Shopify's GraphQL API.
+/// It contains the ID, quantity, merchandise, and cost of the line item.
 #[derive(Debug, Default, Clone, serde::Deserialize, serde::Serialize)]
 pub struct LineItem {
     pub id: String,

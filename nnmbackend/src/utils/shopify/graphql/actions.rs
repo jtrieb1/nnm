@@ -1,3 +1,16 @@
+/// This module provides utility functions for interacting with Shopify's GraphQL API.
+///
+/// The functions in this module facilitate the construction and execution of GraphQL queries and mutations
+/// to interact with Shopify's backend services.
+///
+/// # Dependencies
+///
+/// - `std::collections::HashMap`: Utilized for storing and managing key-value pairs in the context of GraphQL queries.
+///
+/// # Errors
+///
+/// Functions in this module may return errors related to network issues, invalid GraphQL queries, or Shopify-specific errors.
+
 use std::collections::HashMap;
 
 use super::{traits::GraphQLRepresentable, types::ShopifyGraphQLType};

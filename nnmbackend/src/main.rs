@@ -5,7 +5,11 @@ mod routes;
 mod utils;
 
 use routes::{
-    dynamodb::get_issue_data, get_news, s3::{count_issues, get_issue, get_latest_issue}, shopify::{create_checkout, execute_checkout, get_checkout}, upload
+    dynamodb::get_issue_data, 
+    news::get_news, 
+    s3::{count_issues, get_issue, get_latest_issue}, 
+    shopify::{create_checkout, execute_checkout, get_checkout}, 
+    upload::upload
 };
 
 #[actix_web::main]
