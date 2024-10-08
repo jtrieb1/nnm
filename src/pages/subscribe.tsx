@@ -1,14 +1,19 @@
 import React from 'react';
 
-import Layout from '../components/layout';
 import CenteredText from '../components/centered';
 import { HeadFC } from 'gatsby';
+import Footer from '../components/footer';
+import Header from '../components/header';
+import SegmentHeader from '../components/segmentheader';
 
 function SubscribePage() {
     return (
-        <Layout>
-            <CenteredText children={["you sure about that?", "you don't gotta, it's free", "we appreciate it though"]} />
-        </Layout>
+        <>
+            <Header />
+            <SegmentHeader headerText="subscribe" />
+            <CenteredText children={["you sure about that?", "you don't gotta, it's free", "we appreciate it though"]} signed={false} />
+            <Footer />
+        </>
     );
 }
 

@@ -1,12 +1,13 @@
 import React from 'react';
 import { graphql, HeadFC, useStaticQuery } from 'gatsby';
 
-import Layout from '../components/layout';
 import SegmentHeader from '../components/segmentheader';
 import { Cart, ItemResult } from '../components/cart';
 import CartView from '../components/cartview';
 import ProductGrid, { MerchNode } from '../components/productgrid';
 import CenteredText from '../components/centered';
+import Header from '../components/header';
+import Footer from '../components/footer';
 
 // Query for the merch data
 export const pageQuery = graphql`
@@ -93,21 +94,21 @@ function MerchPage() {
     }
 
     return (
-        <Layout>
+        <>
+          <Header />
             <SegmentHeader headerText="Merch" />
-            <div className="merch">
               {
                 merchData.length === 0 ? (
-                  <CenteredText children={["no merch available", "bummer"]} />
+                  <CenteredText children={["no merch available", "bummer"]} signed={false} />
                 ) : (
-                  <>
+                  <div className="merch">
                     <ProductGrid cart={cart} merchData={merchData} addItemCallback={add_item} removeItemCallback={remove_item} />
                     <CartView cart={cart} checkoutFn={initiate_checkout} />
-                  </>
+                  </div>
                 )
               }
-            </div>
-        </Layout>
+          <Footer />
+        </>
     );
 }
 

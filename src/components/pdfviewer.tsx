@@ -16,8 +16,7 @@ interface PDFViewerProps {
 }
 
 /// PDFViewer component that displays a PDF document with navigation buttons
-/// It also allows the user to click on the document to navigate
-/// Unfortunately, loads fairly slowly, need to solve that.
+/// It also allows the user to click on the document to navigate, or use arrow keys
 const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
     const [page, setPage] = useState(0);
     const [numPages, setNumPages] = useState(0);
@@ -25,7 +24,21 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
 
     React.useEffect(() => {
         window.matchMedia('(min-width: 768px)').matches ? setPageWidth(800) : setPageWidth(400);
-    }, []);
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'ArrowLeft' && page > 0) {
+            setPage(prevPage => Math.max(prevPage - 2, 0));
+            } else if (event.key === 'ArrowRight' && page + 1 < numPages) {
+            setPage(prevPage => Math.min(prevPage + 2, numPages - 1));
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [page, setPage, numPages]);
 
     pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 

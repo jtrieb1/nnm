@@ -51,6 +51,11 @@ const Catalog = () => {
         });
     }, []);
 
+    // Here (and similarly in latest), we can't use Layout directly
+    // because when the PDF finishes rendering it changes the size of
+    // the page, which causes the footer to move up. This is a limitation
+    // of the PDF viewer library we're using. Instead, we put the header 
+    // and footer in directly so they rerender properly.
     return (
         <>
             <Header />

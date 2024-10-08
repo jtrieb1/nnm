@@ -1,7 +1,6 @@
 import React from 'react';
 import { HeadFC } from 'gatsby';
 
-import Layout from '../components/layout';
 import SegmentHeader from '../components/segmentheader';
 
 import getCount from '../util/count';

@@ -1,7 +1,7 @@
 .footer { 
     position: relative; 
     bottom: 0;
-    width: 100%; 
+    width: fit-content; 
     background-color: var(--tertiary-color); 
     padding: 10px; 
     text-align: right; 

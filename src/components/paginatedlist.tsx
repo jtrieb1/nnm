@@ -27,32 +27,6 @@ const PaginatedList: React.FC<PaginatedListProps> = ({ currentSelection, totalIt
     }, []);
 
     const items = [...Array(totalItems)].slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'ArrowRight' && currentPage < Math.ceil(totalItems / itemsPerPage)) {
-                currentSelection += 1;
-                if (currentSelection > totalItems) {
-                    currentSelection = totalItems;
-                }
-                if (currentSelection > currentPage * itemsPerPage) {
-                    handlePageChange(currentPage + 1);
-                }
-                handleItemSelect(currentSelection);
-            } else if (e.key === 'ArrowLeft' && currentPage > 1) {
-                currentSelection -= 1;
-                if (currentSelection < 1) {
-                    currentSelection = 1;
-                }
-                if (currentSelection < (currentPage - 1) * itemsPerPage + 1) {
-                    handlePageChange(currentPage - 1);
-                }
-                handleItemSelect(currentSelection);
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [currentPage, totalItems, itemsPerPage, handlePageChange]);
 
     return (
         <div className="paginatedList">
