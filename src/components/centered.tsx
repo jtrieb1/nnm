@@ -1,5 +1,7 @@
 import React from 'react';
 import Signature from './signature';
+import { StaticImage } from 'gatsby-plugin-image';
+import PaperBacked from './paperbacked';
 
 /// CenteredText is a component that displays text in the center of the screen
 /// Kind of like the bumper text on Adult Swim, that's the feeling I'm going for
@@ -25,28 +27,36 @@ const CenteredText: React.FC<{ children: string[], signed: boolean }> = ({ child
             }}
         >
             <div
-                style={
-                    {
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        flexDirection: 'column',
-                        width: '80%',
-                        padding: '20px',
-                        borderRadius: '10px',
-                        backgroundColor: 'rgba(0,0,0, 0.3)',
-                        blockSize: '100dvh',
-                        boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
-                        marginBottom: "10px"
-                    }
-                }
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    zIndex: -2
+                }}
+            >
+                <StaticImage src="../images/blue_bg.jpg" alt="Blue Background" imgStyle={{ width: '100%', height: '100%' }} objectFit='cover' />
+            </div>
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    width: '80%',
+                    padding: '20px',
+                    blockSize: '100dvh',
+                    marginBottom: "10px",
+                    position: 'relative'
+                }}
             >
                 {children.map((child: any, index: number) => (
-                    <div key={index} style={{ textAlign: 'center', margin: '10px' }}>
-                        {child}
-                    </div>
+                    <PaperBacked text={child} key={index} />
                 ))}
-            {signed && <Signature />}
+                <div style={{margin: "10px"}}>
+                    {signed && <Signature />}
+                </div>
             </div>
         </div>
     );
