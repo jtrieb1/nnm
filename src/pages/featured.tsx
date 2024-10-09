@@ -109,9 +109,9 @@ const FeaturedArtists: React.FC<FeaturedArtistsProps> = () => {
     return (
         <>
             <Header />
-            <div className="container mx-auto" style={{flex: 1, height: "100vh"}}>
+            <div className="container mx-auto" style={{flex: 1, height: "100%", minHeight: "85vh"}}>
                 <SegmentHeader headerText="Featured Artists" />
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" style={{flex: 1}}>
                     {
                         top_contributors.length === 0 ? (
                             <div className="bg-white shadow-md rounded-md p-4" role="status" aria-live="polite">

@@ -20,10 +20,13 @@ interface PDFViewerProps {
 const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
     const [page, setPage] = useState(0);
     const [numPages, setNumPages] = useState(0);
-    const [pageWidth, setPageWidth] = useState(800);
+    const [pageWidth, setPageWidth] = useState<number | undefined>(undefined);
 
     React.useEffect(() => {
-        window.matchMedia('(min-width: 768px)').matches ? setPageWidth(800) : setPageWidth(400);
+        
+        if (pageWidth === undefined) {
+            window.matchMedia('(min-width: 768px)').matches ? setPageWidth(800) : setPageWidth(400);
+        }
 
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'ArrowLeft' && page > 0) {
@@ -50,11 +53,11 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
         <div role="region" aria-label="PDF Viewer">
         <div className='pdfviewer'>
             <div className="resizer">
-                <button onClick={() => setPageWidth(pageWidth - 100)} disabled={pageWidth <= 100} className='resizeBtn'>
+                <button onClick={() => setPageWidth(pageWidth! - 100)} disabled={pageWidth! <= 100} className='resizeBtn'>
                     -
                 </button>
                 <span style={{padding: "10px"}}>Page Size: {pageWidth}</span>
-                <button onClick={() => setPageWidth(pageWidth + 100)} disabled={pageWidth >= 1000} className='resizeBtn'>
+                <button onClick={() => setPageWidth(pageWidth! + 100)} disabled={pageWidth! >= 1000} className='resizeBtn'>
                     +
                 </button>
             </div>
