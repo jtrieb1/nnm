@@ -17,40 +17,11 @@ const CenteredText: React.FC<{ children: string[], signed: boolean }> = ({ child
     }, []);
     
     return (
-        <div
-            style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '80vh',
-                flexDirection: 'column',
-            }}
-        >
-            <div
-                style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    zIndex: -2
-                }}
-            >
+        <div className='centered-text-container'>
+            <div className='centered-bg-image-container'>
                 <StaticImage src="../images/blue_bg.jpg" alt="Blue Background" imgStyle={{ width: '100%', height: '100%' }} objectFit='cover' />
             </div>
-            <div
-                style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                    width: '80%',
-                    padding: '20px',
-                    blockSize: '100dvh',
-                    marginBottom: "10px",
-                    position: 'relative'
-                }}
-            >
+            <div className='centered-child-container'>
                 {children.map((child: any, index: number) => (
                     <PaperBacked text={child} key={index} />
                 ))}
