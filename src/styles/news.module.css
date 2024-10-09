@@ -162,6 +162,10 @@
         font-size: 1.2em;
     }
 
+    .news-item {
+        max-width: 150px;
+    }
+
     .news-description {
         font-size: 1em;
     }
