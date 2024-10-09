@@ -96,7 +96,7 @@ function MerchPage() {
     return (
         <>
           <Header />
-            <SegmentHeader headerText="Merch" />
+            <SegmentHeader headerText="Merch" dark={false}/>
               {
                 merchData.length === 0 ? (
                   <CenteredText children={["no merch available", "bummer"]} signed={false} />

@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { DocumentCallback } from 'react-pdf/dist/cjs/shared/types';
+import Contributors from './contributors';
 
 const PageLoading = () => {
     return (
@@ -13,11 +14,12 @@ const PageLoading = () => {
 
 interface PDFViewerProps {
     pdfUrl: string;
+    issue: number;
 }
 
 /// PDFViewer component that displays a PDF document with navigation buttons
 /// It also allows the user to click on the document to navigate, or use arrow keys
-const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
+const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl, issue }) => {
     const [page, setPage] = useState(0);
     const [numPages, setNumPages] = useState(0);
     const [pageWidth, setPageWidth] = useState<number | undefined>(undefined);
@@ -50,32 +52,33 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
     }
 
     return (
-        <div role="region" aria-label="PDF Viewer">
-        <div className='pdfviewer'>
-            <div className="resizer">
-                <button onClick={() => setPageWidth(pageWidth! - 100)} disabled={pageWidth! <= 100} className='resizeBtn'>
-                    -
-                </button>
-                <span style={{padding: "10px"}}>Page Size: {pageWidth}</span>
-                <button onClick={() => setPageWidth(pageWidth! + 100)} disabled={pageWidth! >= 1000} className='resizeBtn'>
-                    +
-                </button>
-            </div>
-            <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess} className="pdfDocument">
-                <div className='pageSpread'>
-                    {page != 0 ? <Page pageNumber={page} className="pdfPage" width={pageWidth} onClick={() => setPage(page - 2)} loading={PageLoading} /> : <></>}
-                    {page != numPages ? <Page pageNumber={page + 1} width={pageWidth} onClick={() => setPage(page + 2)} loading={PageLoading} /> : <></>}
+        <div role="region" aria-label="PDF Viewer" className='pdfviewer-region'>
+            <div className='pdfviewer'>
+                <div className="resizer">
+                    <button onClick={() => setPageWidth(pageWidth! - 100)} disabled={pageWidth! <= 100} className='resizeBtn'>
+                        -
+                    </button>
+                    <span style={{padding: "10px"}}>Page Size: {pageWidth}</span>
+                    <button onClick={() => setPageWidth(pageWidth! + 100)} disabled={pageWidth! >= 1000} className='resizeBtn'>
+                        +
+                    </button>
                 </div>
-            </Document>
-            <div className='buttonContainer'>
-                <button onClick={() => setPage(page - 2)} disabled={page <= 1} className='previousBtn'>
-                    Previous
-                </button>
-                <button onClick={() => setPage(page + 2)} disabled={page + 2 > numPages} className='nextBtn'>
-                    Next
-                </button>
+                <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess} className="pdfDocument">
+                    <div className='pageSpread'>
+                        {page != 0 ? <Page pageNumber={page} className="pdfPage" width={pageWidth} onClick={() => setPage(page - 2)} loading={PageLoading} /> : <></>}
+                        {page != numPages ? <Page pageNumber={page + 1} width={pageWidth} onClick={() => setPage(page + 2)} loading={PageLoading} /> : <></>}
+                    </div>
+                </Document>
+                <div className='buttonContainer'>
+                    <button onClick={() => setPage(page - 2)} disabled={page <= 1} className='previousBtn'>
+                        Previous
+                    </button>
+                    <button onClick={() => setPage(page + 2)} disabled={page + 2 > numPages} className='nextBtn'>
+                        Next
+                    </button>
+                </div>
             </div>
-        </div>  
+            {(page === 0 || page === numPages) && <Contributors issueNumber={issue} />}
         </div>
     );
 };

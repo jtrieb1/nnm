@@ -5,6 +5,14 @@
     height: 100vh;
 }
 
+.contributors-container {
+    position: relative;
+    padding: 20px; 
+    color: var(--background-color);
+    font-family: var(--handwritten-font);
+    font-size: 30px;
+}
+
 .contributors {
     text-align: center;
     list-style: none;
@@ -18,10 +26,35 @@
 
 .contributors li a {
     text-decoration: none;
-    color: var(--primary-color);
+    color: var(--background-color);
     transition: color 0.3s;
 }
 
 .contributors li a:hover {
-    color: var(--secondary-color);
+    color: var(--primary-color);
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .contributors-container {
+        padding: 15px;
+        font-size: 25px;
+    }
+
+    .contributors {
+        padding-bottom: 80px;
+        margin: 15px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .contributors-container {
+        padding: 10px;
+        font-size: 20px;
+    }
+
+    .contributors {
+        padding-bottom: 60px;
+        margin: 10px 0;
+    }
 }

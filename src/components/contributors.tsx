@@ -2,6 +2,7 @@ import React from 'react';
 import { getIssueData } from '../util/issue';
 import handle_to_link from '../util/links';
 import SegmentHeader from './segmentheader';
+import { StaticImage } from 'gatsby-plugin-image';
 
 export interface ContributorsProps {
     issueNumber: number;
@@ -31,8 +32,17 @@ const Contributors: React.FC<ContributorsProps> = ({ issueNumber }) => {
             {loading ? (
                 <div className='contributors-loading'>Loading...</div>
             ) : (
-                <>
-                    <SegmentHeader headerText="Contributors" />
+                <div className='contributors-container'>
+                    <div className='paperbacked-image' style={{overflow: "hidden"}} >
+                        <StaticImage
+                            src="../images/paper.jpg"
+                            alt="Paper background"
+                            layout="fullWidth"
+                            imgClassName='paperbacked-image'
+                            style={{ opacity: contributors.length > 0 ? 1 : 0 }}
+                        />
+                    </div>
+                    <SegmentHeader headerText="Contributors" dark={true} />
                     <ul>
                         {contributors.map((contributor, index) => (
                             <li key={index}>
@@ -40,7 +50,7 @@ const Contributors: React.FC<ContributorsProps> = ({ issueNumber }) => {
                             </li>
                         ))}
                     </ul>
-                </>
+                </div>
             )}
             </div>
         </>

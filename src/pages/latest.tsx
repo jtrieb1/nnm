@@ -13,6 +13,7 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import Header from '../components/header';
 import Footer from '../components/footer';
+import { StaticImage } from 'gatsby-plugin-image';
 
 const Latest = () => {
     const [issueNumber, setIssueNumber] = React.useState(0);
@@ -40,7 +41,10 @@ const Latest = () => {
     return (
         <>
             <Header />
-            <SegmentHeader headerText="Latest Issue" />
+            <div className='centered-bg-image-container'>
+                <StaticImage src="../images/blue_bg.jpg" alt="Blue Background" imgStyle={{ width: '100%', height: '100%' }} objectFit='cover' />
+            </div>
+            <SegmentHeader headerText="Latest Issue" dark={false} />
             {loading ? (
                 <div className='catalog-loading' role="status" aria-live="polite">
                     <div className='spinner' aria-label="Loading"></div>
@@ -49,8 +53,7 @@ const Latest = () => {
                 <div className='catalog-pdfviewer' role="main">
                     <Blurb issueNumber={issueNumber} />
                     <div className='contentSection'>
-                        <PDFViewer pdfUrl={pdfUrl} />
-                        <Contributors issueNumber={issueNumber} />
+                        <PDFViewer pdfUrl={pdfUrl} issue={issueNumber}/>
                     </div>
                     <Footer />
                 </div>

@@ -10,7 +10,7 @@ const AboutPage: React.FC = () => {
     return (
         <>
         <Header />
-            <SegmentHeader headerText="about us" />
+            <SegmentHeader headerText="about us" dark={false}/>
             <CenteredText 
                 children={[
                     "no nothing magazine is a tiny group of friends based in Orlando, Florida",

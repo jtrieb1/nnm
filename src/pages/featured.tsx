@@ -114,7 +114,7 @@ const FeaturedArtists: React.FC<FeaturedArtistsProps> = () => {
                 <div className='centered-bg-image-container'>
                     <StaticImage src="../images/blue_bg.jpg" alt="Blue Background" imgStyle={{ width: '100%', height: '100%' }} objectFit='cover' />
                 </div>
-                <SegmentHeader headerText="Featured Artists" />
+                <SegmentHeader headerText="Featured Artists" dark={false}/>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" style={{flex: 1}}>
                     {
                         top_contributors.length === 0 ? (

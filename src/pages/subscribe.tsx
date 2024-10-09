@@ -10,7 +10,7 @@ function SubscribePage() {
     return (
         <>
             <Header />
-            <SegmentHeader headerText="subscribe" />
+            <SegmentHeader headerText="subscribe" dark={false}/>
             <CenteredText children={["you sure about that?", "you don't gotta, it's free", "we appreciate it though"]} signed={false} />
             <Footer />
         </>

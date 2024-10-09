@@ -5,7 +5,7 @@ import { graphql, useStaticQuery } from 'gatsby';
 
 /// NewsItem is a component that displays a single news item
 /// NewsItem displays an image, title, and description.
-const NewsItem: React.FC<{ title: string, description: string, image_url: string }> = ({ title, description, image_url }) => {
+const NewsItem: React.FC<{ title: string, description: string, image_url: string, key: number }> = ({ title, description, image_url, key }) => {
     let imgquery = useStaticQuery(graphql`
         {
             tape1: file(relativePath: {eq: "tape1.png"}) {
@@ -25,7 +25,10 @@ const NewsItem: React.FC<{ title: string, description: string, image_url: string
             }
         }
     `);
-    let image = getImage(imgquery.tape1);
+
+    let imageSelection = key % 3 + 1;
+    let qchoice = imageSelection === 0 ? imgquery.tape1 : imageSelection === 1 ? imgquery.tape2 : imgquery.tape3;
+    let image = getImage(qchoice);
 
     return (
         <div className="news-item">

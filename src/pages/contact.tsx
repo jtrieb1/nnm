@@ -10,7 +10,7 @@ function ContactPage() {
     return (
         <>
             <Header />
-            <SegmentHeader headerText="contact us" />
+            <SegmentHeader headerText="contact us" dark={false}/>
             <CenteredText children={["we're always looking for more contributors", "send us your stuff", "", "nonothingmag@gmail.com"]} signed={false}/>
             <Footer />
         </>

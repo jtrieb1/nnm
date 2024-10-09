@@ -14,6 +14,7 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import Header from '../components/header';
 import Footer from '../components/footer';
+import { StaticImage } from 'gatsby-plugin-image';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -60,7 +61,10 @@ const Catalog = () => {
         <>
             <Header />
             <div style={{flex: 1, height: "100%"}}>
-                <SegmentHeader headerText="Catalog" />
+                <div className='centered-bg-image-container'>
+                    <StaticImage src="../images/blue_bg.jpg" alt="Blue Background" imgStyle={{ width: '100%', height: '100%' }} objectFit='cover' />
+                </div>
+                <SegmentHeader headerText="Catalog" dark={false}/>
                 {
                     count > 0 && <PaginatedList currentSelection={currentIssue} totalItems={count} itemsPerPage={ITEMS_PER_PAGE} currentPage={currentPage} handleItemSelect={handleIssueSelect} handlePageChange={handlePageChange} />
                 }
@@ -70,8 +74,7 @@ const Catalog = () => {
                     : <div className='catalog-pdfviewer'>
                         <Blurb issueNumber={currentIssue} />
                         <div className='contentSection'>
-                            <PDFViewer pdfUrl={pdfUrl} />
-                            <Contributors issueNumber={currentIssue} />
+                            <PDFViewer pdfUrl={pdfUrl} issue={currentIssue}/>
                         </div>
                         <Footer />
                       </div>
