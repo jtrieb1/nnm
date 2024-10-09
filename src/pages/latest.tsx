@@ -41,7 +41,7 @@ const Latest = () => {
     return (
         <>
             <Header />
-            <div className='centered-bg-image-container'>
+            <div className='latest-bg-image-container'>
                 <StaticImage src="../images/blue_bg.jpg" alt="Blue Background" imgStyle={{ width: '100%', height: '100%' }} objectFit='cover' />
             </div>
             <SegmentHeader headerText="Latest Issue" dark={false} />

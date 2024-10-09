@@ -61,7 +61,7 @@ const Catalog = () => {
         <>
             <Header />
             <div style={{flex: 1, height: "100%"}}>
-                <div className='centered-bg-image-container'>
+                <div className='catalog-bg-image-container'>
                     <StaticImage src="../images/blue_bg.jpg" alt="Blue Background" imgStyle={{ width: '100%', height: '100%' }} objectFit='cover' />
                 </div>
                 <SegmentHeader headerText="Catalog" dark={false}/>
