@@ -39,7 +39,7 @@ const NewsContainer: React.FC<{}> = () => {
             news.articles.length === 0 ?
                 null :
                 <div className="news-container" role="region" aria-labelledby="news-heading">
-                    <StaticImage src="../images/news_bg.jpg" alt="News Background" className="news-image" />
+                    <StaticImage src="../images/nnmnews.png" alt="News Background" className="news-image" />
                     <h1 id="news-heading" style={{display: "none"}}>News</h1>
                     <div className="news-list">
                         {news.articles.map((newsItem, index) => (
