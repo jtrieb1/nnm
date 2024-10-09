@@ -14,7 +14,6 @@ import React from 'react';
                         style={{ opacity: text.length > 0 ? 1 : 0 }}
                     />
                 </div>
-                
                 <div className='paperbacked-text'>
                     {text}
                 </div>

@@ -48,6 +48,13 @@ const config: GatsbyConfig = {
         "icon": "src/images/logo.png"
       }
     },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `images`,
+        path: `${__dirname}/src/images`,
+      }
+    },
   ],
 };
 
