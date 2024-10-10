@@ -1,8 +1,8 @@
 import * as React from "react"
 import { Link, HeadFC, PageProps } from "gatsby"
 
-import Header from "../components/header"
-import Footer from "../components/footer"
+import Header from "../components/layout/Header"
+import Footer from "../components/layout/Footer"
 
 const NotFoundPage: React.FC<PageProps> = () => {
   return (

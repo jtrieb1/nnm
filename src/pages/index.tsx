@@ -1,10 +1,10 @@
 import * as React from "react"
 import type { HeadFC, PageProps } from "gatsby"
 
-import Hero from "../components/hero"
-import NewsContainer from "../components/news"
-import Header from "../components/header"
-import Footer from "../components/footer"
+import Hero from "../components/hero/Hero"
+import NewsContainer from "../components/news/NewsContainer"
+import Header from "../components/layout/Header"
+import Footer from "../components/layout/Footer"
 
 const IndexPage: React.FC<PageProps> = () => {
   return (

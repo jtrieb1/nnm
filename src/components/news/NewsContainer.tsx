@@ -1,5 +1,5 @@
 import React from 'react';
-import BACKEND_URL from '../util/aws';
+import BACKEND_URL from '../../util/aws';
 import { GatsbyImage, getImage, StaticImage } from 'gatsby-plugin-image';
 import { graphql, useStaticQuery } from 'gatsby';
 
@@ -80,11 +80,11 @@ const NewsContainer: React.FC<{}> = () => {
                 null :
                 <div className="news-container" role="region" aria-labelledby="news-heading">
                     <div className='news-header-bg-container'>
-                        <StaticImage src="../images/paper.jpg" alt="News Background" className="news-header-bg-image"/>
+                        <StaticImage src="../../images/paper.jpg" alt="News Background" className="news-header-bg-image"/>
                     </div>
                     <div className="news-overlay">
                         <div className='news-header-container'>
-                            <StaticImage src="../images/nnmnews.png" alt="News Background" imgClassName="news-header-image" />
+                            <StaticImage src="../../images/nnmnews.png" alt="News Background" imgClassName="news-header-image" />
                         </div>
                         <h1 id="news-heading" style={{display: "none"}}>News</h1>
                         <div className="news-list">

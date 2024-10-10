@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PageTurnButtons from './pageturnbuttons';
+import PageTurnButtons from './PageTurnButtons';
 
 
 export interface PaginatedListProps {

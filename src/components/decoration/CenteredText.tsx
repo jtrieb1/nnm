@@ -1,7 +1,7 @@
 import React from 'react';
-import Signature from './signature';
-import PaperBacked from './paperbacked';
-import ContextBg from './contextbg';
+import Signature from './Signature';
+import PaperBacked from './PaperBacked';
+import ContextBg from '../bg/ContextBg';
 
 /// CenteredText is a component that displays text in the center of the screen
 /// Kind of like the bumper text on Adult Swim, that's the feeling I'm going for

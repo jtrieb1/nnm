@@ -11,7 +11,7 @@ const Hero: React.FC<HeroProps> = ({ title, description }) => {
     return (
         <div className="hero" role="banner" aria-labelledby="hero-title" aria-describedby="hero-description">
             <StaticImage 
-                src={"../images/altsplash.jpg"} 
+                src={"../../images/altsplash.jpg"} 
                 alt="Hero Image" 
                 style={{
                     flex: 1,

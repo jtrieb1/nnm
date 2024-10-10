@@ -1,6 +1,6 @@
 import React from "react";
 
-import Navbar from "./navbar";
+import Navbar from "./Navbar";
 
 /// Simple header component that displays the navbar
 const Header = () => {

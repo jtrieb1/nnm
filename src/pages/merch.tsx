@@ -1,13 +1,13 @@
 import React from 'react';
 import { graphql, HeadFC, useStaticQuery } from 'gatsby';
 
-import SegmentHeader from '../components/segmentheader';
-import { Cart, ItemResult } from '../components/cart';
-import CartView from '../components/cartview';
-import ProductGrid, { MerchNode } from '../components/productgrid';
-import CenteredText from '../components/centered';
-import Header from '../components/header';
-import Footer from '../components/footer';
+import SegmentHeader from '../components/layout/SegmentHeader';
+import { Cart, ItemResult } from '../components/cart/Cart';
+import CartView from '../components/cart/CartView';
+import ProductGrid, { MerchNode } from '../components/products/ProductGrid';
+import CenteredText from '../components/decoration/CenteredText';
+import Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
 
 // Query for the merch data
 export const pageQuery = graphql`

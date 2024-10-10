@@ -1,6 +1,6 @@
 import React from 'react';
-import ProductCard from './productcard';
-import { Cart } from './cart';
+import ProductCard from './ProductCard';
+import { Cart } from '../cart/Cart';
 
 /// MerchNode is a type that represents a piece of merchandise.
 /// These fields are returned from the current graphql queries.
@@ -63,7 +63,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ cart, merchData, addItemCallb
                         </button>
                         <button
                             onClick={() => removeItemCallback({node})}
-                            disabled={cart.items.every(i => i.product_id != node.variants[0].shopifyId)}
+                            disabled={cart.items.every((i: any) => i.product_id != node.variants[0].shopifyId)}
                             aria-label={`Remove ${node.title} from Cart`}
                         >
                             Remove from Cart

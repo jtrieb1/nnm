@@ -4,7 +4,7 @@ import React from "react";
 const Signature: React.FC = () => {
     return (
     <StaticImage
-        src="../images/signature.png"
+        src="../../images/signature.png"
         alt="Signature"
         style={{
             position: "relative",

@@ -1,10 +1,10 @@
 import React from 'react';
 import { HeadFC } from 'gatsby';
 
-import CenteredText from '../components/centered';
-import Header from '../components/header';
-import Footer from '../components/footer';
-import SegmentHeader from '../components/segmentheader';
+import CenteredText from '../components/decoration/CenteredText';
+import Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
+import SegmentHeader from '../components/layout/SegmentHeader';
 
 function ContactPage() {
     return (

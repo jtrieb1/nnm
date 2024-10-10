@@ -7,7 +7,7 @@ import React, { ReactNode } from 'react';
             <div className={animated ? "paperbacked-animated" : "paperbacked"}>
                 <div className='paperbacked-image' style={{overflow: "hidden"}} >
                     <StaticImage
-                        src="../images/paper.jpg"
+                        src="../../images/paper.jpg"
                         alt="Paper background"
                         layout="fullWidth"
                         imgClassName='paperbacked-image'

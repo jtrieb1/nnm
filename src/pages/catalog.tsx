@@ -1,19 +1,19 @@
 import React from 'react';
 import { HeadFC } from 'gatsby';
 
-import Blurb from '../components/blurb';
-import PaginatedList from '../components/paginatedlist';
-import PDFViewer from '../components/pdfviewer';
-import SegmentHeader from '../components/segmentheader';
+import Blurb from '../components/blurb/Blurb';
+import PaginatedList from '../components/issueviewer/PaginatedList';
+import IssueViewer from '../components/issueviewer/IssueViewer';
+import SegmentHeader from '../components/layout/SegmentHeader';
 
 import getCount from '../util/count';
 import { getIssueUrl } from '../util/issue';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-import Header from '../components/header';
-import Footer from '../components/footer';
-import ContextBg from '../components/contextbg';
+import Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
+import ContextBg from '../components/bg/ContextBg';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -71,7 +71,7 @@ const Catalog = () => {
                     : <div className='catalog-pdfviewer'>
                         <Blurb issueNumber={currentIssue} />
                         <div className='contentSection'>
-                            <PDFViewer pdfUrl={pdfUrl} issue={currentIssue}/>
+                            <IssueViewer pdfUrl={pdfUrl} issue={currentIssue}/>
                         </div>
                         <Footer />
                       </div>

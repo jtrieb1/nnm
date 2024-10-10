@@ -1,7 +1,7 @@
 import React from 'react';
-import { getIssueData } from '../util/issue';
-import handle_to_link from '../util/links';
-import SegmentHeader from './segmentheader';
+import { getIssueData } from '../../util/issue';
+import handle_to_link from '../../util/links';
+import SegmentHeader from '../layout/SegmentHeader';
 import { StaticImage } from 'gatsby-plugin-image';
 
 export interface ContributorsProps {
@@ -35,7 +35,7 @@ const Contributors: React.FC<ContributorsProps> = ({ issueNumber }) => {
                 <div className='contributors-container'>
                     <div className='paperbacked-image' style={{overflow: "hidden"}} >
                         <StaticImage
-                            src="../images/paper.jpg"
+                            src="../../images/paper.jpg"
                             alt="Paper background"
                             layout="fullWidth"
                             imgClassName='paperbacked-image'

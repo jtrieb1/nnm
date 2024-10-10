@@ -1,15 +1,15 @@
 import React from 'react';
 import { HeadFC } from 'gatsby';
 
-import SegmentHeader from '../components/segmentheader';
+import SegmentHeader from '../components/layout/SegmentHeader';
 
 import getCount from '../util/count';
 import { getIssueData } from '../util/issue';
 import handle_to_link from '../util/links';
-import Footer from '../components/footer';
-import Header from '../components/header';
-import ContextBg from '../components/contextbg';
-import PaperBacked from '../components/paperbacked';
+import Footer from '../components/layout/Footer';
+import Header from '../components/layout/Header';
+import ContextBg from '../components/bg/ContextBg';
+import PaperBacked from '../components/decoration/PaperBacked';
 
 export interface FeaturedArtistsProps {}
 

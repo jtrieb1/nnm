@@ -1,5 +1,5 @@
 import React from 'react';
-import { getIssueData } from '../util/issue';
+import { getIssueData } from '../../util/issue';
 import { StaticImage } from 'gatsby-plugin-image';
 
 export interface BlurbProps {
@@ -36,7 +36,7 @@ const Blurb: React.FC<BlurbProps> = ({ issueNumber }) => {
                     <div id="blurb-content">
                         <div className="blurbholder">
                             <div className='dialogpanel'>
-                                <StaticImage src={"../images/carpetface.png"} alt="Carpet" className='carpetface' />
+                                <StaticImage src={"../../images/carpetface.png"} alt="Carpet" className='carpetface' />
                                 <div className='speechbubble'>
                                     <div className="quoteIntro">carpet sez:</div>
                                     <div className="quote">{blurb}</div>

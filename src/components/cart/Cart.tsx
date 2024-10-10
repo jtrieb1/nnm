@@ -1,4 +1,4 @@
-import BACKEND_URL from "../util/aws";
+import BACKEND_URL from "../../util/aws";
 
 /// ItemResult is the result of a product query
 export interface ItemResult {

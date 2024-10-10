@@ -1,18 +1,18 @@
 import React from 'react';
 import { HeadFC } from 'gatsby';
 
-import Blurb from '../components/blurb';
-import PDFViewer from '../components/pdfviewer';
-import SegmentHeader from '../components/segmentheader';
+import Blurb from '../components/blurb/Blurb';
+import IssueViewer from '../components/issueviewer/IssueViewer';
+import SegmentHeader from '../components/layout/SegmentHeader';
 
-import { getIssueData, getLatestIssueUrl } from '../util/issue';
+import { getLatestIssueUrl } from '../util/issue';
 import getCount from '../util/count';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-import Header from '../components/header';
-import Footer from '../components/footer';
-import ContextBg from '../components/contextbg';
+import Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
+import ContextBg from '../components/bg/ContextBg';
 
 const Latest = () => {
     const [issueNumber, setIssueNumber] = React.useState(0);
@@ -45,7 +45,7 @@ const Latest = () => {
                 <div className='catalog-pdfviewer' role="main">
                     <Blurb issueNumber={issueNumber} />
                     <div className='contentSection'>
-                        <PDFViewer pdfUrl={pdfUrl} issue={issueNumber} />
+                        <IssueViewer pdfUrl={pdfUrl} issue={issueNumber} />
                     </div>
                     <Footer />
                 </div>

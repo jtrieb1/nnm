@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { DocumentCallback } from 'react-pdf/dist/cjs/shared/types';
-import Contributors from './contributors';
+import Contributors from './Contributors';
 
 const PageLoading = () => {
     return (
@@ -19,7 +19,7 @@ interface PDFViewerProps {
 
 /// PDFViewer component that displays a PDF document with navigation buttons
 /// It also allows the user to click on the document to navigate, or use arrow keys
-const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl, issue }) => {
+const IssueViewer: React.FC<PDFViewerProps> = ({ pdfUrl, issue }) => {
     const [page, setPage] = useState(0);
     const [numPages, setNumPages] = useState(0);
     const [pageWidth, setPageWidth] = useState<number | undefined>(undefined);
@@ -83,4 +83,4 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl, issue }) => {
     );
 };
 
-export default PDFViewer;
+export default IssueViewer;
