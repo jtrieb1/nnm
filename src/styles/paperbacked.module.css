@@ -6,6 +6,18 @@
     font-size: 30px;
 }
 
+.paperbacked-animated {
+    position: relative;
+    padding: 20px; 
+    color: var(--background-color);
+    font-family: var(--handwritten-font);
+    font-size: 30px;
+}
+
+.paperbacked-animated:hover {
+    transform: translateY(-2px);
+}
+
 .paperbacked-image {
     position: absolute; 
     top: 0; 

@@ -1,21 +1,21 @@
 import { StaticImage } from 'gatsby-plugin-image';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 
-    const PaperBacked: React.FC<{ text: string }> = ({ text }) => {
+    const PaperBacked: React.FC<{ animated: boolean, children: ReactNode[] }> = ({ animated, children }) => {
         return (
-            <div className='paperbacked'>
+            <div className={animated ? "paperbacked-animated" : "paperbacked"}>
                 <div className='paperbacked-image' style={{overflow: "hidden"}} >
                     <StaticImage
                         src="../images/paper.jpg"
                         alt="Paper background"
                         layout="fullWidth"
                         imgClassName='paperbacked-image'
-                        style={{ opacity: text.length > 0 ? 1 : 0 }}
+                        style={{ opacity: children.length > 0 ? 1 : 0 }}
                     />
                 </div>
                 <div className='paperbacked-text'>
-                    {text}
+                    {children}
                 </div>
             </div>
         );

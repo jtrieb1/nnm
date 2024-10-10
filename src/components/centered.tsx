@@ -1,6 +1,5 @@
 import React from 'react';
 import Signature from './signature';
-import { StaticImage } from 'gatsby-plugin-image';
 import PaperBacked from './paperbacked';
 import ContextBg from './contextbg';
 
@@ -23,7 +22,9 @@ const CenteredText: React.FC<{ children: string[], signed: boolean }> = ({ child
             <ContextBg cutoffpx={576} />
             <div className='centered-child-container'>
                 {children.map((child: any, index: number) => (
-                    <PaperBacked text={child} key={index} />
+                    <PaperBacked animated={false} key={index}>
+                        {child}
+                    </PaperBacked>
                 ))}
                 <div style={{margin: "10px"}}>
                     {signed && <Signature />}

@@ -10,6 +10,14 @@ const ContextBg: React.FC<{cutoffpx: number}> = ({ cutoffpx }) => {
         } else {
             setShow(false);
         }
+
+        window.onresize = () => {
+            if (window.matchMedia(`(min-width: ${cutoffpx}px)`).matches) {
+                setShow(true);
+            } else {
+                setShow(false);
+            }
+        }
     }, [setShow]);
 
     return (

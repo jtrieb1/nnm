@@ -9,6 +9,7 @@ import handle_to_link from '../util/links';
 import Footer from '../components/footer';
 import Header from '../components/header';
 import ContextBg from '../components/contextbg';
+import PaperBacked from '../components/paperbacked';
 
 export interface FeaturedArtistsProps {}
 
@@ -100,8 +101,21 @@ async function get_top_contributors(): Promise<Array<{name: string, handle: stri
 
 const FeaturedArtists: React.FC<FeaturedArtistsProps> = () => {
     const [top_contributors, setTopContributors] = React.useState<Array<{name: string, handle: string}>>([]);
+    const [textCentered, setTextCentered] = React.useState(false);
 
     React.useEffect(() => {
+        if (window.matchMedia('(max-width: 768px)').matches) {
+            setTextCentered(true);
+        }
+
+        window.onresize = () => {
+            if (window.matchMedia('(max-width: 768px)').matches) {
+                setTextCentered(true);
+            } else {
+                setTextCentered(false);
+            }
+        }
+        
         get_top_contributors().then((top_contributors) => {
             setTopContributors(top_contributors);
         });
@@ -116,17 +130,24 @@ const FeaturedArtists: React.FC<FeaturedArtistsProps> = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" style={{flex: 1}}>
                     {
                         top_contributors.length === 0 ? (
-                            <div className="bg-white shadow-md rounded-md p-4" role="status" aria-live="polite">
+                            <PaperBacked animated={false}>
+                                <></>
                                 <h2 className="text-2xl font-bold" style={{color: "#222831"}}>Loading...</h2>
-                            </div>
+                            </PaperBacked>
                         )
                         : top_contributors.map((contributor, index) => (
-                        <div key={index} className="bg-white shadow-md rounded-md p-4">
-                            <a href={handle_to_link(contributor.handle)} target="_blank" rel="noreferrer" style={{color: "#222831"}} aria-label={`Visit ${contributor.name}'s profile`}>
-                            <h2 className="text-2xl font-bold">{contributor.name}</h2>
-                            <p className="text-lg">{contributor.handle}</p>
+                        <PaperBacked key={index} animated={true}>
+                            <></>
+                            <a href={handle_to_link(contributor.handle)} target="_blank" rel="noreferrer" aria-label={`Visit ${contributor.name}'s profile`} className="featured-link" style={textCentered ? {display: "flex", flexDirection: "row"} : {}}>
+                                <h2 className="text-2xl font-bold">{contributor.name}</h2>
+                                {
+                                    textCentered ?
+                                    <p className='text-lg' style={{marginLeft: "20px"}}>{contributor.handle}</p> :
+                                    <p className='text-lg'>{contributor.handle}</p>
+                                }
                             </a>
-                        </div>
+                        </PaperBacked>
+                        
                     ))}
                 </div>
             </div>
