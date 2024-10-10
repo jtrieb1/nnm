@@ -2,7 +2,6 @@ import React from 'react';
 import { HeadFC } from 'gatsby';
 
 import Blurb from '../components/blurb';
-import Contributors from '../components/contributors';
 import PDFViewer from '../components/pdfviewer';
 import SegmentHeader from '../components/segmentheader';
 
@@ -13,7 +12,7 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import Header from '../components/header';
 import Footer from '../components/footer';
-import { StaticImage } from 'gatsby-plugin-image';
+import ContextBg from '../components/contextbg';
 
 const Latest = () => {
     const [issueNumber, setIssueNumber] = React.useState(0);
@@ -21,10 +20,10 @@ const Latest = () => {
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
+        setLoading(true);
+
         getCount().then(count => {
-            getIssueData(count).then(data => {
-                setIssueNumber(count);
-            });
+            setIssueNumber(count);
         });
         getLatestIssueUrl().then(url => {
             setPdfUrl(url);
@@ -33,17 +32,10 @@ const Latest = () => {
         
     }, []);
 
-    // Here (and similarly in catalog), we can't use Layout directly
-    // because when the PDF finishes rendering it changes the size of
-    // the page, which causes the footer to move up. This is a limitation
-    // of the PDF viewer library we're using. Instead, we put the header 
-    // and footer in directly so they rerender properly.
     return (
         <>
             <Header />
-            <div className='latest-bg-image-container'>
-                <StaticImage src="../images/blue_bg.jpg" alt="Blue Background" imgStyle={{ width: '100%', height: '100%' }} objectFit='cover' />
-            </div>
+            <ContextBg cutoffpx={768} />
             <SegmentHeader headerText="Latest Issue" dark={false} />
             {loading ? (
                 <div className='catalog-loading' role="status" aria-live="polite">
@@ -53,7 +45,7 @@ const Latest = () => {
                 <div className='catalog-pdfviewer' role="main">
                     <Blurb issueNumber={issueNumber} />
                     <div className='contentSection'>
-                        <PDFViewer pdfUrl={pdfUrl} issue={issueNumber}/>
+                        <PDFViewer pdfUrl={pdfUrl} issue={issueNumber} />
                     </div>
                     <Footer />
                 </div>

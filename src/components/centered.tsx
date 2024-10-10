@@ -2,6 +2,7 @@ import React from 'react';
 import Signature from './signature';
 import { StaticImage } from 'gatsby-plugin-image';
 import PaperBacked from './paperbacked';
+import ContextBg from './contextbg';
 
 /// CenteredText is a component that displays text in the center of the screen
 /// Kind of like the bumper text on Adult Swim, that's the feeling I'm going for
@@ -10,17 +11,16 @@ const CenteredText: React.FC<{ children: string[], signed: boolean }> = ({ child
     const containerRef = React.useRef<HTMLDivElement>(null);
 
     React.useEffect(() => {
+
         if (containerRef.current) {
             containerRef.current.setAttribute('role', 'main');
             containerRef.current.setAttribute('aria-live', 'polite');
         }
-    }, []);
+    }, [containerRef]);
     
     return (
         <div className='centered-text-container'>
-            <div className='centered-bg-image-container'>
-                <StaticImage src="../images/blue_bg.jpg" alt="Blue Background" imgStyle={{ width: '100%', height: '100%' }} objectFit='cover' />
-            </div>
+            <ContextBg cutoffpx={576} />
             <div className='centered-child-container'>
                 {children.map((child: any, index: number) => (
                     <PaperBacked text={child} key={index} />

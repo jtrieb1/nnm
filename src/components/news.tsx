@@ -5,7 +5,7 @@ import { graphql, useStaticQuery } from 'gatsby';
 
 /// NewsItem is a component that displays a single news item
 /// NewsItem displays an image, title, and description.
-const NewsItem: React.FC<{ title: string, description: string, image_url: string, key: number }> = ({ title, description, image_url, key }) => {
+const NewsItem: React.FC<{ title: string, description: string, image_url: string, index: number }> = ({ title, description, image_url, index }) => {
     let imgquery = useStaticQuery(graphql`
         {
             tape1: file(relativePath: {eq: "tape1.png"}) {
@@ -26,9 +26,19 @@ const NewsItem: React.FC<{ title: string, description: string, image_url: string
         }
     `);
 
-    let imageSelection = key % 3 + 1;
+    let imageSelection = index % 3 + 1;
     let qchoice = imageSelection === 0 ? imgquery.tape1 : imageSelection === 1 ? imgquery.tape2 : imgquery.tape3;
     let image = getImage(qchoice);
+
+    const [showDescription, setShowDescription] = React.useState(false);
+
+    React.useEffect(() => {
+        if (window.matchMedia('(min-width: 768px)').matches) {
+            setShowDescription(true);
+        } else {
+            setShowDescription(false);
+        }
+    }, [setShowDescription]);
 
     return (
         <div className="news-item">
@@ -41,7 +51,7 @@ const NewsItem: React.FC<{ title: string, description: string, image_url: string
                     className="news-image" />
                 <div className="news-content">
                     <h2 className="news-title">{title}</h2>
-                    <p className="news-description">{description}</p>
+                    {showDescription && <p className="news-description">{description}</p>}
                 </div>
             </div>
         </div>
@@ -79,7 +89,7 @@ const NewsContainer: React.FC<{}> = () => {
                         <h1 id="news-heading" style={{display: "none"}}>News</h1>
                         <div className="news-list">
                             {news.articles.map((newsItem, index) => (
-                                <NewsItem key={index} {...newsItem} />
+                                <NewsItem key={index} index={index} {...newsItem} />
                             ))}
                         </div>
                     </div>
