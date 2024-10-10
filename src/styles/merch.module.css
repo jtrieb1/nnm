@@ -1,11 +1,16 @@
 .merch {
-    font-family: 'Arial', sans-serif;
-    background-color: var(--background-color);
+    font-family: var(--navbar-font);
+    font-size: large;
     color: var(--text-color);
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
+}
+
+.merch h2 {
+    font-size: 1.5em;
+    margin: 0;
 }
 
 .merchGrid {
@@ -17,17 +22,13 @@
 }
 
 .merchItem {
-    background-color: var(--card-bg-color);
+    font-family: var(--navbar-font);
     border: 1px solid var(--card-border-color);
     border-radius: 8px;
     box-shadow: var(--card-shadow);
     padding: 20px;
     text-align: center;
-}
-
-.merchItem img {
-    max-width: 100%;
-    border-radius: 8px;
+    height: 500px;
 }
 
 .merchItem h3 {
@@ -36,12 +37,14 @@
 }
 
 .merchItem p {
+    font-family: var(--navbar-font);
     font-size: 0.9em;
     color: var(--text-color);
 }
 
 .merchItem button {
     background-color: var(--button-bg-color);
+    font-family: var(--navbar-font);
     color: var(--button-text-color);
     border: none;
     padding: 10px 20px;
@@ -56,6 +59,7 @@
 }
 
 .cart-summary {
+    font-family: var(--navbar-font);
     background-color: var(--card-bg-color);
     border: 1px solid var(--card-border-color);
     border-radius: 8px;

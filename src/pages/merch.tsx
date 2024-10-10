@@ -8,6 +8,7 @@ import ProductGrid, { MerchNode } from '../components/products/ProductGrid';
 import CenteredText from '../components/decoration/CenteredText';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
+import ContextBg from '../components/bg/ContextBg';
 
 // Query for the merch data
 export const pageQuery = graphql`
@@ -96,10 +97,11 @@ function MerchPage() {
     return (
         <>
           <Header />
+            <ContextBg cutoffpx={768}/>
             <SegmentHeader headerText="Merch" dark={false}/>
               {
                 merchData.length === 0 ? (
-                  <CenteredText children={["no merch available", "bummer"]} signed={false} />
+                  <CenteredText children={["no merch available", "", "bummer"]} signed={false} />
                 ) : (
                   <div className="merch">
                     <ProductGrid cart={cart} merchData={merchData} addItemCallback={add_item} removeItemCallback={remove_item} />

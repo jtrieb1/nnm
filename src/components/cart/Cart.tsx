@@ -146,6 +146,14 @@ export class Cart {
         this.#url = url;
     }
 
+    total(): number {
+        return this.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    }
+
+    currency(): string {
+        return this.items.length !== 0 ? this.items[0].currency : "USD";
+    }
+
     /// Sync the cart with the backend
     async sync(): Promise<void> {
         // If the cart is empty, don't bother

@@ -20,14 +20,7 @@ class ProductCard extends React.Component<ProductCardProps> {
         const { title, description, price, currency } = this.props;
         const ariaLabel = `${title}, ${description}, Price: ${price} ${currency}`;
         return (
-            <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                padding: '10px',
-                margin: '10px',
-                borderRadius: '10px',
-            }}
+            <div className='product-card'
                 aria-label={ariaLabel}
             >
                 <h2>{this.props.title}</h2>

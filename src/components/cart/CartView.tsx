@@ -20,6 +20,10 @@ function CartView({ cart, checkoutFn }: CartViewProps) {
                 <span className="cart-item-total" aria-label={`cart-item-total-${item.product_id}`}>${(item.price * item.quantity).toFixed(2)} {item.currency}</span>
             </li>
         ))}
+            <li className="cart-total" aria-label="cart-total">
+                <span className="cart-total-label" aria-label="cart-total-label">Total</span>
+                <span className="cart-total-amount" aria-label="cart-total-amount">${cart.total().toFixed(2)} {cart.currency()}</span>
+            </li>
         </ul>
         <button 
         className="checkout-button"
