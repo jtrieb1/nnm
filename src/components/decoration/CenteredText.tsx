@@ -19,7 +19,7 @@ const CenteredText: React.FC<{ children: string[], signed: boolean }> = ({ child
     
     return (
         <div className='centered-text-container'>
-            <ContextBg cutoffpx={576} />
+            <ContextBg clip={true} />
             <div className='centered-child-container'>
                 {children.map((child: any, index: number) => (
                     <PaperBacked animated={false} key={index}>

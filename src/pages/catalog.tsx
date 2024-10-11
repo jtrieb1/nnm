@@ -60,7 +60,7 @@ const Catalog = () => {
         <>
             <Header />
             <div style={{flex: 1, height: "100%"}}>
-                <ContextBg cutoffpx={768} />
+                <ContextBg clip={false} />
                 <SegmentHeader headerText="Catalog" dark={false}/>
                 {
                     count > 0 && <PaginatedList currentSelection={currentIssue} totalItems={count} itemsPerPage={ITEMS_PER_PAGE} currentPage={currentPage} handleItemSelect={handleIssueSelect} handlePageChange={handlePageChange} />

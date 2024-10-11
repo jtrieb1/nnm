@@ -97,7 +97,7 @@ function MerchPage() {
     return (
         <>
           <Header />
-            <ContextBg cutoffpx={768}/>
+            <ContextBg clip />
             <SegmentHeader headerText="Merch" dark={false}/>
               {
                 merchData.length === 0 ? (

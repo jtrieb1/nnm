@@ -125,7 +125,7 @@ const FeaturedArtists: React.FC<FeaturedArtistsProps> = () => {
         <>
             <Header />
             <div className="container mx-auto" style={{flex: 1, height: "100%", minHeight: "85vh"}}>
-                <ContextBg cutoffpx={768} />
+                <ContextBg clip />
                 <SegmentHeader headerText="Featured Artists" dark={false}/>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" style={{flex: 1}}>
                     {

@@ -35,21 +35,24 @@ const Latest = () => {
     return (
         <>
             <Header />
-            <ContextBg cutoffpx={768} />
+            
             <SegmentHeader headerText="Latest Issue" dark={false} />
+            <div className='catalog-pdfviewer' role="main">
+                <ContextBg clip={false} />
             {loading ? (
                 <div className='catalog-loading' role="status" aria-live="polite">
                     <div className='spinner' aria-label="Loading"></div>
                 </div>
             ) : (
-                <div className='catalog-pdfviewer' role="main">
+                <>
                     <Blurb issueNumber={issueNumber} />
                     <div className='contentSection'>
                         <IssueViewer pdfUrl={pdfUrl} issue={issueNumber} />
                     </div>
                     <Footer />
-                </div>
+                </>
             )}
+            </div>
         </>
     );
 }

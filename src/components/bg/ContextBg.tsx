@@ -1,32 +1,39 @@
-import { StaticImage } from 'gatsby-plugin-image';
+import { graphql, useStaticQuery } from 'gatsby';
+import { GatsbyImage, getImage, StaticImage } from 'gatsby-plugin-image';
 import React from 'react';
 
-const ContextBg: React.FC<{cutoffpx: number}> = ({ cutoffpx }) => {
-    const [show, setShow] = React.useState(false);
+const ContextBg: React.FC<{clip: boolean}> = ({ clip }) => {
 
-    React.useEffect(() => {
-        if (window.matchMedia(`(min-width: ${cutoffpx}px)`).matches) {
-            setShow(true);
-        } else {
-            setShow(false);
-        }
-
-        window.onresize = () => {
-            if (window.matchMedia(`(min-width: ${cutoffpx}px)`).matches) {
-                setShow(true);
-            } else {
-                setShow(false);
+    let imgQuery = useStaticQuery(graphql`
+        {
+            blueBg: file(relativePath: {eq: "blue_bg.jpg"}) {
+                childImageSharp {
+                    gatsbyImageData
+                }
             }
         }
-    }, [setShow]);
+    `);
+
+    let image = getImage(imgQuery.blueBg);
+
+    const [bgHeight, setBgHeight] = React.useState(0);
+    const [bgWidth, setBgWidth] = React.useState(0);
+
+    React.useEffect(() => {
+        setBgHeight(window.innerHeight);
+        setBgWidth(window.innerWidth);
+
+        window.onresize = () => {
+            setBgHeight(window.innerHeight);
+            setBgWidth(window.innerWidth);
+        };
+    }, [setBgHeight, setBgWidth]);
 
     return (
         <>
-        {
-            show && <div className='catalog-bg-image-container'>
-                <StaticImage src="../../images/blue_bg.jpg" alt="Blue Background" imgStyle={{ width: '100%', height: '100%' }} objectFit='cover' />
+            <div className='catalog-bg-image-container' style={clip ? {overflow: "hidden"} : {}}>
+                <GatsbyImage image={image!} alt="Blue Background" objectFit='cover' />
             </div>
-        }
         </>
     );
 };
