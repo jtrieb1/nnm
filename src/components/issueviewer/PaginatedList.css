@@ -49,6 +49,8 @@
 
 .itemSelector .itemID {
     margin: 5px 0;
+    color: var(--text-color);
+    cursor: pointer;
 }
 
 .itemSelector .itemID.active {
@@ -58,7 +60,6 @@
 
 .itemSelector .itemID:hover {
     background-color: var(--item-hover-bg-color);
-    cursor: pointer;
 }
 
 /* Media Queries */
