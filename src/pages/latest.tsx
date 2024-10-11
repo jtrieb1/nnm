@@ -13,6 +13,7 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import ContextBg from '../components/bg/ContextBg';
+import Layout from '../components/layout/Layout';
 
 const Latest = () => {
     const [issueNumber, setIssueNumber] = React.useState(0);
@@ -33,12 +34,9 @@ const Latest = () => {
     }, []);
 
     return (
-        <>
-            <Header />
-            
+        <Layout clipbg={false}>
             <SegmentHeader headerText="Latest Issue" dark={false} />
             <div className='catalog-pdfviewer' role="main">
-                <ContextBg clip={false} />
             {loading ? (
                 <div className='catalog-loading' role="status" aria-live="polite">
                     <div className='spinner' aria-label="Loading"></div>
@@ -49,11 +47,10 @@ const Latest = () => {
                     <div className='contentSection'>
                         <IssueViewer pdfUrl={pdfUrl} issue={issueNumber} />
                     </div>
-                    <Footer />
                 </>
             )}
             </div>
-        </>
+        </Layout>
     );
 }
 

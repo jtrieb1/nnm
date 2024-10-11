@@ -3,6 +3,8 @@ import BACKEND_URL from '../../util/aws';
 import { GatsbyImage, getImage, StaticImage } from 'gatsby-plugin-image';
 import { graphql, useStaticQuery } from 'gatsby';
 
+import "./NewsContainer.css";
+
 /// NewsItem is a component that displays a single news item
 /// NewsItem displays an image, title, and description.
 const NewsItem: React.FC<{ title: string, description: string, image_url: string, index: number }> = ({ title, description, image_url, index }) => {

@@ -1,6 +1,7 @@
 import { Cart } from "./Cart";
 
 import React from 'react';
+import "./CartView.css";
 
 interface CartViewProps {
     cart: Cart;

@@ -21,27 +21,7 @@
     --item-hover-bg-color: #393E46;
 }
 
-.segmentHeader {
-    font-size: 48px;
-    font-weight: bold;
-    font-family: var(--header-font);
-    color: var(--text-color);
-    text-align: center;
-}
-
-@import "page.module.css";
-
-@import "blurb.module.css";
-@import "contributors.module.css";
-@import "paginatedlist.module.css";
-@import "navbar.module.css";
-@import "hero.module.css";
 @import "catalog.module.css";
-@import "footer.module.css";
+@import "featured.module.css";
 @import "latest.module.css";
 @import "merch.module.css";
-@import "news.module.css";
-@import "pdfviewer.module.css";
-@import "productgrid.module.css";
-@import "paperbacked.module.css";
-@import "centered.module.css";

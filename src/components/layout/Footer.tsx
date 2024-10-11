@@ -1,5 +1,7 @@
 import React from "react";
 
+import "./Footer.css";
+
 /// Footer component that currently only displays copyright information
 const Footer: React.FC = () => {
     return (

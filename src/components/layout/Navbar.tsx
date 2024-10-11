@@ -2,6 +2,8 @@ import React from "react"
 import { Link } from "gatsby"
 import { FaBars } from "react-icons/fa"
 
+import "./Navbar.css";
+
 /// Navigation links for the site
 const links = [
     {

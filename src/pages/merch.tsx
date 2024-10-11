@@ -9,6 +9,7 @@ import CenteredText from '../components/decoration/CenteredText';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import ContextBg from '../components/bg/ContextBg';
+import Layout from '../components/layout/Layout';
 
 // Query for the merch data
 export const pageQuery = graphql`
@@ -95,9 +96,7 @@ function MerchPage() {
     }
 
     return (
-        <>
-          <Header />
-            <ContextBg clip />
+        <Layout clipbg>
             <SegmentHeader headerText="Merch" dark={false}/>
               {
                 merchData.length === 0 ? (
@@ -109,8 +108,7 @@ function MerchPage() {
                   </div>
                 )
               }
-          <Footer />
-        </>
+        </Layout>
     );
 }
 

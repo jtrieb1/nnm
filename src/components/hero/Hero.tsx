@@ -1,6 +1,8 @@
 import { StaticImage } from 'gatsby-plugin-image';
 import React from 'react';
 
+import "./Hero.css";
+
 interface HeroProps {
     title: string;
     description: string;

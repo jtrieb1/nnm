@@ -2,6 +2,8 @@ import React from 'react';
 import { getIssueData } from '../../util/issue';
 import { StaticImage } from 'gatsby-plugin-image';
 
+import "./Blurb.css";
+
 export interface BlurbProps {
     issueNumber: number;
 }

@@ -3,13 +3,11 @@ import { HeadFC } from 'gatsby';
 
 import SegmentHeader from '../components/layout/SegmentHeader';
 import CenteredText from '../components/decoration/CenteredText';
-import Header from '../components/layout/Header';
-import Footer from '../components/layout/Footer';
+import Layout from '../components/layout/Layout';
 
 const AboutPage: React.FC = () => {
     return (
-        <>
-        <Header />
+        <Layout clipbg={true}>
             <SegmentHeader headerText="about us" dark={false}/>
             <CenteredText 
                 children={[
@@ -19,8 +17,7 @@ const AboutPage: React.FC = () => {
                 ]}
                 signed={true}
             />
-        <Footer />
-        </>
+        </Layout>
     );
 };
 

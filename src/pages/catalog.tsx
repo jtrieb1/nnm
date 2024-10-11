@@ -14,6 +14,7 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import ContextBg from '../components/bg/ContextBg';
+import Layout from '../components/layout/Layout';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -57,10 +58,9 @@ const Catalog = () => {
     // of the PDF viewer library we're using. Instead, we put the header 
     // and footer in directly so they rerender properly.
     return (
-        <>
-            <Header />
+        <Layout clipbg={false}>
+            <></>
             <div style={{flex: 1, height: "100%"}}>
-                <ContextBg clip={false} />
                 <SegmentHeader headerText="Catalog" dark={false}/>
                 {
                     count > 0 && <PaginatedList currentSelection={currentIssue} totalItems={count} itemsPerPage={ITEMS_PER_PAGE} currentPage={currentPage} handleItemSelect={handleIssueSelect} handlePageChange={handlePageChange} />
@@ -77,7 +77,7 @@ const Catalog = () => {
                       </div>
                 }
             </div>
-        </>
+        </Layout>
     );
 }
 

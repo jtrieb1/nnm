@@ -4,6 +4,8 @@ import handle_to_link from '../../util/links';
 import SegmentHeader from '../layout/SegmentHeader';
 import { StaticImage } from 'gatsby-plugin-image';
 
+import "./Contributors.css";
+
 export interface ContributorsProps {
     issueNumber: number;
 }

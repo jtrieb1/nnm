@@ -1,0 +1,7 @@
+.segmentHeader {
+    font-size: 48px;
+    font-weight: bold;
+    font-family: var(--header-font);
+    color: var(--text-color);
+    text-align: center;
+}

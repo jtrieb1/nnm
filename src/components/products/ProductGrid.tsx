@@ -2,6 +2,8 @@ import React from 'react';
 import ProductCard from './ProductCard';
 import { Cart } from '../cart/Cart';
 
+import "./ProductGrid.css";
+
 /// MerchNode is a type that represents a piece of merchandise.
 /// These fields are returned from the current graphql queries.
 export interface MerchNode {

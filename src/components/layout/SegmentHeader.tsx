@@ -1,4 +1,5 @@
 import React from 'react';
+import "./SegmentHeader.css";
 
 /// Very simple component that displays a header for a segment
 /// Mostly used for consistency in styling

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PageTurnButtons from './PageTurnButtons';
 
+import "./PaginatedList.css";
 
 export interface PaginatedListProps {
     currentSelection: number;

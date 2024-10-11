@@ -3,7 +3,13 @@
     bottom: 0;
     width: fit-content; 
     background-color: var(--tertiary-color); 
-    text-align: right; 
+    text-align: center; 
     font-size: 14px; 
-    color: var(--text-color)
+    color: var(--text-color);
+    padding: 20px;
+    z-index: 10;
+}
+
+.footer p {
+    margin: 0;
 }
