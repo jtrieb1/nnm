@@ -1,6 +1,8 @@
 import { graphql, useStaticQuery } from 'gatsby';
-import { GatsbyImage, getImage, StaticImage } from 'gatsby-plugin-image';
+import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import React from 'react';
+
+import "./ContextBg.css";
 
 const ContextBg: React.FC<{clip: boolean}> = ({ clip }) => {
 
@@ -31,7 +33,7 @@ const ContextBg: React.FC<{clip: boolean}> = ({ clip }) => {
 
     return (
         <>
-            <div className='catalog-bg-image-container' style={clip ? {overflow: "hidden"} : {}}>
+            <div className='context-bg-image-container' style={clip ? {overflow: "hidden"} : {}}>
                 <GatsbyImage image={image!} alt="Blue Background" objectFit='cover' />
             </div>
         </>

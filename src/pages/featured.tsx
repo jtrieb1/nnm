@@ -6,9 +6,6 @@ import SegmentHeader from '../components/layout/SegmentHeader';
 import getCount from '../util/count';
 import { getIssueData } from '../util/issue';
 import handle_to_link from '../util/links';
-import Footer from '../components/layout/Footer';
-import Header from '../components/layout/Header';
-import ContextBg from '../components/bg/ContextBg';
 import PaperBacked from '../components/decoration/PaperBacked';
 import Layout from '../components/layout/Layout';
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { HeadFC } from 'gatsby';
 
 import Blurb from '../components/blurb/Blurb';
+import Layout from '../components/layout/Layout';
 import PaginatedList from '../components/issueviewer/PaginatedList';
 import IssueViewer from '../components/issueviewer/IssueViewer';
 import SegmentHeader from '../components/layout/SegmentHeader';
@@ -11,10 +12,6 @@ import { getIssueUrl } from '../util/issue';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-import Header from '../components/layout/Header';
-import Footer from '../components/layout/Footer';
-import ContextBg from '../components/bg/ContextBg';
-import Layout from '../components/layout/Layout';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -70,10 +67,7 @@ const Catalog = () => {
                     ? <p className='catalog-loading'>Loading...</p> 
                     : <div className='catalog-pdfviewer'>
                         <Blurb issueNumber={currentIssue} />
-                        <div className='contentSection'>
-                            <IssueViewer pdfUrl={pdfUrl} issue={currentIssue}/>
-                        </div>
-                        <Footer />
+                        <IssueViewer pdfUrl={pdfUrl} issue={currentIssue}/>
                       </div>
                 }
             </div>

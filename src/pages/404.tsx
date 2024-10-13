@@ -1,13 +1,11 @@
 import * as React from "react"
 import { Link, HeadFC, PageProps } from "gatsby"
 
-import Header from "../components/layout/Header"
-import Footer from "../components/layout/Footer"
+import Layout from "../components/layout/Layout"
 
 const NotFoundPage: React.FC<PageProps> = () => {
   return (
-    <>
-      <Header />
+    <Layout clipbg>
       <h1 tabIndex={-1}>Page not found</h1>
       <p>
         The page you are looking for might have been removed, had its name
@@ -16,8 +14,7 @@ const NotFoundPage: React.FC<PageProps> = () => {
       <p>
         <Link to="/">Go back to the homepage</Link>
       </p>
-      <Footer />
-    </>
+    </Layout>
   )
 }
 

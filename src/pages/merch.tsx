@@ -6,9 +6,6 @@ import { Cart, ItemResult } from '../components/cart/Cart';
 import CartView from '../components/cart/CartView';
 import ProductGrid, { MerchNode } from '../components/products/ProductGrid';
 import CenteredText from '../components/decoration/CenteredText';
-import Header from '../components/layout/Header';
-import Footer from '../components/layout/Footer';
-import ContextBg from '../components/bg/ContextBg';
 import Layout from '../components/layout/Layout';
 
 // Query for the merch data
