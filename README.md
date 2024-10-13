@@ -12,7 +12,8 @@ The backend is written in Rust, using actix-web. This was not the most efficient
 Shopify SDKs, but I really wanted to write a web server in Rust and didn't mind rolling my own Shopify interface.
 
 # Infrastructure
-Currently, the website is hosted on AWS using a handful of ECS instances.
+Currently, the website is hosted on AWS using a handful of ECS instances. The website hosts its content on S3, and
+there are a few DynamoDB tables responsible for holding issue-related data and news.
 
 # Visit
 You can visit the website at [nonothing.online](https://nonothing.online).
