@@ -4,12 +4,10 @@ import React from 'react';
 import "./Hero.css";
 
 interface HeroProps {
-    title: string;
-    description: string;
 }
 
 /// Hero image component that displays a title and description over a background image
-const Hero: React.FC<HeroProps> = ({ title, description }) => {
+const Hero: React.FC<HeroProps> = ({ }) => {
     return (
         <div className="hero" role="banner" aria-labelledby="hero-title" aria-describedby="hero-description">
             <StaticImage 
@@ -27,8 +25,12 @@ const Hero: React.FC<HeroProps> = ({ title, description }) => {
                 formats={['auto', 'webp', 'avif']}
             />
             <div className="hero-content">
-                <h1 id="hero-title" className="hero-title">{title}</h1>
-                <p id="hero-description" className="hero-description">{description}</p>
+                <StaticImage
+                    src={"../../images/title.png"}
+                    alt="no nothing magazine"
+                    className="hero-title-img-container"
+                    formats={['auto', 'webp', 'avif']}
+                />
             </div>
         </div>
     );
