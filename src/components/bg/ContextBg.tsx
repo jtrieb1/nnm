@@ -34,7 +34,7 @@ const ContextBg: React.FC<{clip: boolean}> = ({ clip }) => {
     return (
         <>
             <div className='context-bg-image-container' style={clip ? {overflow: "hidden"} : {}}>
-                <GatsbyImage image={image!} alt="Blue Background" objectFit='cover' />
+                <GatsbyImage image={image!} alt="Blue Background" objectFit='fill' />
             </div>
         </>
     );
