@@ -18,10 +18,13 @@ const ContextBg: React.FC<{clip: boolean}> = ({ clip }) => {
 
     let image = getImage(imgQuery.blueBg);
 
-    const [bgHeight, setBgHeight] = React.useState(document.documentElement.offsetHeight);
-    const [bgWidth, setBgWidth] = React.useState(document.documentElement.offsetWidth);
+    const [bgHeight, setBgHeight] = React.useState(0);
+    const [bgWidth, setBgWidth] = React.useState(0);
 
     React.useEffect(() => {
+
+        setBgHeight(document.documentElement.offsetHeight);
+        setBgWidth(document.documentElement.offsetWidth);
 
         window.onresize = () => {
             setBgHeight(document.documentElement.offsetHeight);
@@ -31,7 +34,7 @@ const ContextBg: React.FC<{clip: boolean}> = ({ clip }) => {
         return () => {
             window.onresize = null;
         };
-    });
+    }, []);
 
     return (
         <>
