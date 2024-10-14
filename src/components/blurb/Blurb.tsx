@@ -24,7 +24,7 @@ const Blurb: React.FC<BlurbProps> = ({ issueNumber }) => {
             setBlurb(data.blurb);
             setLoading(false);
         });
-    }, [issueNumber]);
+    }, []);
 
     return (
         <div className="blurb">

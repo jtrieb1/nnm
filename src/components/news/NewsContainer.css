@@ -6,10 +6,13 @@
     font-family: Arial, sans-serif;
     margin-bottom: 20px;
     position: relative;
+    width: 100%;
 }
 
 .news-overlay {
     position: absolute;
+    justify-content: center;
+    align-items: center;
     top: 0;
     left: 0;
     width: 100%;
@@ -17,11 +20,11 @@
 }
 
 .news-header-container {
-    display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
-    width: fit-content;
+    width: 80%;
+    margin: auto;
 }
 
 .news-header-bg-container {
@@ -42,6 +45,7 @@
 .news-header-image {
     object-fit: cover;
     position: absolute;
+    width: 80%;
     top: 0;
     left: 0;
     z-index: 1;

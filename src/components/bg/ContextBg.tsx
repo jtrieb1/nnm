@@ -18,23 +18,25 @@ const ContextBg: React.FC<{clip: boolean}> = ({ clip }) => {
 
     let image = getImage(imgQuery.blueBg);
 
-    const [bgHeight, setBgHeight] = React.useState(0);
-    const [bgWidth, setBgWidth] = React.useState(0);
+    const [bgHeight, setBgHeight] = React.useState(document.documentElement.offsetHeight);
+    const [bgWidth, setBgWidth] = React.useState(document.documentElement.offsetWidth);
 
     React.useEffect(() => {
-        setBgHeight(window.innerHeight);
-        setBgWidth(window.innerWidth);
 
         window.onresize = () => {
-            setBgHeight(window.innerHeight);
-            setBgWidth(window.innerWidth);
+            setBgHeight(document.documentElement.offsetHeight);
+            setBgWidth(document.documentElement.offsetWidth);
         };
-    }, [setBgHeight, setBgWidth]);
+
+        return () => {
+            window.onresize = null;
+        };
+    });
 
     return (
         <>
-            <div className='context-bg-image-container' style={clip ? {overflow: "hidden"} : {}}>
-                <GatsbyImage image={image!} alt="Blue Background" objectFit='fill' />
+            <div className='context-bg-image-container' style={{width: `${bgWidth}px`, height: `${bgHeight}px`, overflow: clip ? "hidden" : "visible"}}>
+                <GatsbyImage image={image!} alt="Blue Background" objectFit='fill' style={{width: `${bgWidth}px`, height: `${bgHeight * 2}px`}} />
             </div>
         </>
     );

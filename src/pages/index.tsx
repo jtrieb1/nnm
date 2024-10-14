@@ -8,10 +8,7 @@ import Layout from "../components/layout/Layout"
 const IndexPage: React.FC<PageProps> = () => {
   return (
     <Layout clipbg>
-      <Hero
-        title="no nothing magazine"
-        description="The magazine about nothing, but in a legally distinct way."
-      />
+      <Hero />
       <NewsContainer />
     </Layout>
   )

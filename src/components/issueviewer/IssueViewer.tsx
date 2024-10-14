@@ -45,7 +45,7 @@ const IssueViewer: React.FC<IssueViewerProps> = ({ pdfUrl, issue }) => {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [page, setPage, numPages]);
+    }, [page, numPages, pageWidth]);
 
     pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 

@@ -12,7 +12,6 @@ const CenteredText: React.FC<{ children: string[], signed: boolean }> = ({ child
     const containerRef = React.useRef<HTMLDivElement>(null);
 
     React.useEffect(() => {
-
         if (containerRef.current) {
             containerRef.current.setAttribute('role', 'main');
             containerRef.current.setAttribute('aria-live', 'polite');

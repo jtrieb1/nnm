@@ -7,9 +7,3 @@
     min-height: 100vh;
     z-index: -2;
 }
-
-@media (max-width: 768px) {
-    .context-bg-image-container {
-        display: none;
-    }
-}
