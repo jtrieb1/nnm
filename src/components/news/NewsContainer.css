@@ -107,8 +107,8 @@
 }
 
 .tape-decoration-container {
-    top: -50px;
-    left: -150px;
+    top: -3rem;
+    left: -50%;
     max-width: 10rem;
     position: relative;
     overflow: visible;

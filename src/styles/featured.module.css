@@ -1,0 +1,9 @@
+.container {
+    padding-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding-bottom: 1rem;
+    }
+}

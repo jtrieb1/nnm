@@ -74,7 +74,7 @@ const Navbar: React.FC = () => {
             <ul id="navbarMenu" className="navbarMenu">
             {links.map(link => (
                 <li key={link.url} className="navbarMenuItem">
-                <Link to={link.url} aria-label={link.description}>{link.text}</Link>
+                <Link to={link.url} onClick={() => setResponsive(!responsive)} aria-label={link.description}>{link.text}</Link>
                 </li>
             ))}
             </ul>
