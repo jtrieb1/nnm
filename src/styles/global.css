@@ -21,6 +21,7 @@
     --item-hover-bg-color: #393E46;
 }
 
+@import "admin.module.css";
 @import "catalog.module.css";
 @import "featured.module.css";
 @import "latest.module.css";

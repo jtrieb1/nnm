@@ -14,7 +14,7 @@ use routes::{
 
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
-    println!("Starting server on port 443...");
+    println!("Starting server...");
     HttpServer::new(|| {
         let cors = Cors::default()
             .allow_any_origin()
@@ -35,7 +35,7 @@ async fn main() -> Result<(), std::io::Error> {
             .service(upload)
             .service(get_news)
     })
-    .bind("127.0.0.1:8000")?
+    .bind("127.0.0.1:3000")?
     .run()
     .await
 }

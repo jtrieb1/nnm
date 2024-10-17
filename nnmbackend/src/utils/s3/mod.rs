@@ -39,7 +39,7 @@ use aws_sdk_s3::Client as S3Client;
 use aws_sdk_s3::{presigning::PresigningConfigBuilder, types::error::NotFound, Error as S3Error};
 
 pub async fn get_s3_client() -> S3Client {
-    let region_provider = RegionProviderChain::default_provider().or_else("us-east-2");
+    let region_provider = RegionProviderChain::default_provider().or_else("us-east-1");
     let config = aws_config::defaults(BehaviorVersion::latest())
         .region(region_provider)
         .load()
@@ -129,7 +129,7 @@ pub async fn get_signed_url_for_latest_issue(s3client: &S3Client) -> Result<Stri
             if !key.ends_with(".pdf") {
                 return 0;
             }
-            println!("{}", key);
+            
             let issue_number = key
                 .trim_start_matches("issue_")
                 .trim_end_matches(".pdf")

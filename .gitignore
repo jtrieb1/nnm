@@ -4,6 +4,7 @@ public
 src/gatsby-types.d.ts
 .env
 *.env
+.env.*
 nnmagent/node_modules
 nnmuploader
 nnmbackend/target

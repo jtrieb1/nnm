@@ -23,12 +23,18 @@ const ContextBg: React.FC<{clip: boolean}> = ({ clip }) => {
 
     React.useEffect(() => {
 
-        setBgHeight(document.documentElement.offsetHeight);
-        setBgWidth(document.documentElement.offsetWidth);
+        const bHeight = Math.max(document.documentElement.scrollHeight, document.documentElement.offsetHeight, document.documentElement.clientHeight);
+        const bWidth = Math.max(document.documentElement.scrollWidth, document.documentElement.offsetWidth, document.documentElement.clientWidth);
+
+        setBgHeight(bHeight);
+        setBgWidth(bWidth);
 
         window.onresize = () => {
-            setBgHeight(document.documentElement.offsetHeight);
-            setBgWidth(document.documentElement.offsetWidth);
+            const bHeight = Math.max(document.documentElement.scrollHeight, document.documentElement.offsetHeight, document.documentElement.clientHeight);
+            const bWidth = Math.max(document.documentElement.scrollWidth, document.documentElement.offsetWidth, document.documentElement.clientWidth);
+
+            setBgHeight(bHeight);
+            setBgWidth(bWidth);
         };
 
         return () => {
