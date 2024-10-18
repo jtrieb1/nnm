@@ -3,6 +3,8 @@ import BACKEND_URL from '../util/aws';
 import Layout from '../components/layout/Layout';
 import { Buffer } from 'buffer';
 import { CognitoJwtVerifier } from "aws-jwt-verify";
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const IssueUploadComponent: React.FC<{access_token: string}> = ({ access_token }) => {
     const [file, setFile] = React.useState<File | null>(null);
@@ -34,13 +36,34 @@ const IssueUploadComponent: React.FC<{access_token: string}> = ({ access_token }
         setLoading(false);
 
         if (response.ok) {
-            alert('Upload successful');
+            toast('Upload successful', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+                });
         } else {
-            alert('Upload failed');
+            toast('Upload failed', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+                });
         }
     }
 
     return (
+        <>
         <div className="issue-upload">
             <h1 className="issue-upload__title">Issue Upload</h1>
             <form className="issue-upload__form" onSubmit={onFormSubmit}>
@@ -82,6 +105,8 @@ const IssueUploadComponent: React.FC<{access_token: string}> = ({ access_token }
                 }
             </form>
         </div>
+        <ToastContainer />
+        </>
     );
 }
 
@@ -154,7 +179,7 @@ const AdminPage = ({ location }: { location: any }) => {
     }
 
     return (
-        <Layout clipbg={false}>
+        <Layout clipbg>
             <br />
             {
                 userTokenValid
